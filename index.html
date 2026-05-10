@@ -1,11 +1,206 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Coart</title>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coart</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #F5EFE4;
+  --surface: #EDE5D6;
+  --card: #FAF6EF;
+  --border: rgba(90,50,15,0.12);
+  --border-strong: rgba(90,50,15,0.22);
+  --text: #3B1F08;
+  --muted: #7A5C3A;
+  --hint: #B09070;
+  --orange: #F26400;
+  --orange-dim: rgba(242,100,0,0.08);
+  --orange-border: rgba(242,100,0,0.35);
+}
+body {
+  background: var(--bg);
+  font-family: 'Figtree', sans-serif;
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+}
+.logo {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: .04em;
+  margin-bottom: 16px;
+}
+.logo-dot {
+  display: inline-block;
+  width: 7px; height: 7px;
+  background: var(--orange);
+  border-radius: 50%;
+  margin-left: 2px;
+  vertical-align: middle;
+  margin-bottom: 3px;
+}
+.tagline {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 8px;
+  text-align: center;
+  line-height: 1.3;
+}
+.sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 40px;
+  text-align: center;
+  line-height: 1.6;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: .05em;
+}
+.toggle-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  display: flex;
+  padding: 4px;
+  margin-bottom: 28px;
+}
+.toggle-btn {
+  padding: 10px 32px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  color: var(--hint);
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+}
+.toggle-btn.on {
+  background: var(--text);
+  color: var(--bg);
+}
+.toggle-btn:not(.on):hover { color: var(--text); }
+.cards {
+  display: flex;
+  gap: 14px;
+  margin-bottom: 32px;
+}
+.view-card {
+  width: 240px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  padding: 20px;
+  opacity: 0.4;
+  transition: all .2s;
+}
+.view-card.on {
+  opacity: 1;
+  border-color: var(--orange-border);
+}
+.view-card-band {
+  height: 2px;
+  background: var(--border-strong);
+  margin-bottom: 12px;
+  transition: background .2s;
+}
+.view-card.on .view-card-band { background: var(--orange); }
+.view-card-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  letter-spacing: .1em;
+  color: var(--hint);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.view-card.on .view-card-label { color: var(--orange); }
+.view-card-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 17px;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.view-card-desc {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.cta {
+  background: var(--orange);
+  color: var(--bg);
+  border: none;
+  padding: 13px 36px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .08em;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: opacity .15s;
+  text-decoration: none;
+  display: inline-block;
+}
+.cta:hover { opacity: .85; }
+.footer-note {
+  margin-top: 32px;
+  font-family: 'DM Mono', monospace;
+  font-size: 9px;
+  color: var(--hint);
+  letter-spacing: .07em;
+  text-align: center;
+}
+</style>
 </head>
 <body>
-  <a href="founder.html">Founder View</a>
-  <br/>
-  <a href="backer.html">Backer View</a>
+
+<div class="logo">Coart<span class="logo-dot"></span></div>
+<div class="tagline">Where young ideas meet the people<br/>who believe in them.</div>
+<p class="sub">Singapore · 2025 · Prototype</p>
+
+<div class="toggle-wrap">
+  <button class="toggle-btn on" id="btn-founder" onclick="setView('founder')">Founder View</button>
+  <button class="toggle-btn" id="btn-backer" onclick="setView('backer')">Backer View</button>
+</div>
+
+<div class="cards">
+  <div class="view-card on" id="card-founder">
+    <div class="view-card-band"></div>
+    <div class="view-card-label">For Founders</div>
+    <div class="view-card-title">Jaslyn Tay</div>
+    <p class="view-card-desc">Create a profile, explore grants, apply with AI assistance, and get discovered by backers.</p>
+  </div>
+  <div class="view-card" id="card-backer">
+    <div class="view-card-band"></div>
+    <div class="view-card-label">For Backers</div>
+    <div class="view-card-title">Tiong Bahru Youth Network</div>
+    <p class="view-card-desc">Browse verified young founders, manage your grants, and track who's applied.</p>
+  </div>
+</div>
+
+<a class="cta" id="enter-btn" href="founder.html">Enter Founder View →</a>
+
+<p class="footer-note">Prototype — not a live product · contact@coart.com</p>
+
+<script>
+function setView(view) {
+  const isFounder = view === 'founder';
+  document.getElementById('btn-founder').classList.toggle('on', isFounder);
+  document.getElementById('btn-backer').classList.toggle('on', !isFounder);
+  document.getElementById('card-founder').classList.toggle('on', isFounder);
+  document.getElementById('card-backer').classList.toggle('on', !isFounder);
+  const btn = document.getElementById('enter-btn');
+  btn.href = isFounder ? 'founder.html' : 'backer.html';
+  btn.textContent = isFounder ? 'Enter Founder View →' : 'Enter Backer View →';
+}
+</script>
 </body>
 </html>
+
