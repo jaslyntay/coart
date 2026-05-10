@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coart — Founder Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #F5EFE4;
+  --surface: #EDE5D6;
+  --card: #FAF6EF;
+  --border: rgba(90,50,15,0.12);
+  --border-strong: rgba(90,50,15,0.22);
+  --text: #3B1F08;
+  --muted: #7A5C3A;
+  --hint: #B09070;
+  --orange: #F26400;
+  --orange-dim: rgba(242,100,0,0.08);
+  --orange-border: rgba(242,100,0,0.35);
+  --sidebar-w: 240px;
+}
+body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text); min-height:100vh; display:flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar-w); min-height:100vh; background:var(--surface);
+  border-right:1px solid var(--border); display:flex; flex-direction:column;
+  flex-shrink:0; position:fixed; top:0; left:0; bottom:0; overflow-y:auto;
+}
+.sidebar-logo { padding:28px 28px 24px; border-bottom:1px solid var(--border); }
+.logo { font-family:'DM Mono',monospace; font-size:17px; font-weight:500; color:var(--text); letter-spacing:.04em; }
+.logo-dot { display:inline-block; width:7px; height:7px; background:var(--orange); border-radius:50%; margin-left:2px; vertical-align:middle; margin-bottom:2px; }
+.sidebar-profile { padding:20px 28px; border-bottom:1px solid var(--border); }
+.profile-avi { width:42px; height:42px; border-radius:50%; background:var(--text); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:13px; color:var(--bg); margin-bottom:10px; }
+.profile-name { font-family:'Instrument Serif',serif; font-size:18px; font-style:italic; color:var(--text); margin-bottom:2px; }
+.profile-uni { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.06em; }
+.sidebar-nav { padding:16px 0; flex:1; }
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:10px 28px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.07em;
+  color:var(--hint); cursor:pointer; border-left:2px solid transparent; transition:all .15s;
+}
+.nav-item:hover { color:var(--text); background:var(--bg); }
+.nav-item.on { color:var(--text); border-left-color:var(--orange); background:var(--bg); }
+.nav-icon { font-size:14px; }
+.sidebar-bottom { padding:20px 28px; border-top:1px solid var(--border); }
+.prog-label { display:flex; justify-content:space-between; margin-bottom:6px; }
+.prog-label span { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.06em; }
+.prog-label span:last-child { color:var(--orange); }
+.prog { height:2px; background:var(--border-strong); margin-bottom:6px; }
+.prog-fill { height:2px; background:var(--orange); width:72%; }
+.prog-note { font-size:11px; color:var(--muted); line-height:1.5; }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); flex:1; min-height:100vh; }
+.topbar {
+  background:var(--bg); border-bottom:1px solid var(--border);
+  padding:20px 40px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10;
+}
+.topbar-title { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--text); }
+.topbar-right { display:flex; gap:10px; }
+
+/* BUTTONS */
+.btn { background:var(--text); color:var(--bg); border:none; padding:9px 18px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; cursor:pointer; border-radius:2px; transition:opacity .15s; }
+.btn:hover { opacity:.85; }
+.btn-or { background:var(--orange); color:var(--bg); }
+.btn-out { background:transparent; color:var(--text); border:1px solid var(--border-strong); }
+.btn-sm { padding:7px 13px; font-size:9px; }
+.btn-row { display:flex; gap:8px; }
+
+/* PAGES */
+.page { display:none; padding:36px 40px; }
+.page.on { display:block; }
+
+/* STAT ROW */
+.stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:32px; }
+.stat-card { background:var(--card); border:1px solid var(--border); padding:20px 22px; }
+.stat-n { font-family:'Instrument Serif',serif; font-size:36px; color:var(--text); display:block; line-height:1; margin-bottom:4px; }
+.stat-l { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.08em; }
+
+/* TWO COL */
+.two-col { display:grid; grid-template-columns:1fr 340px; gap:24px; }
+
+/* LABELS */
+.section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+.lbl { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--hint); text-transform:uppercase; }
+.lbl-link { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.06em; color:var(--orange); cursor:pointer; }
+
+/* PROJECT CARDS */
+.project-card { background:var(--card); border:1px solid var(--border); margin-bottom:10px; transition:border-color .15s; }
+.project-card:hover { border-color:var(--border-strong); }
+.project-card-band { height:3px; background:var(--orange); }
+.project-card-band-muted { height:3px; background:var(--border-strong); }
+.project-card-inner { padding:18px 20px; }
+.project-title { font-family:'Figtree',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.project-sub { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:12px; }
+.tags { display:flex; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+.tag { border:1px solid var(--border-strong); padding:2px 9px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.04em; color:var(--muted); }
+.tag-dk { border-color:var(--text); color:var(--text); }
+.tag-or { border-color:var(--orange-border); color:var(--orange); background:var(--orange-dim); }
+.project-backed { border-left:2px solid var(--text); padding:8px 12px; margin-bottom:12px; background:var(--surface); }
+.backed-lbl { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:.08em; margin-bottom:2px; }
+.backed-val { font-size:13px; color:var(--text); font-weight:600; }
+
+/* GRANT CARDS */
+.grant-card { background:var(--card); border:1px solid var(--border); margin-bottom:10px; }
+.grant-card-inner { padding:16px 18px; }
+.grant-ref { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:4px; }
+.grant-title { font-family:'Figtree',sans-serif; font-size:14px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.grant-amount { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--orange); display:block; margin:4px 0 6px; }
+.grant-sub { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:12px; }
+
+/* EXPLORE GRANTS PAGE */
+.grant-explore-card { background:var(--card); border:1px solid var(--border); margin-bottom:12px; transition:border-color .15s; }
+.grant-explore-card:hover { border-color:var(--border-strong); }
+.grant-explore-band { height:3px; background:var(--orange); }
+.grant-explore-band-dim { height:3px; background:var(--border-strong); }
+.grant-explore-inner { padding:20px 22px; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+.grant-explore-left {}
+.grant-explore-title { font-family:'Figtree',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.grant-explore-amount { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--orange); display:block; margin:4px 0 8px; }
+.grant-explore-sub { font-size:13px; color:var(--muted); line-height:1.6; margin-bottom:10px; }
+.grant-explore-right { flex-shrink:0; display:flex; flex-direction:column; gap:8px; align-items:flex-end; }
+
+/* FILTERS */
+.filter-bar { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; }
+.pill { white-space:nowrap; border:1px solid var(--border-strong); padding:6px 16px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.05em; color:var(--muted); background:var(--card); cursor:pointer; transition:all .15s; }
+.pill:hover { border-color:var(--text); color:var(--text); }
+.pill.on { background:var(--text); color:var(--bg); border-color:var(--text); }
+
+/* APPLICATION MODAL OVERLAY */
+.modal-overlay {
+  display:none; position:fixed; inset:0; background:rgba(30,12,0,0.5);
+  z-index:100; align-items:center; justify-content:center;
+}
+.modal-overlay.on { display:flex; }
+.modal {
+  background:var(--bg); width:720px; max-height:90vh; overflow-y:auto;
+  border:1px solid var(--border-strong);
+  box-shadow:0 24px 80px rgba(30,12,0,0.25);
+}
+.modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
+.modal-title { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--text); margin-bottom:3px; }
+.modal-sub { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; }
+.modal-close { background:none; border:none; font-size:20px; color:var(--hint); cursor:pointer; padding:4px; line-height:1; }
+.modal-close:hover { color:var(--text); }
+.modal-body { padding:28px; }
+
+/* AI ASSISTANCE BANNER */
+.ai-banner {
+  background:var(--orange-dim); border:1px solid var(--orange-border);
+  padding:16px 20px; margin-bottom:24px; display:flex; align-items:flex-start; gap:14px;
+}
+.ai-banner-icon { font-size:20px; flex-shrink:0; margin-top:1px; }
+.ai-banner-text {}
+.ai-banner-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; color:var(--orange); margin-bottom:4px; }
+.ai-banner-desc { font-size:13px; color:var(--muted); line-height:1.5; margin-bottom:10px; }
+.ai-banner-actions { display:flex; gap:8px; }
+.btn-ai { background:var(--orange); color:var(--bg); border:none; padding:8px 16px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.07em; cursor:pointer; border-radius:2px; transition:opacity .15s; }
+.btn-ai:hover { opacity:.85; }
+.btn-ai-out { background:transparent; color:var(--orange); border:1px solid var(--orange-border); }
+
+/* FORM */
+.form-section { margin-bottom:24px; }
+.form-section-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--hint); text-transform:uppercase; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+.form-row { margin-bottom:14px; }
+.form-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.07em; color:var(--muted); margin-bottom:6px; display:flex; align-items:center; justify-content:space-between; }
+.ai-autofill { font-family:'DM Mono',monospace; font-size:9px; color:var(--orange); cursor:pointer; letter-spacing:.05em; }
+.ai-autofill:hover { text-decoration:underline; }
+.form-input {
+  width:100%; background:var(--card); border:1px solid var(--border-strong);
+  padding:10px 14px; font-family:'Figtree',sans-serif; font-size:13px; color:var(--text);
+  outline:none; resize:vertical; font-family:'Figtree',sans-serif;
+}
+.form-input:focus { border-color:var(--orange); }
+.form-input.ai-filled { border-color:var(--orange-border); background:var(--orange-dim); }
+textarea.form-input { min-height:80px; }
+
+/* AI SUGGESTION CHIP */
+.ai-suggestion {
+  margin-top:6px; background:var(--orange-dim); border:1px solid var(--orange-border);
+  padding:10px 14px; display:none;
+}
+.ai-suggestion.on { display:block; }
+.ai-suggestion-label { font-family:'DM Mono',monospace; font-size:8px; letter-spacing:.08em; color:var(--orange); margin-bottom:5px; }
+.ai-suggestion-text { font-size:12px; color:var(--muted); line-height:1.5; margin-bottom:8px; }
+.ai-suggestion-actions { display:flex; gap:6px; }
+.ai-use { font-family:'DM Mono',monospace; font-size:9px; color:var(--orange); cursor:pointer; border:1px solid var(--orange-border); padding:3px 10px; background:none; }
+.ai-use:hover { background:var(--orange); color:var(--bg); }
+.ai-dismiss { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); cursor:pointer; background:none; border:none; padding:3px 6px; }
+
+.modal-footer { padding:20px 28px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.modal-footer-note { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.05em; }
+
+/* PROFILE PAGE */
+.profile-section { background:var(--card); border:1px solid var(--border); margin-bottom:16px; }
+.profile-section-head { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.profile-section-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--hint); text-transform:uppercase; }
+.profile-section-body { padding:20px; }
+.profile-field { margin-bottom:16px; }
+.profile-field:last-child { margin-bottom:0; }
+.profile-field-label { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:4px; }
+.profile-field-value { font-size:14px; color:var(--text); line-height:1.5; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo">Coart<span class="logo-dot"></span></div>
+  </div>
+  <div class="sidebar-profile">
+    <div class="profile-avi">Jt</div>
+    <div class="profile-name">Jaslyn Tay</div>
+    <div class="profile-uni">NUS · Arts & Sustainability</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item on" onclick="showPage('dashboard', this)"><span class="nav-icon">⌂</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage('projects', this)"><span class="nav-icon">◈</span> My Projects</div>
+    <div class="nav-item" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Explore Grants</div>
+    <div class="nav-item" onclick="showPage('backers', this)"><span class="nav-icon">◎</span> Backers</div>
+    <div class="nav-item" onclick="showPage('profile', this)"><span class="nav-icon">◉</span> Profile</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="prog-label"><span>Profile Completion</span><span>72%</span></div>
+    <div class="prog"><div class="prog-fill"></div></div>
+    <p class="prog-note">Backers are 3× more likely to reach out to complete profiles.</p>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Good Morning, Jaslyn.</div>
+    <div class="topbar-right">
+      <button class="btn btn-out" onclick="showPage('profile', document.querySelector('[onclick*=profile]'))">View Public Profile</button>
+      <button class="btn btn-or" onclick="showPage('projects', document.querySelector('[onclick*=projects]'))">+ New Project</button>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: DASHBOARD ═══ -->
+  <div class="page on" id="page-dashboard">
+    <div class="stat-row">
+      <div class="stat-card"><span class="stat-n">2</span><span class="stat-l">Active Projects</span></div>
+      <div class="stat-card"><span class="stat-n">134</span><span class="stat-l">Profile Views This Month</span></div>
+      <div class="stat-card"><span class="stat-n">17</span><span class="stat-l">Grants Open To You</span></div>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="section-head">
+          <span class="lbl">My Projects</span>
+          <span class="lbl-link" onclick="showPage('projects', document.querySelector('[onclick*=projects]'))">View All →</span>
+        </div>
+        <div class="project-card">
+          <div class="project-card-band"></div>
+          <div class="project-card-inner">
+            <div class="tags"><span class="tag tag-or">Backed + Funded</span><span class="tag tag-dk">Arts</span><span class="tag">Active</span></div>
+            <div class="project-title">Unwoventhread</div>
+            <p class="project-sub">A community thrift and upcycling market rooted in Tiong Bahru, reconnecting youth with craft and sustainable living.</p>
+            <div class="project-backed"><div class="backed-lbl">Backed By</div><div class="backed-val">PAYM — Tiong Bahru Youth Network · Oct 2025</div></div>
+            <div class="btn-row"><button class="btn">Edit Project</button><button class="btn btn-out">View Public</button></div>
+          </div>
+        </div>
+        <div class="project-card">
+          <div class="project-card-band-muted"></div>
+          <div class="project-card-inner">
+            <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Draft</span></div>
+            <div class="project-title">Hawker Harvest</div>
+            <p class="project-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food daily across Singapore.</p>
+            <div class="btn-row"><button class="btn">Continue Editing</button></div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="section-head">
+          <span class="lbl">Featured Grants</span>
+          <span class="lbl-link" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">View All 17 →</span>
+        </div>
+        <div class="grant-card">
+          <div class="project-card-band"></div>
+          <div class="grant-card-inner">
+            <div class="grant-ref">NYC-NYF-2025 · Government · Easy</div>
+            <div class="grant-title">National Youth Fund</div>
+            <span class="grant-amount">Up to 80% of project cost</span>
+            <p class="grant-sub">Singapore's most accessible youth grant. Rolling deadline — apply anytime.</p>
+            <button class="btn btn-or btn-sm" onclick="openModal('National Youth Fund', 'NYC-NYF-2025 · Government', 'Up to 80% of project cost')">Apply Now</button>
+          </div>
+        </div>
+        <div class="grant-card">
+          <div class="project-card-band-muted"></div>
+          <div class="grant-card-inner">
+            <div class="grant-ref">SIF-YSE-2025 · Corporate · Selective</div>
+            <div class="grant-title">Young Social Entrepreneurs</div>
+            <span class="grant-amount">Up to S$20,000</span>
+            <p class="grant-sub">6-month programme with mentorship. Annual Jan–Mar intake.</p>
+            <button class="btn btn-sm" onclick="openModal('Young Social Entrepreneurs', 'SIF-YSE-2025 · Corporate', 'Up to S$20,000')">Apply Now</button>
+          </div>
+        </div>
+        <div class="grant-card">
+          <div class="project-card-band-muted"></div>
+          <div class="grant-card-inner">
+            <div class="grant-ref">NAC-AEF-2025 · Government · Moderate</div>
+            <div class="grant-title">Arts Education Fund</div>
+            <span class="grant-amount">Up to S$50,000</span>
+            <p class="grant-sub">For projects that bring arts to underserved communities. Deadline: 31 Mar 2026.</p>
+            <button class="btn btn-sm" onclick="openModal('Arts Education Fund', 'NAC-AEF-2025 · Government', 'Up to S$50,000')">Apply Now</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: MY PROJECTS ═══ -->
+  <div class="page" id="page-projects">
+    <div class="section-head" style="margin-bottom:20px">
+      <span class="lbl">My Projects</span>
+      <button class="btn btn-or">+ New Project</button>
+    </div>
+    <div class="project-card">
+      <div class="project-card-band"></div>
+      <div class="project-card-inner">
+        <div class="tags"><span class="tag tag-or">Backed + Funded</span><span class="tag tag-dk">Arts</span><span class="tag">Active</span><span class="tag">134 Views</span></div>
+        <div class="project-title">Unwoventhread</div>
+        <p class="project-sub">A community thrift and upcycling market rooted in Tiong Bahru, reconnecting youth with heritage craft and sustainable living.</p>
+        <div class="project-backed"><div class="backed-lbl">Backed By</div><div class="backed-val">PAYM — Tiong Bahru Youth Network · Oct 2025</div></div>
+        <div class="btn-row"><button class="btn">Edit Project</button><button class="btn btn-out">View Public</button><button class="btn btn-out">Share</button></div>
+      </div>
+    </div>
+    <div class="project-card">
+      <div class="project-card-band-muted"></div>
+      <div class="project-card-inner">
+        <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Draft</span></div>
+        <div class="project-title">Hawker Harvest</div>
+        <p class="project-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food daily across Singapore.</p>
+        <div class="btn-row"><button class="btn">Continue Editing</button><button class="btn btn-out">Preview</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: EXPLORE GRANTS ═══ -->
+  <div class="page" id="page-grants">
+    <div class="section-head" style="margin-bottom:16px">
+      <span class="lbl">Explore Grants</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;">17 grants match your profile</span>
+    </div>
+    <div class="filter-bar">
+      <div class="pill on">All</div>
+      <div class="pill">Government</div>
+      <div class="pill">Corporate</div>
+      <div class="pill">Community</div>
+      <div class="pill">Arts</div>
+      <div class="pill">Environment</div>
+      <div class="pill">Easy</div>
+      <div class="pill">Open Now</div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NYC-NYF-2025 · Government · Easy · Rolling Deadline</div>
+          <div class="grant-explore-title">National Youth Fund</div>
+          <span class="grant-explore-amount">Up to 80% of project cost</span>
+          <p class="grant-explore-sub">Singapore's most accessible youth grant, open to all registered youth-led initiatives. No fixed deadline — apply anytime.</p>
+          <div class="tags"><span class="tag tag-or">Best Match</span><span class="tag">Government</span><span class="tag">Easy</span><span class="tag">Arts</span><span class="tag">Community</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn btn-or" onclick="openModal('National Youth Fund', 'NYC-NYF-2025 · Government', 'Up to 80% of project cost')">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band-dim"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">SIF-YSE-2025 · Corporate · Selective · Jan–Mar Intake</div>
+          <div class="grant-explore-title">Young Social Entrepreneurs</div>
+          <span class="grant-explore-amount">Up to S$20,000</span>
+          <p class="grant-explore-sub">6-month incubator programme with mentorship, funding, and a cohort of fellow social entrepreneurs.</p>
+          <div class="tags"><span class="tag">Corporate</span><span class="tag">Selective</span><span class="tag">Mentorship</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn" onclick="openModal('Young Social Entrepreneurs', 'SIF-YSE-2025 · Corporate', 'Up to S$20,000')">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band-dim"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NAC-AEF-2025 · Government · Moderate · Deadline 31 Mar 2026</div>
+          <div class="grant-explore-title">Arts Education Fund</div>
+          <span class="grant-explore-amount">Up to S$50,000</span>
+          <p class="grant-explore-sub">For projects that bring arts programming to underserved communities across Singapore.</p>
+          <div class="tags"><span class="tag">Government</span><span class="tag">Arts</span><span class="tag">Education</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn" onclick="openModal('Arts Education Fund', 'NAC-AEF-2025 · Government', 'Up to S$50,000')">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band-dim"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">TBYN-CIG-2025 · Community · Easy · Deadline 30 Jun 2025</div>
+          <div class="grant-explore-title">Tiong Bahru Youth Network — Community Impact Grant</div>
+          <span class="grant-explore-amount">Up to S$5,000</span>
+          <p class="grant-explore-sub">Supports youth-led projects with a direct impact on the Tiong Bahru and surrounding communities.</p>
+          <div class="tags"><span class="tag">Community</span><span class="tag">Easy</span><span class="tag">Local</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn" onclick="openModal('Community Impact Grant', 'TBYN-CIG-2025 · Community', 'Up to S$5,000')">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: BACKERS ═══ -->
+  <div class="page" id="page-backers">
+    <div class="section-head" style="margin-bottom:20px"><span class="lbl">Backers & Interest</span></div>
+    <div class="project-card">
+      <div class="project-card-band"></div>
+      <div class="project-card-inner">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <div class="project-title" style="margin-bottom:0">Tiong Bahru Youth Network</div>
+          <span class="tag tag-or">Backed</span>
+        </div>
+        <p class="project-sub">Backed <strong>Unwoventhread</strong> in October 2025. Community organisation based in Tiong Bahru.</p>
+        <div class="btn-row"><button class="btn btn-out btn-sm">View Profile</button><button class="btn btn-out btn-sm">Message</button></div>
+      </div>
+    </div>
+    <div style="margin-top:24px">
+      <div class="section-head"><span class="lbl">Organisations That Viewed Your Profile</span></div>
+      <div class="project-card" style="margin-bottom:10px">
+        <div class="project-card-band-muted"></div>
+        <div class="project-card-inner">
+          <div class="project-title">Singapore International Foundation</div>
+          <p class="project-sub" style="margin-bottom:10px">Viewed your profile 3 times this week. Runs the Young Social Entrepreneurs programme.</p>
+          <div class="btn-row"><button class="btn btn-out btn-sm">View Profile</button><button class="btn btn-or btn-sm" onclick="openModal('Young Social Entrepreneurs', 'SIF-YSE-2025 · Corporate', 'Up to S$20,000')">Apply To Their Grant</button></div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-card-band-muted"></div>
+        <div class="project-card-inner">
+          <div class="project-title">National Arts Council</div>
+          <p class="project-sub" style="margin-bottom:10px">Viewed your profile this month. Administers the Arts Education Fund.</p>
+          <div class="btn-row"><button class="btn btn-out btn-sm">View Profile</button><button class="btn btn-sm" onclick="openModal('Arts Education Fund', 'NAC-AEF-2025 · Government', 'Up to S$50,000')">Apply To Their Grant</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: PROFILE ═══ -->
+  <div class="page" id="page-profile">
+    <div class="section-head" style="margin-bottom:20px">
+      <span class="lbl">My Profile</span>
+      <button class="btn btn-or">Save Changes</button>
+    </div>
+    <div class="profile-section">
+      <div class="profile-section-head"><span class="profile-section-title">Basic Info</span><button class="btn btn-out btn-sm">Edit</button></div>
+      <div class="profile-section-body">
+        <div class="profile-field"><div class="profile-field-label">Full Name</div><div class="profile-field-value">Jaslyn Tay</div></div>
+        <div class="profile-field"><div class="profile-field-label">University</div><div class="profile-field-value">National University of Singapore</div></div>
+        <div class="profile-field"><div class="profile-field-label">Field Of Study</div><div class="profile-field-value">Arts & Sustainability</div></div>
+        <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value">Singapore</div></div>
+      </div>
+    </div>
+    <div class="profile-section">
+      <div class="profile-section-head"><span class="profile-section-title">About</span><button class="btn btn-out btn-sm">Edit</button></div>
+      <div class="profile-section-body">
+        <div class="profile-field"><div class="profile-field-label">Bio</div><div class="profile-field-value">Building community-led creative spaces that reconnect Singapore's youth with heritage craft and sustainable living.</div></div>
+        <div class="profile-field"><div class="profile-field-label">Focus Areas</div><div class="tags" style="margin-bottom:0"><span class="tag tag-dk">Arts</span><span class="tag tag-dk">Sustainability</span><span class="tag tag-dk">Community</span></div></div>
+      </div>
+    </div>
+    <div class="profile-section">
+      <div class="profile-section-head"><span class="profile-section-title">Missing — Complete To Reach 100%</span></div>
+      <div class="profile-section-body">
+        <div class="profile-field"><div class="profile-field-label">Profile Photo</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
+        <div class="profile-field"><div class="profile-field-label">LinkedIn URL</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
+        <div class="profile-field"><div class="profile-field-label">Past Experience</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
+        <button class="btn btn-or" style="margin-top:6px">Complete Profile</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- APPLICATION MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="modal-grant-title">Grant Application</div>
+        <div class="modal-sub" id="modal-grant-ref">REF · Type</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- AI ASSISTANCE BANNER -->
+      <div class="ai-banner">
+        <div class="ai-banner-icon">✦</div>
+        <div class="ai-banner-text">
+          <div class="ai-banner-title">AI Application Assistance</div>
+          <div class="ai-banner-desc">Coart's AI can draft your answers using your profile and project details. You review and edit everything before submitting — it's your voice, just a faster start.</div>
+          <div class="ai-banner-actions">
+            <button class="btn-ai" onclick="autofillAll()">✦ Autofill All Fields</button>
+            <button class="btn-ai btn-ai-out" onclick="clearAll()">Start From Scratch</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FORM -->
+      <div class="form-section">
+        <div class="form-section-title">Your Project</div>
+        <div class="form-row">
+          <div class="form-label">
+            <span>Which project is this application for?</span>
+          </div>
+          <select class="form-input" id="field-project">
+            <option>Select a project…</option>
+            <option selected>Unwoventhread</option>
+            <option>Hawker Harvest</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Application Questions</div>
+
+        <div class="form-row">
+          <div class="form-label">
+            <span>Describe your project and its impact</span>
+            <span class="ai-autofill" onclick="autofillField('impact')">✦ AI Draft</span>
+          </div>
+          <textarea class="form-input" id="field-impact" placeholder="Tell the grant committee what your project does and who it helps…"></textarea>
+          <div class="ai-suggestion" id="suggest-impact">
+            <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
+            <div class="ai-suggestion-text">Unwoventhread is a community thrift and upcycling market rooted in Tiong Bahru. We create accessible spaces for Singapore's youth to engage with heritage crafts and sustainable fashion, reducing textile waste while building intergenerational connections. Our market events have attracted over 300 participants and diverted an estimated 400kg of clothing from landfill.</div>
+            <div class="ai-suggestion-actions">
+              <button class="ai-use" onclick="useField('impact')">Use This Draft</button>
+              <button class="ai-dismiss" onclick="dismissSuggest('impact')">Dismiss</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">
+            <span>How will you use the grant funding?</span>
+            <span class="ai-autofill" onclick="autofillField('funding')">✦ AI Draft</span>
+          </div>
+          <textarea class="form-input" id="field-funding" placeholder="Break down how the grant money would be used…"></textarea>
+          <div class="ai-suggestion" id="suggest-funding">
+            <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
+            <div class="ai-suggestion-text">Funding would be allocated across three areas: venue hire and logistics for four market events (40%), artisan stipends to support participating craftspeople (35%), and community outreach and communications to broaden participation in underserved neighbourhoods (25%).</div>
+            <div class="ai-suggestion-actions">
+              <button class="ai-use" onclick="useField('funding')">Use This Draft</button>
+              <button class="ai-dismiss" onclick="dismissSuggest('funding')">Dismiss</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-label">
+            <span>What makes you the right person to lead this?</span>
+            <span class="ai-autofill" onclick="autofillField('founder')">✦ AI Draft</span>
+          </div>
+          <textarea class="form-input" id="field-founder" placeholder="Share your background and why you're uniquely placed to deliver this project…"></textarea>
+          <div class="ai-suggestion" id="suggest-founder">
+            <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
+            <div class="ai-suggestion-text">As a final-year Arts & Sustainability student at NUS, I have spent three years studying the intersection of cultural heritage and environmental practice. I founded Unwoventhread after organising community pop-ups in Tiong Bahru and have since built relationships with over 20 local artisans and five NGO partners.</div>
+            <div class="ai-suggestion-actions">
+              <button class="ai-use" onclick="useField('founder')">Use This Draft</button>
+              <button class="ai-dismiss" onclick="dismissSuggest('founder')">Dismiss</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <div class="form-section-title">Supporting Documents</div>
+        <div class="form-row">
+          <div class="form-label"><span>Project Budget (PDF or Excel)</span></div>
+          <div class="form-input" style="color:var(--hint);cursor:pointer;display:flex;align-items:center;gap:8px;">
+            <span>↑</span> Upload file…
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-note">All AI-drafted content is editable. You submit, you sign off.</div>
+      <div class="btn-row">
+        <button class="btn btn-out" onclick="closeModal()">Save Draft</button>
+        <button class="btn btn-or">Submit Application</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const pages = ['dashboard','projects','grants','backers','profile'];
+const titles = {
+  dashboard: 'Good Morning, Jaslyn.',
+  projects: 'My Projects',
+  grants: 'Explore Grants',
+  backers: 'Backers & Interest',
+  profile: 'My Profile'
+};
+
+function showPage(id, el) {
+  pages.forEach(p => {
+    document.getElementById('page-' + p).classList.toggle('on', p === id);
+  });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  if (el) el.classList.add('on');
+  document.getElementById('topbar-title').textContent = titles[id] || '';
+  window.scrollTo(0, 0);
+}
+
+function openModal(title, ref, amount) {
+  document.getElementById('modal-grant-title').textContent = title + ' — Application';
+  document.getElementById('modal-grant-ref').textContent = ref + ' · ' + amount;
+  document.getElementById('modal-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function autofillField(field) {
+  document.getElementById('suggest-' + field).classList.add('on');
+}
+
+function useField(field) {
+  const texts = {
+    impact: "Unwoventhread is a community thrift and upcycling market rooted in Tiong Bahru. We create accessible spaces for Singapore's youth to engage with heritage crafts and sustainable fashion, reducing textile waste while building intergenerational connections. Our market events have attracted over 300 participants and diverted an estimated 400kg of clothing from landfill.",
+    funding: "Funding would be allocated across three areas: venue hire and logistics for four market events (40%), artisan stipends to support participating craftspeople (35%), and community outreach and communications to broaden participation in underserved neighbourhoods (25%).",
+    founder: "As a final-year Arts & Sustainability student at NUS, I have spent three years studying the intersection of cultural heritage and environmental practice. I founded Unwoventhread after organising community pop-ups in Tiong Bahru and have since built relationships with over 20 local artisans and five NGO partners."
+  };
+  const el = document.getElementById('field-' + field);
+  el.value = texts[field];
+  el.classList.add('ai-filled');
+  document.getElementById('suggest-' + field).classList.remove('on');
+}
+
+function dismissSuggest(field) {
+  document.getElementById('suggest-' + field).classList.remove('on');
+}
+
+function autofillAll() {
+  ['impact','funding','founder'].forEach(f => {
+    autofillField(f);
+    setTimeout(() => useField(f), 300);
+  });
+}
+
+function clearAll() {
+  ['impact','funding','founder'].forEach(f => {
+    const el = document.getElementById('field-' + f);
+    el.value = '';
+    el.classList.remove('ai-filled');
+    document.getElementById('suggest-' + f).classList.remove('on');
+  });
+}
+
+// Filter pills toggle
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    this.closest('.filter-bar').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>

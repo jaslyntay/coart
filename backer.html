@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Coart — Tiong Bahru Youth Network</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --bg: #F5EFE4;
+  --surface: #EDE5D6;
+  --card: #FAF6EF;
+  --border: rgba(90,50,15,0.12);
+  --border-strong: rgba(90,50,15,0.22);
+  --text: #3B1F08;
+  --muted: #7A5C3A;
+  --hint: #B09070;
+  --orange: #F26400;
+  --orange-dim: rgba(242,100,0,0.08);
+  --orange-border: rgba(242,100,0,0.35);
+  --sidebar-w: 260px;
+}
+body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text); min-height:100vh; display:flex; }
+
+/* SIDEBAR */
+.sidebar {
+  width:var(--sidebar-w); min-height:100vh; background:var(--surface);
+  border-right:1px solid var(--border); display:flex; flex-direction:column;
+  flex-shrink:0; position:fixed; top:0; left:0; bottom:0; overflow-y:auto;
+}
+.sidebar-logo { padding:28px 28px 24px; border-bottom:1px solid var(--border); }
+.logo { font-family:'DM Mono',monospace; font-size:17px; font-weight:500; color:var(--text); letter-spacing:.04em; }
+.logo-dot { display:inline-block; width:7px; height:7px; background:var(--orange); border-radius:50%; margin-left:2px; vertical-align:middle; margin-bottom:2px; }
+.sidebar-org { padding:20px 28px; border-bottom:1px solid var(--border); }
+.org-badge { display:inline-block; font-family:'DM Mono',monospace; font-size:8px; letter-spacing:.1em; color:var(--orange); border:1px solid var(--orange-border); background:var(--orange-dim); padding:2px 8px; margin-bottom:10px; }
+.org-name { font-family:'Instrument Serif',serif; font-size:17px; font-style:italic; color:var(--text); line-height:1.3; margin-bottom:3px; }
+.org-type { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.06em; }
+.sidebar-nav { padding:16px 0; flex:1; }
+.nav-item {
+  display:flex; align-items:center; gap:10px; padding:10px 28px;
+  font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.07em;
+  color:var(--hint); cursor:pointer; border-left:2px solid transparent; transition:all .15s;
+}
+.nav-item:hover { color:var(--text); background:var(--bg); }
+.nav-item.on { color:var(--text); border-left-color:var(--orange); background:var(--bg); }
+.nav-icon { font-size:14px; }
+.nav-badge { margin-left:auto; font-family:'DM Mono',monospace; font-size:9px; background:var(--orange); color:var(--bg); padding:1px 6px; border-radius:2px; }
+.sidebar-stats { padding:20px 28px; border-top:1px solid var(--border); }
+.sidebar-stat { margin-bottom:14px; }
+.sidebar-stat:last-child { margin-bottom:0; }
+.sidebar-stat-n { font-family:'Instrument Serif',serif; font-size:22px; color:var(--text); display:block; line-height:1; }
+.sidebar-stat-l { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; }
+
+/* MAIN */
+.main { margin-left:var(--sidebar-w); flex:1; min-height:100vh; }
+.topbar {
+  background:var(--bg); border-bottom:1px solid var(--border);
+  padding:20px 40px; display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:10;
+}
+.topbar-title { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--text); }
+.topbar-right { display:flex; gap:10px; }
+
+/* BUTTONS */
+.btn { background:var(--text); color:var(--bg); border:none; padding:9px 18px; font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.08em; cursor:pointer; border-radius:2px; transition:opacity .15s; }
+.btn:hover { opacity:.85; }
+.btn-or { background:var(--orange); color:var(--bg); }
+.btn-out { background:transparent; color:var(--text); border:1px solid var(--border-strong); }
+.btn-sm { padding:7px 13px; font-size:9px; }
+.btn-row { display:flex; gap:8px; }
+
+/* PAGES */
+.page { display:none; }
+.page.on { display:block; }
+
+/* CONTENT */
+.content { padding:32px 40px; }
+
+/* LABELS */
+.section-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; }
+.lbl { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--hint); text-transform:uppercase; }
+.lbl-link { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.06em; color:var(--orange); cursor:pointer; }
+
+/* TAGS */
+.tags { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px; }
+.tag { border:1px solid var(--border-strong); padding:2px 9px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.04em; color:var(--muted); }
+.tag-dk { border-color:var(--text); color:var(--text); }
+.tag-or { border-color:var(--orange-border); color:var(--orange); background:var(--orange-dim); }
+
+/* GRANT BLOCK */
+.grant-block { background:var(--card); border:1px solid var(--border); margin-bottom:28px; }
+.grant-block-band { height:3px; background:var(--orange); }
+.grant-block-band-dim { height:3px; background:var(--border-strong); }
+.grant-block-header { border-bottom:1px solid var(--border); padding:18px 22px; display:flex; align-items:flex-start; justify-content:space-between; gap:20px; }
+.grant-ref { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:4px; }
+.grant-title { font-family:'Figtree',sans-serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.grant-amount { font-family:'DM Mono',monospace; font-size:13px; font-weight:500; color:var(--orange); }
+.grant-meta { display:flex; gap:8px; margin-top:8px; flex-wrap:wrap; }
+.grant-block-actions { display:flex; gap:8px; flex-shrink:0; align-items:flex-start; padding-top:4px; }
+
+/* APPLICANT TABLE */
+.applicant-table { width:100%; border-collapse:collapse; }
+.applicant-table th { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.08em; color:var(--hint); text-align:left; padding:10px 22px; border-bottom:1px solid var(--border); background:var(--surface); }
+.applicant-table td { padding:14px 22px; border-bottom:1px solid var(--border); vertical-align:middle; }
+.applicant-table tr:last-child td { border-bottom:none; }
+.applicant-table tr:hover td { background:rgba(90,50,15,0.03); cursor:pointer; }
+.applicant-name { font-family:'Instrument Serif',serif; font-size:16px; font-style:italic; color:var(--text); }
+.applicant-uni { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.05em; margin-top:2px; }
+.applicant-project { font-size:13px; font-weight:600; color:var(--text); }
+.applicant-project-sub { font-size:11px; color:var(--muted); margin-top:1px; }
+.applicant-tags { display:flex; gap:5px; }
+.status-badge { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.06em; padding:3px 9px; border:1px solid; }
+.status-new { color:var(--orange); border-color:var(--orange-border); background:var(--orange-dim); }
+.status-review { color:var(--muted); border-color:var(--border-strong); background:var(--surface); }
+.status-shortlist { color:var(--text); border-color:var(--text); }
+.action-row { display:flex; gap:6px; }
+
+/* SEARCH BAR */
+.search-bar { padding:16px 40px; border-bottom:1px solid var(--border); display:flex; align-items:center; gap:12px; background:var(--bg); }
+.search-box { display:flex; align-items:center; gap:10px; border:1px solid var(--border-strong); background:var(--card); padding:10px 16px; flex:1; max-width:400px; }
+.search-icon { font-size:13px; color:var(--hint); }
+.search-input { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.04em; background:none; border:none; outline:none; flex:1; }
+.search-input::placeholder { color:var(--hint); }
+.filter-bar { display:flex; gap:6px; }
+.pill { white-space:nowrap; border:1px solid var(--border-strong); padding:5px 14px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.05em; color:var(--muted); background:var(--card); cursor:pointer; transition:all .15s; }
+.pill.on { background:var(--text); color:var(--bg); border-color:var(--text); }
+
+/* FOUNDER GRID */
+.founder-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.founder-card { background:var(--card); border:1px solid var(--border); transition:border-color .15s; cursor:pointer; }
+.founder-card:hover { border-color:var(--border-strong); }
+.founder-card-band { height:2px; background:var(--border-strong); }
+.founder-card-inner { padding:18px; }
+.fc-top { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.fc-avi { width:36px; height:36px; border-radius:50%; background:var(--surface); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); flex-shrink:0; }
+.fc-name { font-family:'Instrument Serif',serif; font-size:17px; font-style:italic; color:var(--text); line-height:1.1; }
+.fc-uni { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.05em; margin-top:1px; }
+.fc-bio { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:12px; }
+.fc-meta { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:.05em; margin-bottom:12px; }
+.fc-meta span { color:var(--text); font-weight:600; }
+
+/* FEATURED CARD */
+.featured-card { background:var(--card); border:1px solid var(--border); margin-bottom:28px; display:grid; grid-template-columns:1fr 1fr; }
+.featured-band { height:3px; background:var(--orange); grid-column:1/-1; }
+.featured-left { padding:28px 32px; border-right:1px solid var(--border); }
+.featured-right { padding:28px 32px; }
+.featured-kicker { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--orange); text-transform:uppercase; margin-bottom:8px; }
+.featured-meta { display:flex; align-items:center; gap:14px; margin-bottom:16px; }
+.featured-avi { width:52px; height:52px; border-radius:50%; background:var(--surface); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; font-family:'DM Mono',monospace; font-size:15px; color:var(--muted); flex-shrink:0; }
+.featured-name { font-family:'Instrument Serif',serif; font-size:26px; font-style:italic; color:var(--text); line-height:1.1; }
+.featured-uni { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.06em; margin-top:3px; }
+.featured-bio { font-size:13px; color:var(--muted); line-height:1.7; margin-bottom:16px; }
+.project-preview { background:var(--surface); border:1px solid var(--border); padding:14px 16px; margin-bottom:16px; }
+.preview-lbl { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:5px; }
+.preview-title { font-family:'Figtree',sans-serif; font-size:15px; font-weight:700; color:var(--text); margin-bottom:4px; }
+.preview-sub { font-size:12px; color:var(--muted); line-height:1.5; }
+
+/* BACKED PROJECTS PAGE */
+.backed-card { background:var(--card); border:1px solid var(--border); margin-bottom:10px; }
+.backed-card-band { height:3px; background:var(--orange); }
+.backed-card-inner { padding:18px 20px; }
+.backed-card-title { font-family:'Figtree',sans-serif; font-size:15px; font-weight:700; color:var(--text); margin-bottom:3px; }
+.backed-card-sub { font-size:12px; color:var(--muted); line-height:1.6; margin-bottom:12px; }
+
+/* ORG PROFILE PAGE */
+.profile-section { background:var(--card); border:1px solid var(--border); margin-bottom:16px; }
+.profile-section-head { padding:16px 20px; border-bottom:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; }
+.profile-section-title { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--hint); text-transform:uppercase; }
+.profile-section-body { padding:20px; }
+.profile-field { margin-bottom:16px; }
+.profile-field:last-child { margin-bottom:0; }
+.profile-field-label { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:4px; }
+.profile-field-value { font-size:14px; color:var(--text); line-height:1.5; }
+
+/* FOUNDER PROFILE MODAL */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,12,0,0.5); z-index:100; align-items:center; justify-content:center; }
+.modal-overlay.on { display:flex; }
+.modal { background:var(--bg); width:660px; max-height:88vh; overflow-y:auto; border:1px solid var(--border-strong); box-shadow:0 24px 80px rgba(30,12,0,0.25); }
+.modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
+.modal-close { background:none; border:none; font-size:20px; color:var(--hint); cursor:pointer; padding:4px; line-height:1; }
+.modal-close:hover { color:var(--text); }
+.modal-body { padding:28px; }
+.modal-footer { padding:20px 28px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sidebar-logo"><div class="logo">Coart<span class="logo-dot"></span></div></div>
+  <div class="sidebar-org">
+    <div class="org-badge">Backer Organisation</div>
+    <div class="org-name">Tiong Bahru Youth Network</div>
+    <div class="org-type">Community Organisation · Singapore</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants">14</span></div>
+    <div class="nav-item" onclick="showPage('discover', this)"><span class="nav-icon">⌂</span> Discover Founders</div>
+    <div class="nav-item" onclick="showPage('backed', this)"><span class="nav-icon">◈</span> Backed Projects</div>
+    <div class="nav-item" onclick="showPage('orgprofile', this)"><span class="nav-icon">◉</span> Organisation Profile</div>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="sidebar-stat"><span class="sidebar-stat-n">3</span><span class="sidebar-stat-l">Active Grants</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-n">14</span><span class="sidebar-stat-l">Total Applications</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-n">6</span><span class="sidebar-stat-l">Projects Backed To Date</span></div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="topbar-title">Our Grants & Applicants</div>
+    <div class="topbar-right">
+      <button class="btn btn-out" onclick="showPage('orgprofile', document.querySelector('[onclick*=orgprofile]'))">View Public Profile</button>
+      <button class="btn btn-or">+ Post A Grant</button>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: OUR GRANTS ═══ -->
+  <div class="page on" id="page-grants">
+    <div class="content">
+      <div class="section-head" style="margin-bottom:20px">
+        <span class="lbl">Active Grants</span>
+        <span class="lbl-link">+ Post A New Grant</span>
+      </div>
+
+      <!-- GRANT 1 -->
+      <div class="grant-block">
+        <div class="grant-block-band"></div>
+        <div class="grant-block-header">
+          <div>
+            <div class="grant-ref">TBYN-CIG-2025 · Community Impact Grant</div>
+            <div class="grant-title">Community Impact Grant 2025</div>
+            <div class="grant-amount">Up to S$5,000 per project</div>
+            <div class="grant-meta">
+              <span class="tag tag-or">5 Applications</span>
+              <span class="tag">Deadline: 30 Jun 2025</span>
+              <span class="tag">Arts · Community · Environment</span>
+            </div>
+          </div>
+          <div class="grant-block-actions">
+            <button class="btn btn-out btn-sm">Edit Grant</button>
+            <button class="btn btn-sm">Close Grant</button>
+          </div>
+        </div>
+        <table class="applicant-table">
+          <thead>
+            <tr>
+              <th>Founder</th><th>Project</th><th>Focus</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">
+              <td><div class="applicant-name">Jaslyn Tay</div><div class="applicant-uni">NUS · Arts & Sustainability</div></td>
+              <td><div class="applicant-project">Unwoventhread</div><div class="applicant-project-sub">Community thrift & upcycling, Tiong Bahru</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Arts</span><span class="tag">Community</span></div></td>
+              <td><span class="status-badge status-shortlist">Shortlisted</span></td>
+              <td><div class="action-row"><button class="btn btn-or btn-sm" onclick="event.stopPropagation()">Back</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">View</button></div></td>
+            </tr>
+            <tr onclick="openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">
+              <td><div class="applicant-name">Ravi Pillai</div><div class="applicant-uni">SMU · Social Enterprise</div></td>
+              <td><div class="applicant-project">Craft Memory Archive</div><div class="applicant-project-sub">Oral histories from traditional craftsmen</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Heritage</span></div></td>
+              <td><span class="status-badge status-review">In Review</span></td>
+              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">View</button></div></td>
+            </tr>
+            <tr onclick="openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">
+              <td><div class="applicant-name">Aisha Che</div><div class="applicant-uni">LASALLE · Design</div></td>
+              <td><div class="applicant-project">Access Arts</div><div class="applicant-project-sub">Arts education for differently-abled youth</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Arts</span><span class="tag">Education</span></div></td>
+              <td><span class="status-badge status-new">New</span></td>
+              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">View</button></div></td>
+            </tr>
+            <tr onclick="openFounderModal('Yi Wen Lim','NTU · Environmental Science','Refill Network SG','Zero-waste refill network for wet markets','Environment, Food')">
+              <td><div class="applicant-name">Yi Wen Lim</div><div class="applicant-uni">NTU · Environmental Science</div></td>
+              <td><div class="applicant-project">Refill Network SG</div><div class="applicant-project-sub">Zero-waste refill network for wet markets</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Environment</span><span class="tag">Food</span></div></td>
+              <td><span class="status-badge status-new">New</span></td>
+              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
+            </tr>
+            <tr onclick="openFounderModal('Ben Ng','SUTD · Architecture','Void Deck Gardens','Modular community gardens for HDB estates','Community, Environment')">
+              <td><div class="applicant-name">Ben Ng</div><div class="applicant-uni">SUTD · Architecture</div></td>
+              <td><div class="applicant-project">Void Deck Gardens</div><div class="applicant-project-sub">Modular community gardens for HDB estates</div></td>
+              <td><div class="applicant-tags"><span class="tag">Community</span><span class="tag">Environment</span></div></td>
+              <td><span class="status-badge status-review">In Review</span></td>
+              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- GRANT 2 -->
+      <div class="grant-block">
+        <div class="grant-block-band-dim"></div>
+        <div class="grant-block-header">
+          <div>
+            <div class="grant-ref">TBYN-YSS-2025 · Youth Starter Stipend</div>
+            <div class="grant-title">Youth Starter Stipend</div>
+            <div class="grant-amount">S$1,500 flat stipend</div>
+            <div class="grant-meta">
+              <span class="tag tag-or">9 Applications</span>
+              <span class="tag">Deadline: 15 May 2025</span>
+              <span class="tag">Open Category</span>
+            </div>
+          </div>
+          <div class="grant-block-actions">
+            <button class="btn btn-out btn-sm">Edit Grant</button>
+            <button class="btn btn-sm" onclick="showPage('grants',document.querySelector('[onclick*=grants]'))">View All 9 →</button>
+          </div>
+        </div>
+        <table class="applicant-table">
+          <thead>
+            <tr><th>Founder</th><th>Project</th><th>Focus</th><th>Status</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            <tr onclick="openFounderModal('Siti Rahimah','NIE · Early Childhood','Cerita Kita','Bilingual storytelling for migrant children','Education, Community')">
+              <td><div class="applicant-name">Siti Rahimah</div><div class="applicant-uni">NIE · Early Childhood</div></td>
+              <td><div class="applicant-project">Cerita Kita</div><div class="applicant-project-sub">Bilingual storytelling for migrant children</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Education</span><span class="tag">Community</span></div></td>
+              <td><span class="status-badge status-shortlist">Shortlisted</span></td>
+              <td><div class="action-row"><button class="btn btn-or btn-sm" onclick="event.stopPropagation()">Back</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
+            </tr>
+            <tr onclick="openFounderModal('Kai Lin Tan','NUS · Computer Science','Neighbours Online','Connecting elderly residents with youth volunteers','Tech, Community')">
+              <td><div class="applicant-name">Kai Lin Tan</div><div class="applicant-uni">NUS · Computer Science</div></td>
+              <td><div class="applicant-project">Neighbours Online</div><div class="applicant-project-sub">Connecting elderly residents with youth volunteers</div></td>
+              <td><div class="applicant-tags"><span class="tag tag-dk">Tech</span><span class="tag">Community</span></div></td>
+              <td><span class="status-badge status-new">New</span></td>
+              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
+            </tr>
+            <tr>
+              <td colspan="5" style="text-align:center;padding:14px 22px;">
+                <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;cursor:pointer;">+ 7 More Applications — View All →</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: DISCOVER FOUNDERS ═══ -->
+  <div class="page" id="page-discover">
+    <div class="search-bar">
+      <div class="search-box">
+        <span class="search-icon">⌕</span>
+        <input class="search-input" placeholder="Search founders, projects, causes…" readonly/>
+      </div>
+      <div class="filter-bar">
+        <div class="pill on">All</div>
+        <div class="pill">Arts</div>
+        <div class="pill">Environment</div>
+        <div class="pill">Community</div>
+        <div class="pill">Education</div>
+        <div class="pill">Food</div>
+        <div class="pill">Heritage</div>
+      </div>
+    </div>
+    <div class="content">
+      <div class="section-head"><span class="lbl">Featured This Week</span></div>
+      <div class="featured-card">
+        <div class="featured-band"></div>
+        <div class="featured-left">
+          <div class="featured-kicker">Featured Founder</div>
+          <div class="featured-meta">
+            <div class="featured-avi">Jt</div>
+            <div>
+              <div class="featured-name">Jaslyn Tay</div>
+              <div class="featured-uni">NUS · Arts & Sustainability</div>
+            </div>
+          </div>
+          <p class="featured-bio">Building community-led creative spaces that reconnect Singapore's youth with heritage craft and sustainable living. Two active projects, open to backers.</p>
+          <div class="tags"><span class="tag tag-or">Arts</span><span class="tag tag-or">Sustainability</span><span class="tag tag-dk">Open To Backers</span></div>
+          <div class="btn-row">
+            <button class="btn btn-or" onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">Back This Founder</button>
+            <button class="btn btn-out" onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">View Full Profile</button>
+            <button class="btn btn-out">Save</button>
+          </div>
+        </div>
+        <div class="featured-right">
+          <div class="preview-lbl">Active Project</div>
+          <div class="project-preview">
+            <div class="preview-title">Unwoventhread</div>
+            <p class="preview-sub">A community thrift and upcycling market rooted in Tiong Bahru. Already backed by PAYM.</p>
+          </div>
+          <div class="preview-lbl" style="margin-bottom:8px">Draft Project</div>
+          <div class="project-preview">
+            <div class="preview-title">Hawker Harvest</div>
+            <p class="preview-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food across Singapore.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-head"><span class="lbl">Browse All Founders</span><span class="lbl-link">128 Founders →</span></div>
+      <div class="founder-grid">
+        <div class="founder-card" onclick="openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage, Community')">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Rp</div><div><div class="fc-name">Ravi Pillai</div><div class="fc-uni">SMU · Social Enterprise</div></div></div>
+            <p class="fc-bio">Digitising oral histories from Singapore's last generation of traditional craftsmen.</p>
+            <div class="tags"><span class="tag tag-dk">Heritage</span><span class="tag">Community</span><span class="tag tag-or">Open To Backers</span></div>
+            <div class="fc-meta"><span>2</span> Projects · <span>1</span> Active</div>
+            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation();openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">View Profile</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
+          </div>
+        </div>
+        <div class="founder-card" onclick="openFounderModal('Yi Wen Lim','NTU · Environmental Science','Refill Network SG','Zero-waste refill network for wet markets','Environment, Food')">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Yw</div><div><div class="fc-name">Yi Wen Lim</div><div class="fc-uni">NTU · Environmental Science</div></div></div>
+            <p class="fc-bio">Building a zero-waste refill network for wet markets across Singapore.</p>
+            <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Food</span><span class="tag tag-or">Seeking Grant Match</span></div>
+            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
+            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation()">View Profile</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
+          </div>
+        </div>
+        <div class="founder-card" onclick="openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Ac</div><div><div class="fc-name">Aisha Che</div><div class="fc-uni">LASALLE · Design</div></div></div>
+            <p class="fc-bio">Creating accessible arts education for differently-abled youth in Geylang.</p>
+            <div class="tags"><span class="tag tag-dk">Arts</span><span class="tag">Education</span><span class="tag tag-or">Open To Backers</span></div>
+            <div class="fc-meta"><span>1</span> Project · <span>1</span> Draft</div>
+            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation()">View Profile</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
+          </div>
+        </div>
+        <div class="founder-card">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Bn</div><div><div class="fc-name">Ben Ng</div><div class="fc-uni">SUTD · Architecture</div></div></div>
+            <p class="fc-bio">Designing modular community gardens for HDB void decks to build social cohesion.</p>
+            <div class="tags"><span class="tag tag-dk">Community</span><span class="tag">Environment</span><span class="tag tag-or">Open To Backers</span></div>
+            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
+            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-out btn-sm">Save</button></div>
+          </div>
+        </div>
+        <div class="founder-card">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Sr</div><div><div class="fc-name">Siti Rahimah</div><div class="fc-uni">NIE · Early Childhood</div></div></div>
+            <p class="fc-bio">Running bilingual storytelling workshops for migrant children navigating dual cultural identities.</p>
+            <div class="tags"><span class="tag tag-dk">Education</span><span class="tag">Community</span></div>
+            <div class="fc-meta"><span>2</span> Projects · <span>2</span> Active</div>
+            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-out btn-sm">Save</button></div>
+          </div>
+        </div>
+        <div class="founder-card">
+          <div class="founder-card-band"></div>
+          <div class="founder-card-inner">
+            <div class="fc-top"><div class="fc-avi">Kl</div><div><div class="fc-name">Kai Lin Tan</div><div class="fc-uni">NUS · Computer Science</div></div></div>
+            <p class="fc-bio">Building a platform connecting elderly residents with youth volunteers for tech and daily tasks.</p>
+            <div class="tags"><span class="tag tag-dk">Tech</span><span class="tag">Community</span><span class="tag tag-or">Open To Backers</span></div>
+            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
+            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-out btn-sm">Save</button></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: BACKED PROJECTS ═══ -->
+  <div class="page" id="page-backed">
+    <div class="content">
+      <div class="section-head" style="margin-bottom:20px"><span class="lbl">Projects We've Backed</span></div>
+      <div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><div class="backed-card-title">Unwoventhread</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.05em;margin-top:2px;">Jaslyn Tay · NUS</div></div>
+          <span class="tag tag-or">Active</span>
+        </div>
+        <p class="backed-card-sub">A community thrift and upcycling market rooted in Tiong Bahru. Backed via Community Impact Grant, Oct 2025.</p>
+        <div class="btn-row"><button class="btn btn-out btn-sm">View Project</button><button class="btn btn-out btn-sm">View Founder</button></div>
+      </div></div>
+      <div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
+          <div><div class="backed-card-title">Cerita Kita</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.05em;margin-top:2px;">Siti Rahimah · NIE</div></div>
+          <span class="tag tag-or">Active</span>
+        </div>
+        <p class="backed-card-sub">Bilingual storytelling workshops for migrant children. Backed via Youth Starter Stipend, Jan 2025.</p>
+        <div class="btn-row"><button class="btn btn-out btn-sm">View Project</button><button class="btn btn-out btn-sm">View Founder</button></div>
+      </div></div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE: ORG PROFILE ═══ -->
+  <div class="page" id="page-orgprofile">
+    <div class="content">
+      <div class="section-head" style="margin-bottom:20px"><span class="lbl">Organisation Profile</span><button class="btn btn-or">Save Changes</button></div>
+      <div class="profile-section">
+        <div class="profile-section-head"><span class="profile-section-title">Organisation Info</span><button class="btn btn-out btn-sm">Edit</button></div>
+        <div class="profile-section-body">
+          <div class="profile-field"><div class="profile-field-label">Organisation Name</div><div class="profile-field-value">Tiong Bahru Youth Network</div></div>
+          <div class="profile-field"><div class="profile-field-label">Type</div><div class="profile-field-value">Community Organisation</div></div>
+          <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value">Tiong Bahru, Singapore</div></div>
+          <div class="profile-field"><div class="profile-field-label">Focus Areas</div><div class="tags" style="margin-bottom:0"><span class="tag tag-dk">Arts</span><span class="tag tag-dk">Community</span><span class="tag tag-dk">Sustainability</span></div></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-head"><span class="profile-section-title">About</span><button class="btn btn-out btn-sm">Edit</button></div>
+        <div class="profile-section-body">
+          <div class="profile-field"><div class="profile-field-label">Description</div><div class="profile-field-value">We support youth-led projects that strengthen community bonds and promote sustainable living across the Tiong Bahru precinct and beyond.</div></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-head"><span class="profile-section-title">Grant History</span></div>
+        <div class="profile-section-body">
+          <div class="profile-field"><div class="profile-field-label">Grants Posted</div><div class="profile-field-value">3 active · 4 closed</div></div>
+          <div class="profile-field"><div class="profile-field-label">Projects Backed</div><div class="profile-field-value">6 total since 2023</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOUNDER PROFILE MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div style="font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--text)" id="modal-name">Founder Name</div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-top:3px" id="modal-uni">University</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="margin-bottom:20px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.08em;margin-bottom:6px">Focus Areas</div>
+        <div class="tags" id="modal-tags"></div>
+      </div>
+      <div style="margin-bottom:20px">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.08em;margin-bottom:8px">Active Project</div>
+        <div style="background:var(--surface);border:1px solid var(--border);padding:14px 16px">
+          <div style="font-family:'Figtree',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px" id="modal-project">Project</div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.5" id="modal-project-sub">Description</div>
+        </div>
+      </div>
+      <div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.6">
+        This founder has applied to your <strong style="color:var(--text)">Community Impact Grant 2025</strong>. Review their full application before deciding to back or shortlist.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-out btn-sm" onclick="closeModal()">Dismiss</button>
+      <button class="btn btn-sm" onclick="closeModal()">Shortlist</button>
+      <button class="btn btn-or btn-sm" onclick="closeModal()">Back This Founder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const pageIds = ['grants','discover','backed','orgprofile'];
+const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', backed:'Backed Projects', orgprofile:'Organisation Profile' };
+
+function showPage(id, el) {
+  pageIds.forEach(p => document.getElementById('page-' + p).classList.toggle('on', p === id));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  if (el) el.classList.add('on');
+  document.getElementById('topbar-title').textContent = pageTitles[id] || '';
+  window.scrollTo(0, 0);
+}
+
+function openFounderModal(name, uni, project, projectSub, tags) {
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal-uni').textContent = uni;
+  document.getElementById('modal-project').textContent = project;
+  document.getElementById('modal-project-sub').textContent = projectSub;
+  const tagsEl = document.getElementById('modal-tags');
+  tagsEl.innerHTML = tags.split(',').map(t => `<span class="tag tag-dk">${t.trim()}</span>`).join('');
+  document.getElementById('modal-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+document.querySelectorAll('.pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    this.closest('.filter-bar').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
+    this.classList.add('on');
+  });
+});
+</script>
+</body>
+</html>
