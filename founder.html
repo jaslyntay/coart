@@ -101,6 +101,9 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 .tag { border:1px solid var(--border-strong); padding:2px 9px; font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.04em; color:var(--muted); }
 .tag-dk { border-color:var(--text); color:var(--text); }
 .tag-or { border-color:var(--orange-border); color:var(--orange); background:var(--orange-dim); }
+.tag-ext { border-color:rgba(90,120,90,0.4); color:#4A7A4A; background:rgba(90,120,90,0.07); }
+.btn-ext { background:transparent; color:var(--muted); border:1px solid var(--border-strong); text-decoration:none; display:inline-block; }
+.btn-ext:hover { border-color:var(--text); color:var(--text); }
 .project-backed { border-left:2px solid var(--text); padding:8px 12px; margin-bottom:12px; background:var(--surface); }
 .backed-lbl { font-family:'DM Mono',monospace; font-size:9px; color:var(--muted); letter-spacing:.08em; margin-bottom:2px; }
 .backed-val { font-size:13px; color:var(--text); font-weight:600; }
@@ -211,7 +214,7 @@ textarea.form-input { min-height:80px; }
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo">Coart<span class="logo-dot"></span></div>
+    <div class="logo">coart<span class="logo-dot"></span></div>
   </div>
   <div class="sidebar-profile">
     <div class="profile-avi">Jt</div>
@@ -237,7 +240,7 @@ textarea.form-input { min-height:80px; }
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-title" id="topbar-title">Good Morning, Jaslyn.</div>
+    <div style="display:flex;align-items:center;gap:14px;"><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">Good Morning, Jaslyn.</div></div>
     <div class="topbar-right">
       <button class="btn btn-out" onclick="showPage('profile', document.querySelector('[onclick*=profile]'))">View Public Profile</button>
       <button class="btn btn-or" onclick="showPage('projects', document.querySelector('[onclick*=projects]'))">+ New Project</button>
@@ -289,7 +292,7 @@ textarea.form-input { min-height:80px; }
             <div class="grant-title">National Youth Fund</div>
             <span class="grant-amount">Up to 80% of project cost</span>
             <p class="grant-sub">Singapore's most accessible youth grant. Rolling deadline — apply anytime.</p>
-            <button class="btn btn-or btn-sm" onclick="openModal('National Youth Fund', 'NYC-NYF-2025 · Government', 'Up to 80% of project cost')">Apply Now</button>
+            <button class="btn btn-or btn-sm" onclick="window.location.href='apply.html'">Apply Now</button>
           </div>
         </div>
         <div class="grant-card">
@@ -299,7 +302,7 @@ textarea.form-input { min-height:80px; }
             <div class="grant-title">Young Social Entrepreneurs</div>
             <span class="grant-amount">Up to S$20,000</span>
             <p class="grant-sub">6-month programme with mentorship. Annual Jan–Mar intake.</p>
-            <button class="btn btn-sm" onclick="openModal('Young Social Entrepreneurs', 'SIF-YSE-2025 · Corporate', 'Up to S$20,000')">Apply Now</button>
+            <button class="btn btn-sm" onclick="window.location.href='apply.html'">Apply Now</button>
           </div>
         </div>
         <div class="grant-card">
@@ -309,7 +312,7 @@ textarea.form-input { min-height:80px; }
             <div class="grant-title">Arts Education Fund</div>
             <span class="grant-amount">Up to S$50,000</span>
             <p class="grant-sub">For projects that bring arts to underserved communities. Deadline: 31 Mar 2026.</p>
-            <button class="btn btn-sm" onclick="openModal('Arts Education Fund', 'NAC-AEF-2025 · Government', 'Up to S$50,000')">Apply Now</button>
+            <button class="btn btn-sm" onclick="window.location.href='apply.html'">Apply Now</button>
           </div>
         </div>
       </div>
@@ -349,6 +352,7 @@ textarea.form-input { min-height:80px; }
       <span class="lbl">Explore Grants</span>
       <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;">17 grants match your profile</span>
     </div>
+
     <div class="filter-bar">
       <div class="pill on">All</div>
       <div class="pill">Government</div>
@@ -371,7 +375,7 @@ textarea.form-input { min-height:80px; }
           <div class="tags"><span class="tag tag-or">Best Match</span><span class="tag">Government</span><span class="tag">Easy</span><span class="tag">Arts</span><span class="tag">Community</span></div>
         </div>
         <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="openModal('National Youth Fund', 'NYC-NYF-2025 · Government', 'Up to 80% of project cost')">Apply Now</button>
+          <button class="btn btn-or" onclick="window.location.href='apply.html'">Apply Now</button>
           <button class="btn btn-out btn-sm">Save</button>
         </div>
       </div>
@@ -388,7 +392,7 @@ textarea.form-input { min-height:80px; }
           <div class="tags"><span class="tag">Corporate</span><span class="tag">Selective</span><span class="tag">Mentorship</span></div>
         </div>
         <div class="grant-explore-right">
-          <button class="btn" onclick="openModal('Young Social Entrepreneurs', 'SIF-YSE-2025 · Corporate', 'Up to S$20,000')">Apply Now</button>
+          <button class="btn" onclick="window.location.href='apply.html'">Apply Now</button>
           <button class="btn btn-out btn-sm">Save</button>
         </div>
       </div>
@@ -405,7 +409,7 @@ textarea.form-input { min-height:80px; }
           <div class="tags"><span class="tag">Government</span><span class="tag">Arts</span><span class="tag">Education</span></div>
         </div>
         <div class="grant-explore-right">
-          <button class="btn" onclick="openModal('Arts Education Fund', 'NAC-AEF-2025 · Government', 'Up to S$50,000')">Apply Now</button>
+          <button class="btn" onclick="window.location.href='apply.html'">Apply Now</button>
           <button class="btn btn-out btn-sm">Save</button>
         </div>
       </div>
@@ -422,7 +426,41 @@ textarea.form-input { min-height:80px; }
           <div class="tags"><span class="tag">Community</span><span class="tag">Easy</span><span class="tag">Local</span></div>
         </div>
         <div class="grant-explore-right">
-          <button class="btn" onclick="openModal('Community Impact Grant', 'TBYN-CIG-2025 · Community', 'Up to S$5,000')">Apply Now</button>
+          <button class="btn" onclick="window.location.href='apply.html'">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band-dim"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NEA-3R-2025 · Government · Moderate · Rolling Deadline</div>
+          <div class="grant-explore-title">NEA 3R Fund</div>
+          <span class="grant-explore-amount">Up to S$300,000</span>
+          <p class="grant-explore-sub">Supports projects that promote reduce, reuse, and recycle behaviours among households, schools, and communities in Singapore.</p>
+          <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Government</span><span class="tag tag-or">AI Assisted</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn btn-or" onclick="window.location.href='apply.html'">Apply Now</button>
+          <button class="btn btn-out btn-sm">Save</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="grant-explore-card">
+      <div class="grant-explore-band-dim"></div>
+      <div class="grant-explore-inner">
+        <div class="grant-explore-left">
+          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NEA-EEF-2025 · Government · Moderate · Rolling Deadline</div>
+          <div class="grant-explore-title">NEA Environmental Education Fund</div>
+          <span class="grant-explore-amount">Up to S$50,000</span>
+          <p class="grant-explore-sub">Funds environmental education programmes that raise awareness and build capability for sustainable behaviours, especially among youth.</p>
+          <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Education</span><span class="tag tag-or">AI Assisted</span></div>
+        </div>
+        <div class="grant-explore-right">
+          <button class="btn btn-or" onclick="window.location.href='apply.html'">Apply Now</button>
           <button class="btn btn-out btn-sm">Save</button>
         </div>
       </div>
@@ -511,12 +549,18 @@ textarea.form-input { min-height:80px; }
     </div>
     <div class="modal-body">
 
+      <!-- NEA NOTE (shown for external portal grants) -->
+      <div id="modal-nea-note" style="display:none;background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 18px;margin-bottom:20px;">
+        <div style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.07em;color:var(--orange);margin-bottom:5px;">✦ How This Works</div>
+        <div class="nea-note-text" style="font-size:13px;color:var(--muted);line-height:1.6;"></div>
+      </div>
+
       <!-- AI ASSISTANCE BANNER -->
       <div class="ai-banner">
         <div class="ai-banner-icon">✦</div>
         <div class="ai-banner-text">
-          <div class="ai-banner-title">AI Application Assistance</div>
-          <div class="ai-banner-desc">Coart's AI can draft your answers using your profile and project details. You review and edit everything before submitting — it's your voice, just a faster start.</div>
+          <div class="ai-banner-title">✦ AI Application Assistance</div>
+          <div class="ai-banner-desc">coart's AI can draft your answers using your profile and project details. You review and edit everything before submitting — it's your voice, just a faster start.</div>
           <div class="ai-banner-actions">
             <button class="btn-ai" onclick="autofillAll()">✦ Autofill All Fields</button>
             <button class="btn-ai btn-ai-out" onclick="clearAll()">Start From Scratch</button>
@@ -524,7 +568,11 @@ textarea.form-input { min-height:80px; }
         </div>
       </div>
 
-      <!-- FORM -->
+      <!-- CUSTOM FIELDS (NEA etc) -->
+      <div class="form-section" id="modal-custom-fields" style="display:none;"></div>
+
+      <!-- DEFAULT FORM -->
+      <div id="modal-default-fields">
       <div class="form-section">
         <div class="form-section-title">Your Project</div>
         <div class="form-row">
@@ -602,6 +650,7 @@ textarea.form-input { min-height:80px; }
       </div>
 
     </div>
+      </div><!-- /modal-default-fields -->
     <div class="modal-footer">
       <div class="modal-footer-note">All AI-drafted content is editable. You submit, you sign off.</div>
       <div class="btn-row">
@@ -632,12 +681,90 @@ function showPage(id, el) {
   window.scrollTo(0, 0);
 }
 
+const grantQuestions = {
+  'NEA 3R Fund': {
+    note: 'NEA requires a Pre-Assessment Form emailed to WM_Fund@nea.gov.sg. Draft your answers below and coart will help structure them for submission.',
+    fields: [
+      { id: 'nea3r-org', label: 'Organisation name and type', placeholder: 'e.g. Unwoventhread, registered non-profit...', aiDraft: 'Unwoventhread is a registered community initiative operating as a non-profit in Singapore, focused on textile waste reduction through community thrift and upcycling markets in Tiong Bahru.' },
+      { id: 'nea3r-project', label: 'Project description - what waste problem does it solve?', placeholder: 'Describe your project and the waste it will reduce or recycle...', aiDraft: 'The project establishes a community upcycling and textile reuse marketplace in Tiong Bahru. By redirecting pre-loved clothing from household disposal into active reuse circuits, the project targets textile waste with an estimated 120 tonnes diverted from incineration over 18 months.' },
+      { id: 'nea3r-tonnage', label: 'Estimated waste reduced / recycled (minimum 100 tonnes over project duration)', placeholder: 'e.g. 120 tonnes of textile waste over 18 months...', aiDraft: 'Estimated 120 tonnes of textile and fabric waste reduced or recycled over the 18-month project duration, based on average garment weights and projected market throughput of 500 items per month.' },
+      { id: 'nea3r-timeline', label: 'Project timeline (preparatory max 6 months, operations max 3 years)', placeholder: 'e.g. Month 1-3: setup, Month 4-18: operations...', aiDraft: 'Months 1-3 (Preparatory): Secure venue, establish collection partnerships with 10 community organisations. Months 4-18 (Operations): Run monthly markets, operate ongoing drop-off and redistribution system. Total: 18 months.' },
+      { id: 'nea3r-budget', label: 'Budget breakdown - manpower, equipment, professional services, other', placeholder: 'Break down qualifying costs across the four categories...', aiDraft: 'Manpower (40%): Part-time coordinator and volunteers. Equipment and materials (35%): Collection bins, sorting infrastructure, upcycling tools. Professional services (15%): Project management and reporting. Other (10%): Community outreach. Total estimated qualifying cost: S$25,000.' }
+    ]
+  },
+  'NEA Environmental Education Fund': {
+    note: 'The NEA EEF supports environmental education programmes. Draft your answers below and coart will help structure them for NEA submission.',
+    fields: [
+      { id: 'neaeef-org', label: 'Organisation name and background', placeholder: 'Describe your organisation and its environmental work...', aiDraft: 'Unwoventhread is a Singapore-based community initiative founded in 2024, running thrift markets and upcycling workshops in Tiong Bahru with a focus on sustainable living and youth environmental education.' },
+      { id: 'neaeef-programme', label: 'Programme description - what environmental education will you deliver?', placeholder: 'Describe the programme content, format, and delivery...', aiDraft: 'A series of monthly hands-on upcycling workshops teaching textile repair, natural dyeing, and zero-waste fashion to youth aged 15-25. Sessions combine practical skills with education on fast fashion and Singapore zero-waste goals.' },
+      { id: 'neaeef-target', label: 'Target audience and expected reach', placeholder: 'Who will participate and how many people will you reach?', aiDraft: 'Primary audience: youth aged 15-25 in Tiong Bahru and surrounding estates. Expected reach: 300 participants across 12 workshop sessions, with secondary reach of 1,000+ through community market touchpoints.' },
+      { id: 'neaeef-outcomes', label: 'Expected environmental outcomes and how you will measure them', placeholder: 'What behaviour change do you expect and how will you track it?', aiDraft: 'Expected outcomes: increased awareness of textile waste (pre/post survey), adoption of repair and reuse behaviours (3-month follow-up). Measured via surveys, attendance records, and social media engagement.' },
+      { id: 'neaeef-budget', label: 'Programme budget breakdown', placeholder: 'Break down costs across materials, facilitators, venue, outreach...', aiDraft: 'Facilitator fees (40%): 2 trained educators per session. Materials and consumables (30%): Fabric, dye, repair tools. Venue and logistics (15%): Community centre space. Outreach and documentation (15%): Photography and impact reporting. Total: S$18,000 over 12 sessions.' }
+    ]
+  }
+};
+
+let currentCustomFields = {};
+
 function openModal(title, ref, amount) {
-  document.getElementById('modal-grant-title').textContent = title + ' — Application';
+  document.getElementById('modal-grant-title').textContent = title + ' - Application';
   document.getElementById('modal-grant-ref').textContent = ref + ' · ' + amount;
+
+  const custom = grantQuestions[title];
+  const formSection = document.getElementById('modal-custom-fields');
+  const defaultSection = document.getElementById('modal-default-fields');
+  const neaNote = document.getElementById('modal-nea-note');
+
+  if (custom) {
+    currentCustomFields = {};
+    custom.fields.forEach(function(f) { currentCustomFields[f.id] = f.aiDraft; });
+    defaultSection.style.display = 'none';
+    neaNote.style.display = 'block';
+    neaNote.querySelector('.nea-note-text').textContent = custom.note;
+    formSection.style.display = 'block';
+
+    var html = '<div class="form-section-title">Application Questions</div>';
+    custom.fields.forEach(function(field) {
+      html += '<div class="form-row">';
+      html += '<div class="form-label"><span>' + field.label + '</span>';
+      html += '<span class="ai-autofill" data-fid="' + field.id + '" onclick="showCustomSuggest(this.getAttribute(\'data-fid\'))">&#10022; AI Draft</span></div>';
+      html += '<textarea class="form-input" id="' + field.id + '" placeholder="' + field.placeholder + '" rows="3"></textarea>';
+      html += '<div class="ai-suggestion" id="suggest-' + field.id + '">';
+      html += '<div class="ai-suggestion-label">&#10022; AI Draft - Review and Edit Before Using</div>';
+      html += '<div class="ai-suggestion-text" id="drafttext-' + field.id + '"></div>';
+      html += '<div class="ai-suggestion-actions">';
+      html += '<button class="ai-use" data-fid="' + field.id + '" onclick="useCustomField(this.getAttribute(\'data-fid\'))">Use This Draft</button>';
+      html += '<button class="ai-dismiss" data-fid="' + field.id + '" onclick="dismissSuggest(this.getAttribute(\'data-fid\'))">Dismiss</button>';
+      html += '</div></div></div>';
+    });
+    formSection.innerHTML = html;
+    custom.fields.forEach(function(field) {
+      var el = document.getElementById('drafttext-' + field.id);
+      if (el) el.textContent = field.aiDraft;
+    });
+  } else {
+    defaultSection.style.display = 'block';
+    neaNote.style.display = 'none';
+    formSection.style.display = 'none';
+  }
+
   document.getElementById('modal-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
+
+function showCustomSuggest(id) {
+  var el = document.getElementById('suggest-' + id);
+  if (el) el.classList.add('on');
+}
+
+function useCustomField(id) {
+  var el = document.getElementById(id);
+  if (el) { el.value = currentCustomFields[id] || ''; el.classList.add('ai-filled'); }
+  var s = document.getElementById('suggest-' + id);
+  if (s) s.classList.remove('on');
+}
+
+
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('on');
