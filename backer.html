@@ -176,7 +176,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 /* FOUNDER PROFILE MODAL */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,12,0,0.5); z-index:100; align-items:center; justify-content:center; }
 .modal-overlay.on { display:flex; }
-.modal { background:var(--bg); width:660px; max-height:88vh; overflow-y:auto; border:1px solid var(--border-strong); box-shadow:0 24px 80px rgba(30,12,0,0.25); }
+.modal { background:var(--bg); width:860px; max-height:90vh; overflow-y:auto; border:1px solid var(--border-strong); box-shadow:0 24px 80px rgba(30,12,0,0.25); }
 .modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
 .modal-close { background:none; border:none; font-size:20px; color:var(--hint); cursor:pointer; padding:4px; line-height:1; }
 .modal-close:hover { color:var(--text); }
@@ -184,13 +184,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 .modal-footer { padding:20px 28px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
 </style>
 </head>
-<body><div style="background:#3B1F08;padding:8px 32px;display:flex;align-items:center;justify-content:space-between;">
-  <span style="font-family:'DM Mono',monospace;font-size:9px;color:#B09070;letter-spacing:.06em;">&#9888; Prototype — no data is saved or submitted · coart · 2026</span>
-  <span style="font-family:'DM Mono',monospace;font-size:9px;color:#B09070;letter-spacing:.06em;">For demo purposes only</span>
-</div>
-
-
-<!-- SIDEBAR -->
+<body><!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo"><div class="logo">Coart<span class="logo-dot"></span></div></div>
   <div class="sidebar-org">
@@ -515,37 +509,148 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
 </div><!-- /main -->
 
-<!-- FOUNDER PROFILE MODAL -->
+<!-- FOUNDER APPLICATION MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
   <div class="modal">
+
     <div class="modal-header">
-      <div>
-        <div style="font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--text)" id="modal-name">Founder Name</div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-top:3px" id="modal-uni">University</div>
+      <div style="display:flex;align-items:center;gap:16px">
+        <div style="width:44px;height:44px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;color:var(--bg);flex-shrink:0" id="modal-avi">jt</div>
+        <div>
+          <div style="font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--text);line-height:1.1" id="modal-name">Founder Name</div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-top:3px" id="modal-uni">University</div>
+        </div>
       </div>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
-    <div class="modal-body">
-      <div style="margin-bottom:20px">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.08em;margin-bottom:6px">Focus Areas</div>
-        <div class="tags" id="modal-tags"></div>
+
+    <div class="modal-body" style="padding:0">
+
+      <!-- TWO COLUMN LAYOUT -->
+      <div style="display:grid;grid-template-columns:260px 1fr;min-height:400px">
+
+        <!-- LEFT: FOUNDER PROFILE -->
+        <div style="background:var(--surface);border-right:1px solid var(--border);padding:22px">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:14px">Founder Profile</div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px">Focus Areas</div>
+            <div class="tags" id="modal-tags" style="margin-bottom:0"></div>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px">About</div>
+            <div style="font-size:12px;color:var(--muted);line-height:1.6" id="modal-about">Loading...</div>
+          </div>
+
+          <div style="margin-bottom:16px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Active Project</div>
+            <div style="background:var(--card);border:1px solid var(--border);padding:12px 14px">
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px" id="modal-project">Project</div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5" id="modal-project-sub">Description</div>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Applied To</div>
+            <div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:10px 12px">
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:.06em;margin-bottom:2px" id="modal-grant-name">Grant Name</div>
+              <div style="font-size:11px;color:var(--muted)" id="modal-grant-amount">Amount</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: FULL APPLICATION -->
+        <div style="padding:22px;overflow-y:auto">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Application Answers</div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Project Description</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-1">Loading...</div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Problem Statement</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-2">Loading...</div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Target Beneficiaries</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-3">Loading...</div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Intended Outcomes</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-4">Loading...</div>
+          </div>
+
+          <div style="margin-bottom:20px">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">How Funding Will Be Used</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-5">Loading...</div>
+          </div>
+
+          <div>
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Why This Founder</div>
+            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-6">Loading...</div>
+          </div>
+        </div>
+
       </div>
-      <div style="margin-bottom:20px">
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.08em;margin-bottom:8px">Active Project</div>
-        <div style="background:var(--surface);border:1px solid var(--border);padding:14px 16px">
-          <div style="font-family:'Figtree',sans-serif;font-size:15px;font-weight:700;color:var(--text);margin-bottom:4px" id="modal-project">Project</div>
-          <div style="font-size:12px;color:var(--muted);line-height:1.5" id="modal-project-sub">Description</div>
+    </div>
+
+    <!-- CONTACT PANEL (slides in) -->
+    <div id="contact-panel" style="display:none;padding:20px 28px;border-top:1px solid var(--border);background:var(--surface);">
+      <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--orange);text-transform:uppercase;margin-bottom:12px;">Request a Call</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:5px;">Your preferred time</div>
+          <select id="contact-time" style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:9px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text);outline:none;">
+            <option>This week — any time</option>
+            <option>Weekday morning (9am–12pm)</option>
+            <option>Weekday afternoon (12pm–5pm)</option>
+            <option>Weekday evening (6pm–9pm)</option>
+            <option>Weekend morning</option>
+            <option>Weekend afternoon</option>
+          </select>
+        </div>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:5px;">Format</div>
+          <select id="contact-format" style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:9px 12px;font-family:'DM Mono',monospace;font-size:10px;color:var(--text);outline:none;">
+            <option>Video call (Zoom / Meet)</option>
+            <option>Phone call</option>
+            <option>In-person meeting</option>
+            <option>Voice note exchange</option>
+          </select>
         </div>
       </div>
-      <div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.6">
-        This founder has applied to your <strong style="color:var(--text)">Community Impact Grant 2025</strong>. Review their full application before deciding to back or shortlist.
+      <div style="margin-bottom:12px;">
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:5px;">Message to founder (optional)</div>
+        <textarea id="contact-msg" placeholder="Tell them why you&#39;re interested in their project..." style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:10px 12px;font-family:'Figtree',sans-serif;font-size:12px;color:var(--text);resize:none;outline:none;min-height:72px;line-height:1.5;"></textarea>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;">
+        <button class="btn btn-out btn-sm" onclick="toggleContact()">Cancel</button>
+        <button class="btn btn-or btn-sm" onclick="sendContactRequest()">Send Request</button>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-out btn-sm" onclick="closeModal()">Dismiss</button>
-      <button class="btn btn-sm" onclick="closeModal()">Shortlist</button>
-      <button class="btn btn-or btn-sm" onclick="closeModal()">Back This Founder</button>
+
+    <!-- SENT CONFIRMATION -->
+    <div id="contact-sent" style="display:none;padding:16px 28px;border-top:1px solid var(--border);background:var(--orange-dim);border-bottom:1px solid var(--orange-border);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="font-size:18px;">✓</span>
+        <div>
+          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--orange);letter-spacing:.07em;margin-bottom:2px;" id="sent-msg">Request sent to founder.</div>
+          <div style="font-size:12px;color:var(--muted);">They&#39;ll receive a notification and can confirm a time through coart.</div>
+        </div>
+      </div>
     </div>
+
+    <div class="modal-footer">
+      <button class="btn btn-out btn-sm" onclick="closeModal()">Close</button>
+      <button class="btn btn-out btn-sm" id="modal-btn-contact" onclick="toggleContact()">Request a Call</button>
+      <button class="btn btn-sm" id="modal-btn-shortlist" onclick="shortlistFounder()">Shortlist</button>
+      <button class="btn btn-or btn-sm" id="modal-btn-back" onclick="backFounder()">Back This Founder</button>
+    </div>
+
   </div>
 </div>
 
@@ -561,20 +666,190 @@ function showPage(id, el) {
   window.scrollTo(0, 0);
 }
 
+const founderData = {
+  'Jaslyn Tay': {
+    avi: 'Jt', uni: 'NUS · Arts & Sustainability',
+    about: 'Final-year Arts & Sustainability student at NUS. Founded Unwoventhread in 2024 after organising community pop-ups in Tiong Bahru. Passionate about making sustainable living accessible and fun for young people.',
+    tags: 'Arts, Sustainability, Community',
+    project: 'Unwoventhread',
+    projectSub: 'Community thrift & upcycling market, Tiong Bahru',
+    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
+    answers: {
+      1: 'Unwoventhread is a community-led upcycling and thrift market based in Tiong Bahru. The project creates accessible spaces where youth engage with sustainable fashion, heritage craft, and textile reuse — reducing waste while building intergenerational community connections.',
+      2: 'Singapore&#39;s youth are increasingly disconnected from sustainable consumption habits. Fast fashion contributes significantly to the 168,000 tonnes of textile waste disposed of annually. Young people lack accessible, affordable spaces to learn repair, reuse, and upcycling skills.',
+      3: 'Primary beneficiaries: youth aged 15–25 in Tiong Bahru and surrounding estates. Secondary beneficiaries: participating artisans and craftspeople, and the broader community through reduced textile waste.',
+      4: 'Within 6 months: 300+ youth participants across monthly market events; measurable reduction in textile waste disposal among participants; 20+ artisan partnerships; a self-sustaining community hub for sustainable fashion education.',
+      5: 'Venue hire and logistics for six market events (40%); artisan stipends to support participating craftspeople (35%); community outreach and communications (25%). Total requested: S$5,000.',
+      6: 'As a final-year Arts & Sustainability student at NUS, I have three years of study at the intersection of cultural heritage and environmental practice. I have organised three successful markets with 300+ attendees and built relationships with 20+ local artisans and five NGO partners including PAYM.'
+    }
+  },
+  'Ravi Pillai': {
+    avi: 'Rp', uni: 'SMU · Social Enterprise',
+    about: 'Third-year Social Enterprise student at SMU. Has been documenting traditional craftsmen in Singapore since 2023. Believes oral history is one of the most urgent preservation challenges facing the country.',
+    tags: 'Heritage, Community',
+    project: 'Craft Memory Archive',
+    projectSub: 'Oral histories from Singapore&#39;s traditional craftsmen',
+    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
+    answers: {
+      1: 'Craft Memory Archive is a digital oral history project documenting the lives, techniques, and stories of Singapore&#39;s last generation of traditional craftsmen — cobblers, rattan weavers, Chinese calligraphers, and metalworkers — before their knowledge is lost.',
+      2: 'Singapore&#39;s traditional craft trades are disappearing rapidly. Many master craftsmen are in their 70s and 80s with no apprentices and no documented record of their techniques. Once they pass, their knowledge is irretrievably lost.',
+      3: 'Primary: Singapore&#39;s traditional craftsmen aged 60+, who gain recognition and a lasting legacy. Secondary: youth and students who will engage with the archive through school partnerships, and the broader public through a public-facing digital portal.',
+      4: 'Within 6 months: 20+ craftsmen interviewed and documented; a publicly accessible archive launched at craftmemory.sg; school partnership with at least 2 secondary schools; 1,000+ archive visits.',
+      5: 'Videography equipment and editing (35%); archivists and translators for multi-dialect interviews (40%); web development for the public archive (15%); outreach and community events (10%). Total: S$5,000.',
+      6: 'I grew up in a family of craftspeople and speak Hokkien and Tamil, giving me direct access to communities that are rarely documented. I have already conducted 5 pilot interviews as proof of concept and have partnerships with the National Heritage Board and two community centres.'
+    }
+  },
+  'Aisha Che': {
+    avi: 'Ac', uni: 'LASALLE · Design',
+    about: 'Final-year Design student at LASALLE. Has been volunteering with disability arts organisations since her first year. Believes the arts should be radically accessible — not an afterthought.',
+    tags: 'Arts, Education',
+    project: 'Access Arts',
+    projectSub: 'Arts education for differently-abled youth in Geylang',
+    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
+    answers: {
+      1: 'Access Arts delivers hands-on arts education workshops for differently-abled youth aged 10–21 in Geylang, designed from the ground up for participants with physical, intellectual, and sensory disabilities. Every activity is co-designed with disability advocates.',
+      2: 'Arts education in Singapore is largely inaccessible to differently-abled youth. Most programmes lack adaptive equipment, trained facilitators, or sensory-friendly environments. Differently-abled children are frequently excluded from the creative experiences their peers take for granted.',
+      3: 'Differently-abled youth aged 10–21 in Geylang and the east, primarily from lower-income families. Secondary beneficiaries: parents and caregivers who gain respite time and community connection.',
+      4: 'Within 6 months: 80 differently-abled youth served across 12 workshop sessions; 3 trained adaptive arts facilitators; a free resource kit shared with 5 other disability organisations; 1 public showcase of participant work.',
+      5: 'Adaptive arts materials and equipment (40%); trained facilitators with disability experience (35%); venue at an accessible community space (15%); documentation and resource kit production (10%). Total: S$5,000.',
+      6: 'I have 3 years of experience volunteering with Cerebral Palsy Alliance Singapore and Very Special Arts Singapore. My design thesis was on universal design principles for arts spaces. This project grows directly from that research and my existing relationships with the disability community.'
+    }
+  },
+  'Yi Wen Lim': {
+    avi: 'Yw', uni: 'NTU · Environmental Science',
+    about: 'Second-year Environmental Science student at NTU. Has been studying zero-waste systems in Southeast Asia. Wants to make sustainable living the default, not the exception.',
+    tags: 'Environment, Food',
+    project: 'Refill Network SG',
+    projectSub: 'Zero-waste refill network for wet markets',
+    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
+    answers: {
+      1: 'Refill Network SG pilots a zero-waste bulk refill system in two Singapore wet markets — Bedok and Clementi — allowing shoppers to refill common household products such as cooking oil, detergent, and rice in their own containers.',
+      2: 'Single-use plastic packaging from wet market purchases is one of the most persistent sources of household plastic waste in Singapore. Most shoppers would reduce packaging if given a convenient, affordable alternative.',
+      3: 'Wet market shoppers in Bedok and Clementi, particularly lower-income households who shop daily and generate the most packaging waste per capita.',
+      4: 'Within 6 months: 2 refill stations operational; 500+ repeat users; estimated 200kg of plastic packaging avoided; learnings published as a replication guide for other markets.',
+      5: 'Refill station equipment and installation (50%); participating stall-holder incentives (20%); communications and behaviour change campaign (20%); monitoring and evaluation (10%). Total: S$5,000.',
+      6: 'I have spent two semesters studying zero-waste wet market models in Thailand and Malaysia. I have existing relationships with the Bedok Interchange Hawker Centre management and three stall-holders who have agreed to participate in the pilot.'
+    }
+  },
+  'Ben Ng': {
+    avi: 'Bn', uni: 'SUTD · Architecture',
+    about: 'Third-year Architecture student at SUTD. Specialises in community-centred design. Convinced that HDB void decks are the most underused community asset in Singapore.',
+    tags: 'Community, Environment',
+    project: 'Void Deck Gardens',
+    projectSub: 'Modular community gardens for HDB void decks',
+    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
+    answers: {
+      1: 'Void Deck Gardens installs modular, low-maintenance growing systems in HDB void decks, designed to be managed collectively by residents. Each unit produces herbs and vegetables while creating a gathering point for neighbourly connection.',
+      2: 'HDB void decks are largely sterile, underused spaces. Simultaneously, urban farming interest in Singapore is growing but most residents lack space or access. There is no programme connecting these two gaps at the estate level.',
+      3: 'HDB residents in mature estates, particularly elderly residents who benefit from light activity and social connection, and families with children who gain access to food growing education.',
+      4: 'Within 6 months: 3 void deck garden installations across 2 HDB estates; 60+ regular participating residents; a management model tested and documented for replication.',
+      5: 'Modular planter fabrication and materials (60%); soil, seeds, and growing supplies (20%); resident workshops and onboarding (15%); documentation (5%). Total: S$1,500.',
+      6: 'My final-year architecture project at SUTD was a detailed design proposal for community urban farming infrastructure. I have conducted site visits with residents at Queenstown and Bishan and received positive interest from two Town Councils.'
+    }
+  },
+  'Siti Rahimah': {
+    avi: 'Sr', uni: 'NIE · Early Childhood',
+    about: 'Early Childhood educator at NIE. Has been running informal storytelling sessions for migrant families since 2022. Believes bilingualism is a strength, not a barrier.',
+    tags: 'Education, Community',
+    project: 'Cerita Kita',
+    projectSub: 'Bilingual storytelling for migrant children',
+    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
+    answers: {
+      1: 'Cerita Kita (Our Story) runs bilingual storytelling workshops for migrant children aged 4–10, using their mother tongue alongside English to build literacy, confidence, and a sense of belonging in Singapore.',
+      2: 'Migrant children in Singapore often struggle with identity and literacy as they navigate between their home language and English. Most early childhood programmes are English-only, leaving these children without culturally affirming experiences.',
+      3: 'Migrant children aged 4–10 primarily from Bangladesh, India, and Myanmar, living in Jurong West and Woodlands. Secondary beneficiaries: their parents, who gain community connection and parenting resources.',
+      4: 'Within 6 months: 60 children reached across 12 sessions; measurable improvement in literacy confidence (teacher and parent survey); a bilingual storybook co-created with participants and distributed to 3 community centres.',
+      5: 'Bilingual story materials and books (30%); facilitator fees for 2 mother-tongue educators (45%); venue at community centre (15%); storybook printing and distribution (10%). Total: S$1,500.',
+      6: 'I am a trained early childhood educator with a specialism in multilingual literacy. I have been running pilot sessions informally for the past year with 15 families, and have letters of support from the Jurong West CC and two primary schools.'
+    }
+  },
+  'Kai Lin Tan': {
+    avi: 'Kl', uni: 'NUS · Computer Science',
+    about: 'Final-year Computer Science student at NUS. Has been building side projects for social good since second year. Wants to use technology to reduce isolation among Singapore&#39;s elderly.',
+    tags: 'Tech, Community',
+    project: 'Neighbours Online',
+    projectSub: 'Connecting elderly residents with youth volunteers',
+    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
+    answers: {
+      1: 'Neighbours Online is a simple matching platform connecting elderly residents who need help with everyday digital tasks — video calls, government app navigation, online shopping — with trained youth volunteers living nearby.',
+      2: 'Singapore&#39;s elderly population is growing rapidly, but digital inclusion remains low. Many older residents struggle with basic digital tasks that would significantly improve their independence and social connection, but cannot access consistent, patient help.',
+      3: 'Elderly residents aged 65+ in Queenstown and Toa Payoh who own smartphones but lack confidence using them. Secondary: youth volunteers aged 16–25 who gain structured volunteering experience and inter-generational connection.',
+      4: 'Within 6 months: 50 elderly residents matched with volunteers; 200+ help sessions completed; an onboarding programme for volunteers developed and tested with 3 secondary schools.',
+      5: 'Platform development and hosting (40%); volunteer training materials (20%); community outreach to recruit elderly participants (25%); evaluation and reporting (15%). Total: S$1,500.',
+      6: 'I built the initial prototype of Neighbours Online as my second-year software engineering project and piloted it with 10 residents at Queenstown. I have a partnership with Queenstown CC and letters of support from two secondary schools for volunteer recruitment.'
+    }
+  }
+};
+
 function openFounderModal(name, uni, project, projectSub, tags) {
+  const data = founderData[name];
+
   document.getElementById('modal-name').textContent = name;
-  document.getElementById('modal-uni').textContent = uni;
-  document.getElementById('modal-project').textContent = project;
-  document.getElementById('modal-project-sub').textContent = projectSub;
+  document.getElementById('modal-uni').textContent = data ? data.uni : uni;
+  document.getElementById('modal-avi').textContent = data ? data.avi : name.split(' ').map(w=>w[0]).join('').toLowerCase();
+  document.getElementById('modal-about').textContent = data ? data.about : 'Profile not available.';
+  document.getElementById('modal-project').textContent = data ? data.project : project;
+  document.getElementById('modal-project-sub').textContent = data ? data.projectSub : projectSub;
+  document.getElementById('modal-grant-name').textContent = data ? data.grant : 'Grant Application';
+  document.getElementById('modal-grant-amount').textContent = data ? data.grantAmount : '';
+
   const tagsEl = document.getElementById('modal-tags');
-  tagsEl.innerHTML = tags.split(',').map(t => `<span class="tag tag-dk">${t.trim()}</span>`).join('');
+  const tagStr = data ? data.tags : tags;
+  tagsEl.innerHTML = tagStr.split(',').map(t => '<span class="tag tag-dk">' + t.trim() + '</span>').join('');
+
+  if (data && data.answers) {
+    for (let i = 1; i <= 6; i++) {
+      const el = document.getElementById('modal-ans-' + i);
+      if (el) el.textContent = data.answers[i] || 'Not provided.';
+    }
+  }
+
   document.getElementById('modal-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
+}
+
+function shortlistFounder() {
+  const btn = document.getElementById('modal-btn-shortlist');
+  btn.textContent = 'Shortlisted ✓';
+  btn.disabled = true;
+}
+
+function backFounder() {
+  const btn = document.getElementById('modal-btn-back');
+  btn.textContent = 'Backed ✓';
+  btn.style.background = 'var(--text)';
+  btn.disabled = true;
+}
+
+function toggleContact() {
+  const panel = document.getElementById('contact-panel');
+  const sent = document.getElementById('contact-sent');
+  const btn = document.getElementById('modal-btn-contact');
+  if (sent.style.display !== 'none') return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? 'Request a Call' : 'Cancel';
+}
+
+function sendContactRequest() {
+  const name = document.getElementById('modal-name').textContent;
+  const time = document.getElementById('contact-time').value;
+  const format = document.getElementById('contact-format').value;
+  document.getElementById('contact-panel').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'block';
+  document.getElementById('sent-msg').textContent = 'Call request sent to ' + name + ' — ' + format + ', ' + time.toLowerCase() + '.';
+  document.getElementById('modal-btn-contact').style.display = 'none';
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('on');
   document.body.style.overflow = '';
+  // reset contact panel
+  document.getElementById('contact-panel').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'none';
+  document.getElementById('modal-btn-contact').style.display = '';
+  document.getElementById('modal-btn-contact').textContent = 'Request a Call';
+  document.getElementById('contact-msg').value = '';
 }
 
 function closeModalOutside(e) {
