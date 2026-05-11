@@ -182,6 +182,27 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 .modal-close:hover { color:var(--text); }
 .modal-body { padding:28px; }
 .modal-footer { padding:20px 28px; border-top:1px solid var(--border); display:flex; justify-content:flex-end; gap:10px; }
+
+/* POST A GRANT FORM */
+.pg-field { display:flex; flex-direction:column; }
+.pg-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.08em; color:var(--hint); text-transform:uppercase; margin-bottom:6px; }
+.pg-req { color:var(--orange); }
+.pg-input {
+  background:var(--bg); border:1px solid var(--border-strong);
+  padding:10px 14px; font-family:'Figtree',sans-serif;
+  font-size:13px; color:var(--text); outline:none; width:100%;
+}
+.pg-input:focus { border-color:var(--orange); }
+.pg-input option { background:var(--bg); }
+.pg-checkbox {
+  display:flex; align-items:center; gap:6px;
+  font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.05em;
+  color:var(--muted); cursor:pointer;
+  border:1px solid var(--border-strong); padding:4px 10px;
+  background:var(--card); transition:all .15s;
+}
+.pg-checkbox:hover { border-color:var(--border-strong); color:var(--text); }
+.pg-checkbox input { accent-color:var(--orange); }
 </style>
 </head>
 <body><!-- SIDEBAR -->
@@ -196,6 +217,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants">14</span></div>
     <div class="nav-item" onclick="showPage('discover', this)"><span class="nav-icon">⌂</span> Discover Founders</div>
     <div class="nav-item" onclick="showPage('backed', this)"><span class="nav-icon">◈</span> Backed Projects</div>
+    <div class="nav-item" onclick="showPage('postgrant', this)"><span class="nav-icon">＋</span> Post A Grant</div>
     <div class="nav-item" onclick="showPage('orgprofile', this)"><span class="nav-icon">◉</span> Organisation Profile</div>
   </nav>
   <div class="sidebar-stats">
@@ -211,7 +233,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="topbar-title" id="topbar-title">Our Grants & Applicants</div>
     <div class="topbar-right">
       <button class="btn btn-out" onclick="showPage('orgprofile', document.querySelector('[onclick*=orgprofile]'))">View Public Profile</button>
-      <button class="btn btn-or">+ Post A Grant</button>
+      <button class="btn btn-or" onclick="showPage('postgrant', document.querySelector('[onclick*=postgrant]'))">+ Post A Grant</button>
     </div>
   </div>
 
@@ -220,7 +242,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="content">
       <div class="section-head" style="margin-bottom:20px">
         <span class="lbl">Active Grants</span>
-        <span class="lbl-link">+ Post A New Grant</span>
+        <span class="lbl-link" onclick="showPage('postgrant', document.querySelector('[onclick*=postgrant]'))" style="cursor:pointer">+ Post A New Grant</span>
       </div>
 
       <!-- GRANT 1 -->
@@ -507,6 +529,276 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     </div>
   </div>
 
+
+  <!-- ═══ PAGE: POST A GRANT ═══ -->
+  <div class="page" id="page-postgrant">
+    <div class="content">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="lbl">Post A Grant</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;">This will be visible to all founders on coart.</span>
+      </div>
+
+      <form onsubmit="submitGrant(event)" style="max-width:720px">
+
+        <!-- SECTION 1: BASIC INFO -->
+        <div style="background:var(--card);border:1px solid var(--border);margin-bottom:16px;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <div style="width:22px;height:22px;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--bg);flex-shrink:0;">1</div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;">Basic Info</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+
+            <div class="pg-field">
+              <div class="pg-label">Grant Name <span class="pg-req">*</span></div>
+              <input class="pg-input" type="text" placeholder="e.g. Community Impact Grant 2026" required/>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="pg-field">
+                <div class="pg-label">Grant Type <span class="pg-req">*</span></div>
+                <select class="pg-input" required>
+                  <option value="">Select type...</option>
+                  <option>Cash Grant</option>
+                  <option>Mentorship Programme</option>
+                  <option>Incubation Programme</option>
+                  <option>Mixed — Funding + Mentorship</option>
+                  <option>Resource Grant</option>
+                  <option>Scholarship</option>
+                </select>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Value Per Recipient <span class="pg-req">*</span></div>
+                <input class="pg-input" type="text" placeholder="e.g. Up to S$5,000 or describe if non-monetary" required/>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
+              <div class="pg-field">
+                <div class="pg-label">Number of Recipients</div>
+                <select class="pg-input">
+                  <option>1</option>
+                  <option selected>2–5</option>
+                  <option>5–10</option>
+                  <option>10+</option>
+                </select>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Application Opens <span class="pg-req">*</span></div>
+                <input class="pg-input" type="date" required/>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Application Closes <span class="pg-req">*</span></div>
+                <input class="pg-input" type="date" required/>
+              </div>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">How Often Do You Run This?</div>
+              <select class="pg-input">
+                <option>Annually</option>
+                <option>Every 6 months</option>
+                <option>Quarterly</option>
+                <option>Rolling / ongoing</option>
+                <option>One-time only</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 2: ELIGIBILITY -->
+        <div style="background:var(--card);border:1px solid var(--border);margin-bottom:16px;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <div style="width:22px;height:22px;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--bg);flex-shrink:0;">2</div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;">Eligibility</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="pg-field">
+                <div class="pg-label">Age Range</div>
+                <select class="pg-input">
+                  <option>15–18</option>
+                  <option>18–21</option>
+                  <option>21–25</option>
+                  <option selected>All ages on platform (15–25)</option>
+                </select>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Project Stage</div>
+                <select class="pg-input">
+                  <option>Any stage welcome</option>
+                  <option>Idea stage only</option>
+                  <option>Planning phase and above</option>
+                  <option>Must have already started</option>
+                  <option>Must have existing users or traction</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="pg-field">
+                <div class="pg-label">Singapore Citizen / PR Required?</div>
+                <select class="pg-input">
+                  <option>Yes — citizens and PRs</option>
+                  <option>Yes — citizens only</option>
+                  <option selected>No — open to all residents</option>
+                </select>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Team or Solo?</div>
+                <select class="pg-input">
+                  <option selected>Both welcome</option>
+                  <option>Solo founders only</option>
+                  <option>Teams only</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">Focus Areas (select all that apply)</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="focus-tags">
+                <label class="pg-checkbox"><input type="checkbox" value="Arts"> Arts</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Environment"> Environment</label>
+                <label class="pg-checkbox" ><input type="checkbox" value="Community" checked> Community</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Education"> Education</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Food"> Food</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Heritage"> Heritage</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Tech"> Tech</label>
+                <label class="pg-checkbox"><input type="checkbox" value="Health"> Health</label>
+                <label class="pg-checkbox"><input type="checkbox" value="All Categories" checked> All Categories</label>
+              </div>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">Anything you are NOT looking to fund?</div>
+              <input class="pg-input" type="text" placeholder="e.g. Commercial for-profit businesses, projects outside Singapore..."/>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 3: WHAT YOU OFFER -->
+        <div style="background:var(--card);border:1px solid var(--border);margin-bottom:16px;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <div style="width:22px;height:22px;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--bg);flex-shrink:0;">3</div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;">What You Offer</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+
+            <div class="pg-field">
+              <div class="pg-label">Describe what you are offering <span class="pg-req">*</span></div>
+              <textarea class="pg-input" rows="3" placeholder="Founders will read this on your grant listing. Be specific about what support looks like — funding, mentorship, network access, etc." required style="min-height:80px;resize:vertical;"></textarea>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">What do you expect from funded founders?</div>
+              <textarea class="pg-input" rows="2" placeholder="e.g. Monthly progress updates, participation in community events, public acknowledgement..." style="min-height:64px;resize:vertical;"></textarea>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="pg-field">
+                <div class="pg-label">Engagement Style</div>
+                <select class="pg-input">
+                  <option>Regular scheduled check-ins</option>
+                  <option>On-demand — founders reach out when needed</option>
+                  <option>Structured programme with milestones</option>
+                  <option selected>Flexible — depends on the founder</option>
+                </select>
+              </div>
+              <div class="pg-field">
+                <div class="pg-label">Response Time</div>
+                <select class="pg-input">
+                  <option>Within 24 hours</option>
+                  <option selected>Within 3 days</option>
+                  <option>Within a week</option>
+                  <option>Depends on availability</option>
+                </select>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SECTION 4: APPLICATION PROCESS -->
+        <div style="background:var(--card);border:1px solid var(--border);margin-bottom:16px;">
+          <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+            <div style="width:22px;height:22px;background:var(--text);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:10px;color:var(--bg);flex-shrink:0;">4</div>
+            <span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;">Application Process</span>
+          </div>
+          <div style="padding:20px;display:flex;flex-direction:column;gap:16px;">
+
+            <div class="pg-field">
+              <div class="pg-label">What should founders submit? <span class="pg-req">*</span></div>
+              <textarea class="pg-input" rows="2" placeholder="e.g. A completed coart application form answering 4 questions about their project, problem, target audience, and funding use." required style="min-height:64px;resize:vertical;"></textarea>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">Is there a pitch or interview round?</div>
+              <select class="pg-input" id="pg-pitch-toggle" onchange="togglePitchDetails()">
+                <option value="no">No — application only</option>
+                <option value="yes">Yes — shortlisted founders will pitch</option>
+              </select>
+            </div>
+
+            <div id="pg-pitch-details" style="display:none;background:var(--surface);border:1px solid var(--border);padding:14px 16px;">
+              <div class="pg-label" style="margin-bottom:8px;">Pitch / interview format</div>
+              <select class="pg-input" style="margin-bottom:10px;">
+                <option>Online panel interview</option>
+                <option>Live pitch presentation</option>
+                <option>1-on-1 interview</option>
+                <option>Recorded video pitch</option>
+                <option>In-person</option>
+              </select>
+              <div class="pg-label" style="margin-bottom:6px;">What should founders prepare?</div>
+              <input class="pg-input" type="text" placeholder="e.g. A 5-minute pitch covering problem, solution, team, and ask"/>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">How long after closing will decisions be made?</div>
+              <select class="pg-input">
+                <option>Within 2 weeks</option>
+                <option selected>Within 4 weeks</option>
+                <option>Within 6 weeks</option>
+                <option>Within 3 months</option>
+              </select>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">How will successful founders be notified?</div>
+              <select class="pg-input">
+                <option selected>Through the coart platform</option>
+                <option>Email</option>
+                <option>Public announcement</option>
+                <option>All of the above</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- SUBMIT -->
+        <div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:40px;" id="pg-submit-row">
+          <button type="button" class="btn btn-out" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">Cancel</button>
+          <button type="button" class="btn btn-out" onclick="saveGrantDraft()">Save Draft</button>
+          <button type="submit" class="btn btn-or">Publish Grant</button>
+        </div>
+
+        <!-- SUCCESS STATE -->
+        <div id="pg-success" style="display:none;background:var(--card);border:1px solid var(--orange-border);padding:28px 24px;margin-bottom:40px;text-align:center;">
+          <div style="font-size:28px;margin-bottom:12px;">✓</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:22px;font-style:italic;color:var(--text);margin-bottom:6px;">Grant published.</div>
+          <div style="font-size:13px;color:var(--muted);margin-bottom:20px;">It&#39;s now live on coart and visible to all matching founders.</div>
+          <div style="display:flex;gap:10px;justify-content:center;">
+            <button class="btn btn-out btn-sm" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">View Our Grants</button>
+            <button class="btn btn-or btn-sm" onclick="resetPostGrant()">Post Another</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
 </div><!-- /main -->
 
 <!-- FOUNDER APPLICATION MODAL -->
@@ -655,8 +947,8 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 </div>
 
 <script>
-const pageIds = ['grants','discover','backed','orgprofile'];
-const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', backed:'Backed Projects', orgprofile:'Organisation Profile' };
+const pageIds = ['grants','discover','backed','orgprofile','postgrant'];
+const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', backed:'Backed Projects', orgprofile:'Organisation Profile', postgrant:'Post A Grant' };
 
 function showPage(id, el) {
   pageIds.forEach(p => document.getElementById('page-' + p).classList.toggle('on', p === id));
@@ -862,6 +1154,30 @@ document.querySelectorAll('.pill').forEach(pill => {
     this.classList.add('on');
   });
 });
+
+function togglePitchDetails() {
+  const val = document.getElementById('pg-pitch-toggle').value;
+  document.getElementById('pg-pitch-details').style.display = val === 'yes' ? 'block' : 'none';
+}
+
+function saveGrantDraft() {
+  const btn = event.target;
+  btn.textContent = 'Draft Saved ✓';
+  btn.disabled = true;
+  setTimeout(() => { btn.textContent = 'Save Draft'; btn.disabled = false; }, 2000);
+}
+
+function submitGrant(e) {
+  e.preventDefault();
+  document.getElementById('pg-submit-row').style.display = 'none';
+  document.getElementById('pg-success').style.display = 'block';
+  document.getElementById('pg-success').scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetPostGrant() {
+  document.getElementById('pg-submit-row').style.display = 'flex';
+  document.getElementById('pg-success').style.display = 'none';
+}
 </script>
 </body>
 </html>
