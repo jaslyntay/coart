@@ -1,0 +1,32 @@
+{
+  "name": "coart-backend",
+  "version": "0.1.0",
+  "description": "Backend API for Coart — connecting young Singapore founders with backers and grants.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "lint": "echo 'add eslint when ready'"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@fastify/cors": "^9.0.1",
+    "@fastify/sensible": "^5.6.0",
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5",
+    "fastify": "^4.28.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "pino-pretty": "^11.2.2",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.0"
+  }
+}
