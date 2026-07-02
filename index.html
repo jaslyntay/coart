@@ -66,89 +66,52 @@ body {
   font-family: 'DM Mono', monospace;
   letter-spacing: .05em;
 }
-.toggle-wrap {
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
+.login-stack {
   display: flex;
-  padding: 4px;
+  flex-direction: column;
+  gap: 12px;
+  width: 320px;
   margin-bottom: 28px;
 }
-.toggle-btn {
-  padding: 10px 32px;
+.gbtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 13px 18px;
+  background: var(--card);
+  border: 1px solid var(--border-strong);
   font-family: 'DM Mono', monospace;
   font-size: 11px;
-  letter-spacing: .08em;
-  color: var(--hint);
-  background: none;
-  border: none;
+  letter-spacing: .06em;
+  color: var(--text);
+  text-decoration: none;
   cursor: pointer;
-  transition: all .2s;
+  transition: all .15s;
 }
-.toggle-btn.on {
-  background: var(--text);
+.gbtn:hover { border-color: var(--text); background: var(--surface); }
+.gbtn-primary {
+  background: var(--orange);
   color: var(--bg);
+  border-color: var(--orange);
 }
-.toggle-btn:not(.on):hover { color: var(--text); }
-.cards {
-  display: flex;
-  gap: 14px;
-  margin-bottom: 32px;
+.gbtn-primary:hover { opacity: .9; background: var(--orange); border-color: var(--orange); color: var(--bg); }
+.g-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
-.view-card {
-  width: 240px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  padding: 20px;
-  opacity: 0.4;
-  transition: all .2s;
-}
-.view-card.on {
-  opacity: 1;
-  border-color: var(--orange-border);
-}
-.view-card-band {
-  height: 2px;
-  background: var(--border-strong);
-  margin-bottom: 12px;
-  transition: background .2s;
-}
-.view-card.on .view-card-band { background: var(--orange); }
-.view-card-label {
+.role-label {
   font-family: 'DM Mono', monospace;
   font-size: 9px;
   letter-spacing: .1em;
   color: var(--hint);
   text-transform: uppercase;
-  margin-bottom: 5px;
-}
-.view-card.on .view-card-label { color: var(--orange); }
-.view-card-title {
-  font-family: 'Instrument Serif', serif;
-  font-size: 17px;
-  font-style: italic;
-  color: var(--text);
+  text-align: center;
   margin-bottom: 6px;
+  margin-top: 4px;
 }
-.view-card-desc {
-  font-size: 12px;
-  color: var(--muted);
-  line-height: 1.6;
-}
-.cta {
-  background: var(--orange);
-  color: var(--bg);
-  border: none;
-  padding: 13px 36px;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: .08em;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: opacity .15s;
-  text-decoration: none;
-  display: inline-block;
-}
-.cta:hover { opacity: .85; }
 .footer-note {
   margin-top: 32px;
   font-family: 'DM Mono', monospace;
@@ -165,41 +128,19 @@ body {
 <div class="tagline">Where young ideas meet the people<br/>who believe in them.</div>
 <p class="sub">Singapore · 2026 · Prototype</p>
 
-<div class="toggle-wrap">
-  <button class="toggle-btn on" id="btn-founder" onclick="setView('founder')">Founder View</button>
-  <button class="toggle-btn" id="btn-backer" onclick="setView('backer')">Backer View</button>
+<div class="login-stack">
+  <div class="role-label">— I'm a Founder —</div>
+  <a class="gbtn gbtn-primary" href="founder.html">
+    <svg class="g-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#fff" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+    Continue with Google
+  </a>
+  <div class="role-label">— I'm a Backer —</div>
+  <a class="gbtn" href="backer.html">
+    <svg class="g-icon" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><path fill="#3B1F08" d="M44.5 20H24v8.5h11.8C34.7 33.9 30 37 24 37c-7.2 0-13-5.8-13-13s5.8-13 13-13c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 4.1 29.6 2 24 2 11.8 2 2 11.8 2 24s9.8 22 22 22c11 0 21-8 21-22 0-1.3-.2-2.7-.5-4z"/></svg>
+    Continue with Google
+  </a>
 </div>
-
-<div class="cards">
-  <div class="view-card on" id="card-founder">
-    <div class="view-card-band"></div>
-    <div class="view-card-label">For Founders</div>
-    <div class="view-card-title">Jaslyn Tay</div>
-    <p class="view-card-desc">Create a profile, explore grants, apply with AI assistance, and get discovered by backers.</p>
-  </div>
-  <div class="view-card" id="card-backer">
-    <div class="view-card-band"></div>
-    <div class="view-card-label">For Backers</div>
-    <div class="view-card-title">Tiong Bahru Youth Network</div>
-    <p class="view-card-desc">Browse verified young founders, manage your grants, and track who's applied.</p>
-  </div>
-</div>
-
-<a class="cta" id="enter-btn" href="founder.html">Enter Founder View →</a>
 
 <p class="footer-note">Prototype — not a live product · contact@coart.com</p>
-
-<script>
-function setView(view) {
-  const isFounder = view === 'founder';
-  document.getElementById('btn-founder').classList.toggle('on', isFounder);
-  document.getElementById('btn-backer').classList.toggle('on', !isFounder);
-  document.getElementById('card-founder').classList.toggle('on', isFounder);
-  document.getElementById('card-backer').classList.toggle('on', !isFounder);
-  const btn = document.getElementById('enter-btn');
-  btn.href = isFounder ? 'founder.html' : 'backer.html';
-  btn.textContent = isFounder ? 'Enter Founder View →' : 'Enter Backer View →';
-}
-</script>
 </body>
 </html>
