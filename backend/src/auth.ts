@@ -9,6 +9,7 @@
 
 import type { FastifyRequest, FastifyReply } from 'fastify';
 import { admin } from './db.js';
+import { config } from './config.js';
 
 declare module 'fastify' {
   interface FastifyRequest {
@@ -48,7 +49,25 @@ async function attachUser(req: FastifyRequest, jwt: string): Promise<boolean> {
   return true;
 }
 
+// DEV-ONLY. Remove or gate more strictly before production.
+// In development, a request carrying `X-Dev-User: <uuid>` skips JWT
+// verification entirely and acts as that founder. The service-role key is
+// used as the "jwt" so userClient() queries bypass RLS.
+function attachDevUser(req: FastifyRequest): boolean {
+  if (config.nodeEnv !== 'development') return false;
+  const devUserId = req.headers['x-dev-user'];
+  if (typeof devUserId !== 'string' || devUserId === '') return false;
+  req.user = {
+    id: devUserId,
+    email: undefined,
+    jwt: config.supabase.serviceRoleKey,
+    role: 'founder',
+  };
+  return true;
+}
+
 export async function requireUser(req: FastifyRequest, reply: FastifyReply) {
+  if (attachDevUser(req)) return;
   const token = extractToken(req);
   if (!token) return reply.code(401).send({ error: 'Missing Authorization header' });
   const ok = await attachUser(req, token);
@@ -62,13 +81,15 @@ export async function optionalUser(req: FastifyRequest, _reply: FastifyReply) {
   // No error if invalid — just leaves req.user undefined.
 }
 
-export function requireFounder(req: FastifyRequest, reply: FastifyReply) {
+// Async so Fastify's hook runner awaits it — a sync hook without `done`
+// never resolves and hangs the request.
+export async function requireFounder(req: FastifyRequest, reply: FastifyReply) {
   if (!req.user) return reply.code(401).send({ error: 'Not authenticated' });
   if (req.user.role !== 'founder')
     return reply.code(403).send({ error: 'Founder role required' });
 }
 
-export function requireBacker(req: FastifyRequest, reply: FastifyReply) {
+export async function requireBacker(req: FastifyRequest, reply: FastifyReply) {
   if (!req.user) return reply.code(401).send({ error: 'Not authenticated' });
   if (req.user.role !== 'backer')
     return reply.code(403).send({ error: 'Backer role required' });
