@@ -232,6 +232,42 @@ textarea.form-input { min-height:80px; }
     <div class="prog-label"><span>Profile Completion</span><span>72%</span></div>
     <div class="prog"><div class="prog-fill"></div></div>
     <p class="prog-note">Backers are 3× more likely to reach out to complete profiles.</p>
+    <p style="margin-top:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a></p>
+  </div>
+</div>
+
+<!-- ═══ FIRST-LOGIN ONBOARDING MODAL ═══ -->
+<div class="modal-overlay" id="onboard-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Welcome to coart</div>
+        <div class="modal-sub">Two quick details and you're in — everything is editable later from Profile.</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-row">
+          <div class="form-label"><span>Full name</span></div>
+          <input class="form-input" id="ob-name" placeholder="e.g. Jaslyn Tay"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Age</span></div>
+          <input class="form-input" id="ob-age" type="number" min="13" max="99" placeholder="e.g. 22"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>University (optional)</span></div>
+          <input class="form-input" id="ob-uni" placeholder="e.g. NUS"/>
+        </div>
+      </div>
+      <div id="ob-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-note">One-time setup · saved to your coart account.</div>
+      <div class="btn-row">
+        <button class="btn btn-or" onclick="submitOnboarding()">Create my profile →</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -801,24 +837,44 @@ textarea.form-input { min-height:80px; }
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-// ───── BACKEND API (dev mode) ─────
-// Talks to the local coart backend using the dev-mode auth bypass
-// (X-Dev-User header). On the deployed site the backend is unreachable,
-// so everything falls back to localStorage.
-const API_BASE_URL = 'http://localhost:3001/api/v1';
-const DEV_FOUNDER_ID = 'e32a58dc-0531-49df-9bff-d5bbdca8360a';
+// ───── BACKEND API + AUTH ─────
+// Deployed: same-origin /api/v1 (Vercel serverless) with a real Supabase
+// session token. Local dev: localhost:3001 with a real session if present,
+// else the X-Dev-User bypass. URL + anon key are public by design; RLS
+// governs what the anon role can touch.
+const SUPABASE_URL = 'https://vbnztpgnnkhpoxxkchkd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZibnp0cGdubmtocG94eGtjaGtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQyNjAsImV4cCI6MjA5ODU5MDI2MH0.iU4YTlsaeI8XncdP0QIWQqPOXwEUJ0XfvTrUyR4crTE';
+const sbAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const IS_LOCAL_DEV = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE_URL = IS_LOCAL_DEV ? 'http://localhost:3001/api/v1' : '/api/v1';
+const DEV_FOUNDER_ID = 'e32a58dc-0531-49df-9bff-d5bbdca8360a'; // local dev only
+
+async function authHeaders() {
+  const { data } = await sbAuth.auth.getSession();
+  if (data.session) return { Authorization: 'Bearer ' + data.session.access_token };
+  if (IS_LOCAL_DEV) return { 'X-Dev-User': DEV_FOUNDER_ID };
+  return {};
+}
+
 async function api(path, opts = {}) {
   const r = await fetch(API_BASE_URL + path, {
     ...opts,
     headers: {
       'Content-Type': 'application/json',
-      'X-Dev-User': DEV_FOUNDER_ID,
+      ...(await authHeaders()),
       ...(opts.headers || {}),
     },
   });
   if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
   return r.status === 204 ? null : r.json();
+}
+
+async function signOut() {
+  try { await sbAuth.auth.signOut(); } catch (e) {}
+  localStorage.removeItem('coart_general_application');
+  window.location.href = 'index.html';
 }
 
 const pages = ['projects','grants','dashboard','profile'];
@@ -1030,19 +1086,82 @@ function founderRowToGenApp(row, localGa) {
   };
 }
 
-(async function initGenApp() {
+function applyFounderIdentity(row) {
+  const name = row.full_name || 'Founder';
+  titles.dashboard = 'Good Morning, ' + name.split(' ')[0] + '.';
+  const avi = document.querySelector('.profile-avi');
+  if (avi) avi.textContent = name.split(' ').map(w => w[0]).slice(0, 2).join('');
+  const pn = document.querySelector('.profile-name');
+  if (pn) pn.textContent = name;
+  const uni = [row.university, row.field_of_study].filter(Boolean).join(' · ');
+  const pu = document.querySelector('.profile-uni');
+  if (pu && uni) pu.textContent = uni;
+}
+
+function hydrateFromFounder(row) {
+  const ga = founderRowToGenApp(row, getGenApp());
+  localStorage.setItem(GEN_APP_KEY, JSON.stringify(ga));
+  applyFounderIdentity(row);
+  renderProfileGenApp();
+}
+
+(async function initApp() {
+  // Not signed in → back to the login page (except in local dev, where
+  // the X-Dev-User bypass stands in for a session).
+  const { data } = await sbAuth.auth.getSession();
+  if (!data.session && !IS_LOCAL_DEV) {
+    window.location.replace('index.html');
+    return;
+  }
   try {
-    const row = await api('/founders/me');
-    const ga = founderRowToGenApp(row, getGenApp());
-    localStorage.setItem(GEN_APP_KEY, JSON.stringify(ga));
+    hydrateFromFounder(await api('/founders/me'));
   } catch (e) {
-    // API unreachable or founder not seeded — fall back to the local seed.
+    const msg = String(e.message || '');
+    // 404: signed in but no founders row yet. 403: no profiles row at all
+    // (role is null). Both mean first login → one-time onboarding.
+    if (msg.includes(': 404') || msg.includes(': 403')) {
+      openOnboarding();
+      return;
+    }
+    // API unreachable — fall back to the local seed so the demo still works.
     if (!localStorage.getItem(GEN_APP_KEY)) {
       localStorage.setItem(GEN_APP_KEY, JSON.stringify(SEED_GEN_APP));
     }
+    renderProfileGenApp();
   }
-  renderProfileGenApp();
 })();
+
+// ───── FIRST-LOGIN ONBOARDING ─────
+function openOnboarding() {
+  document.getElementById('onboard-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
+async function submitOnboarding() {
+  const name = document.getElementById('ob-name').value.trim();
+  const age = parseInt(document.getElementById('ob-age').value, 10);
+  const uni = document.getElementById('ob-uni').value.trim();
+  const status = document.getElementById('ob-status');
+  if (name.length < 2) { status.textContent = 'Please enter your full name.'; return; }
+  if (!age || age < 13 || age > 99) { status.textContent = 'Please enter your age (13–99).'; return; }
+  status.textContent = 'Creating your profile…';
+  try {
+    await api('/auth/profile', {
+      method: 'POST',
+      body: JSON.stringify({
+        role: 'founder',
+        founder: { full_name: name, age, ...(uni ? { university: uni } : {}) },
+      }),
+    });
+    const row = await api('/founders/me');
+    document.getElementById('onboard-overlay').classList.remove('on');
+    document.body.style.overflow = '';
+    hydrateFromFounder(row);
+    showToast('✓ Welcome to coart, ' + name.split(' ')[0] + '!');
+  } catch (e) {
+    status.textContent = 'Could not create profile — ' + e.message;
+  }
+}
 
 function getGenApp() {
   try { return JSON.parse(localStorage.getItem(GEN_APP_KEY)) || null; } catch(e) { return null; }
