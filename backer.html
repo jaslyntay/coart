@@ -859,7 +859,10 @@ async function loadAll() {
     MY_GRANTS = results[0].value.grants.filter(g => g.organization && g.organization.id === ORG.id);
     // fetch applicants for each of our grants
     const apps = await Promise.allSettled(MY_GRANTS.map(g => api('/grants/' + g.id + '/applications')));
-    apps.forEach((r, i) => { MY_GRANTS[i].applications = r.status === 'fulfilled' ? r.value.applications : []; });
+    apps.forEach((r, i) => {
+      MY_GRANTS[i].applications = r.status === 'fulfilled' ? r.value.applications : [];
+      MY_GRANTS[i].questions = r.status === 'fulfilled' ? (r.value.questions || []) : [];
+    });
   }
   if (results[1].status === 'fulfilled') FOUNDERS = results[1].value.founders;
   if (results[2].status === 'fulfilled') BACKED = results[2].value.backings;
@@ -1008,7 +1011,12 @@ async function backApp(id) {
 
 async function refreshApplications() {
   const apps = await Promise.allSettled(MY_GRANTS.map(g => api('/grants/' + g.id + '/applications')));
-  apps.forEach((r, i) => { if (r.status === 'fulfilled') MY_GRANTS[i].applications = r.value.applications; });
+  apps.forEach((r, i) => {
+    if (r.status === 'fulfilled') {
+      MY_GRANTS[i].applications = r.value.applications;
+      MY_GRANTS[i].questions = r.value.questions || [];
+    }
+  });
   renderOurGrants();
   renderSidebarStats();
 }
@@ -1130,10 +1138,28 @@ async function openApplicantModal(applicationId, grantId) {
   document.getElementById('modal-project-box').style.display = 'block';
   document.getElementById('modal-project').textContent = p.title || '';
   document.getElementById('modal-project-sub').textContent = p.tagline || '';
+
+  // The founder's written answers, labelled by the grant's questions.
+  const labels = {};
+  (grant.questions || []).forEach(q => { labels[q.question_key] = q.label; });
+  const FALLBACK_LABELS = {
+    impact: 'Describe your project and its impact',
+    funding: 'How will you use this grant?',
+    founder: 'What makes you the right person to lead this?',
+  };
+  const answers = a.answers || [];
+  const answersHtml = answers.length
+    ? answers.map(ans => {
+        const label = labels[ans.question_key] || FALLBACK_LABELS[ans.question_key] || ans.question_key;
+        return section(label + (ans.ai_drafted ? ' · ✦ AI-assisted' : ''), ans.value || '—');
+      }).join('')
+    : section('Answers', 'No written answers yet — this application may still be a draft.');
+
   document.getElementById('modal-right').innerHTML =
     '<div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Application</div>' +
-    section('Project', [p.title, p.tagline].filter(Boolean).join(' — ') || '—') +
-    section('Status', (STATUS_BADGES[a.status] || [null, a.status])[1] + (a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : ''));
+    section('Status', (STATUS_BADGES[a.status] || [null, a.status])[1] + (a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : '')) +
+    (p.description ? section('About the project', p.description) : '') +
+    answersHtml;
 }
 
 function shortlistFounder() {

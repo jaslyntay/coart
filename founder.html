@@ -540,10 +540,11 @@ textarea.form-input { min-height:80px; }
       </div>
     </div>
     <div class="modal-footer">
-      <div class="modal-footer-note">Saved as a Draft · find it under My Projects.</div>
+      <div class="modal-footer-note" id="np-footer-note">Drafts are private · published projects are visible to backers.</div>
       <div class="btn-row">
         <button class="btn btn-out" onclick="closeNewProj()">Cancel</button>
-        <button class="btn btn-or" onclick="saveProject()">Save Draft →</button>
+        <button class="btn btn-out" id="np-draft-btn" onclick="saveProject('draft')">Save as Draft</button>
+        <button class="btn btn-or" id="np-publish-btn" onclick="saveProject('active')">Publish →</button>
       </div>
     </div>
   </div>
@@ -1214,6 +1215,8 @@ function startNewProject() {
 
 function openNewProj(ga) {
   EDITING_PROJECT_ID = null;
+  document.getElementById('np-publish-btn').textContent = 'Publish →';
+  document.getElementById('np-draft-btn').style.display = 'inline-block';
   document.getElementById('np-name').value = '';
   document.getElementById('np-tagline').value = '';
   document.getElementById('np-impact').value = '';
@@ -1226,6 +1229,8 @@ function openEditProject(id) {
   const p = MY_PROJECTS.find(x => x.id === id);
   if (!p) return;
   EDITING_PROJECT_ID = id;
+  document.getElementById('np-publish-btn').textContent = p.status === 'active' ? 'Save Changes →' : 'Publish →';
+  document.getElementById('np-draft-btn').style.display = p.status === 'active' ? 'none' : 'inline-block';
   document.getElementById('np-name').value = p.title || '';
   document.getElementById('np-tagline').value = p.tagline || '';
   document.getElementById('np-impact').value = p.description || '';
@@ -1244,7 +1249,10 @@ function closeNewProjOutside(e) {
   if (e.target === document.getElementById('newproj-overlay')) closeNewProj();
 }
 
-async function saveProject() {
+let SAVING_PROJECT = false;
+
+async function saveProject(status) {
+  if (SAVING_PROJECT) return; // guard against double-clicks creating duplicates
   const name = document.getElementById('np-name').value.trim();
   if (!name) { showToast('Give the project a name.'); return; }
   const budget = document.getElementById('np-budget').value.trim();
@@ -1259,13 +1267,25 @@ async function saveProject() {
     description: description || undefined,
     focus_areas: [document.getElementById('np-category').value],
   };
+  SAVING_PROJECT = true;
+  const draftBtn = document.getElementById('np-draft-btn');
+  const pubBtn = document.getElementById('np-publish-btn');
+  draftBtn.disabled = true; pubBtn.disabled = true;
   try {
     if (EDITING_PROJECT_ID) {
-      await api('/projects/' + EDITING_PROJECT_ID, { method: 'PATCH', body: JSON.stringify(body) });
-      showToast('✓ Project updated.');
+      await api('/projects/' + EDITING_PROJECT_ID, {
+        method: 'PATCH',
+        body: JSON.stringify({ ...body, ...(status === 'active' ? { status: 'active' } : {}) }),
+      });
+      showToast(status === 'active' ? '✓ Project published!' : '✓ Project updated.');
     } else {
-      await api('/projects', { method: 'POST', body: JSON.stringify(body) });
-      showToast('✓ Project saved as draft.');
+      const created = await api('/projects', { method: 'POST', body: JSON.stringify(body) });
+      if (status === 'active') {
+        await api('/projects/' + created.id, { method: 'PATCH', body: JSON.stringify({ status: 'active' }) });
+        showToast('✓ Project published — backers can now discover it.');
+      } else {
+        showToast('✓ Saved as a private draft.');
+      }
     }
     closeNewProj();
     const res = await api('/projects/me');
@@ -1274,6 +1294,9 @@ async function saveProject() {
     loadStats();
   } catch (e) {
     showToast('Could not save project — ' + e.message);
+  } finally {
+    SAVING_PROJECT = false;
+    draftBtn.disabled = false; pubBtn.disabled = false;
   }
 }
 

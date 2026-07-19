@@ -159,15 +159,24 @@ export async function grantsRoutes(app: FastifyInstance) {
         return reply.code(403).send({ error: 'Not your grant' });
       }
 
-      const { data, error } = await admin
-        .from('applications')
-        .select(
-          'id, status, submitted_at, founder:founders(id, full_name, university, field_of_study, focus_areas), project:projects(id, title, tagline, focus_areas)',
-        )
-        .eq('grant_id', id)
-        .order('submitted_at', { ascending: false });
+      // Answers are included: the org owns this grant (verified above), so
+      // backers may read what founders wrote in applications to it.
+      const [{ data, error }, { data: questions }] = await Promise.all([
+        admin
+          .from('applications')
+          .select(
+            'id, status, submitted_at, founder:founders(id, full_name, university, field_of_study, focus_areas), project:projects(id, title, tagline, description, focus_areas), answers:application_answers(question_key, value, ai_drafted)',
+          )
+          .eq('grant_id', id)
+          .order('submitted_at', { ascending: false }),
+        admin
+          .from('grant_questions')
+          .select('question_key, label, order_index')
+          .eq('grant_id', id)
+          .order('order_index', { ascending: true }),
+      ]);
       if (error) return reply.code(500).send({ error: error.message });
-      return { applications: data ?? [] };
+      return { applications: data ?? [], questions: questions ?? [] };
     },
   );
 }
