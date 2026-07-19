@@ -56,6 +56,24 @@ export async function organizationsRoutes(app: FastifyInstance) {
     return data;
   });
 
+  // GET /api/v1/organizations/me/backed — projects this org has backed
+  app.get('/me/backed', { preHandler: [requireUser, requireBacker] }, async (req, reply) => {
+    const { data: member } = await admin
+      .from('backer_members')
+      .select('organization_id')
+      .eq('user_id', req.user!.id)
+      .maybeSingle();
+    if (!member) return reply.code(404).send({ error: 'No organisation' });
+
+    const { data, error } = await admin
+      .from('backings')
+      .select('id, backed_at, note, project:projects(id, title, tagline, status, founder:founders(id, full_name, university)), grant:grants(id, title)')
+      .eq('organization_id', member.organization_id)
+      .order('backed_at', { ascending: false });
+    if (error) return reply.code(500).send({ error: error.message });
+    return { backings: data ?? [] };
+  });
+
   // GET /api/v1/organizations/:id — public
   app.get('/:id', async (req, reply) => {
     const { id } = req.params as { id: string };

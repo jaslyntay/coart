@@ -116,6 +116,19 @@ export async function foundersRoutes(app: FastifyInstance) {
     return { founders: data ?? [], total: count ?? 0 };
   });
 
+  // GET /api/v1/founders/:id/projects — a founder's public (active) projects
+  app.get('/:id/projects', { preHandler: requireUser }, async (req, reply) => {
+    const { id } = req.params as { id: string };
+    const { data, error } = await admin
+      .from('projects')
+      .select('id, title, tagline, description, focus_areas, stage, status')
+      .eq('founder_id', id)
+      .eq('status', 'active')
+      .order('updated_at', { ascending: false });
+    if (error) return reply.code(500).send({ error: error.message });
+    return { projects: data ?? [] };
+  });
+
   // GET /api/v1/founders/:id — public founder detail
   app.get('/:id', { preHandler: requireUser }, async (req, reply) => {
     const { id } = req.params as { id: string };

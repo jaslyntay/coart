@@ -218,9 +218,9 @@ textarea.form-input { min-height:80px; }
     <div class="logo">coart<span class="logo-dot"></span></div>
   </div>
   <div class="sidebar-profile">
-    <div class="profile-avi">Jt</div>
-    <div class="profile-name">Jaslyn Tay</div>
-    <div class="profile-uni">NUS · Arts & Sustainability</div>
+    <div class="profile-avi">·</div>
+    <div class="profile-name">Loading…</div>
+    <div class="profile-uni"></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-item on" onclick="showPage('projects', this)"><span class="nav-icon">◈</span> My Projects</div>
@@ -229,8 +229,8 @@ textarea.form-input { min-height:80px; }
     <div class="nav-item" onclick="showPage('profile', this)"><span class="nav-icon">◉</span> Profile</div>
   </nav>
   <div class="sidebar-bottom">
-    <div class="prog-label"><span>Profile Completion</span><span>72%</span></div>
-    <div class="prog"><div class="prog-fill"></div></div>
+    <div class="prog-label"><span>Profile Completion</span><span id="prog-pct">—</span></div>
+    <div class="prog"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     <p class="prog-note">Backers are 3× more likely to reach out to complete profiles.</p>
     <p style="margin-top:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a></p>
   </div>
@@ -242,14 +242,21 @@ textarea.form-input { min-height:80px; }
     <div class="modal-header">
       <div>
         <div class="modal-title">Welcome to coart</div>
-        <div class="modal-sub">Two quick details and you're in — everything is editable later from Profile.</div>
+        <div class="modal-sub">A few quick details and you're in — everything is editable later.</div>
       </div>
     </div>
     <div class="modal-body">
       <div class="form-section">
+        <div class="form-section-title">I'm joining as…</div>
+        <div class="btn-row" style="margin-bottom:6px;">
+          <button class="btn btn-or" id="ob-role-founder" onclick="setOnboardRole('founder')">A Founder</button>
+          <button class="btn btn-out" id="ob-role-backer" onclick="setOnboardRole('backer')">A Backer / Organisation</button>
+        </div>
+      </div>
+      <div class="form-section" id="ob-founder-fields">
         <div class="form-row">
           <div class="form-label"><span>Full name</span></div>
-          <input class="form-input" id="ob-name" placeholder="e.g. Jaslyn Tay"/>
+          <input class="form-input" id="ob-name" placeholder="Your full name"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Age</span></div>
@@ -258,6 +265,27 @@ textarea.form-input { min-height:80px; }
         <div class="form-row">
           <div class="form-label"><span>University (optional)</span></div>
           <input class="form-input" id="ob-uni" placeholder="e.g. NUS"/>
+        </div>
+      </div>
+      <div class="form-section" id="ob-backer-fields" style="display:none;">
+        <div class="form-row">
+          <div class="form-label"><span>Organisation name</span></div>
+          <input class="form-input" id="ob-org-name" placeholder="e.g. Tiong Bahru Youth Network"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Organisation type</span></div>
+          <select class="form-input" id="ob-org-type">
+            <option value="community">Community</option>
+            <option value="government">Government</option>
+            <option value="corporate">Corporate</option>
+            <option value="foundation">Foundation</option>
+            <option value="accelerator">Accelerator</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Location (optional)</span></div>
+          <input class="form-input" id="ob-org-location" placeholder="e.g. Singapore"/>
         </div>
       </div>
       <div id="ob-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
@@ -285,9 +313,10 @@ textarea.form-input { min-height:80px; }
 
   <!-- ═══ PAGE: DASHBOARD ═══ -->
   <div class="page" id="page-dashboard">
-    <div class="stat-row" style="grid-template-columns:repeat(2,1fr)">
-      <div class="stat-card"><span class="stat-n">2</span><span class="stat-l">Active Projects</span></div>
-      <div class="stat-card"><span class="stat-n">3</span><span class="stat-l">Grants Applied</span></div>
+    <div class="stat-row" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat-card"><span class="stat-n" id="stat-projects">—</span><span class="stat-l">Active Projects</span></div>
+      <div class="stat-card"><span class="stat-n" id="stat-views">—</span><span class="stat-l">Profile Views This Month</span></div>
+      <div class="stat-card"><span class="stat-n" id="stat-grants">—</span><span class="stat-l">Grants Open Now</span></div>
     </div>
     <div class="two-col">
       <div>
@@ -295,61 +324,14 @@ textarea.form-input { min-height:80px; }
           <span class="lbl">My Projects</span>
           <span class="lbl-link" onclick="showPage('projects', document.querySelector('[onclick*=projects]'))">View All →</span>
         </div>
-        <div class="project-card">
-          <div class="project-card-band"></div>
-          <div class="project-card-inner">
-            <div class="tags"><span class="tag tag-or">Backed + Funded</span><span class="tag tag-dk">Arts</span><span class="tag">Active</span></div>
-            <div class="project-title">Unwoventhread</div>
-            <p class="project-sub">A community thrift and upcycling market rooted in Tiong Bahru, reconnecting youth with craft and sustainable living.</p>
-            <div class="project-backed"><div class="backed-lbl">Backed By</div><div class="backed-val">PAYM — Tiong Bahru Youth Network · Oct 2025</div></div>
-            <div class="btn-row"><button class="btn">Edit Project</button><button class="btn btn-out">View Public</button></div>
-          </div>
-        </div>
-        <div class="project-card">
-          <div class="project-card-band-muted"></div>
-          <div class="project-card-inner">
-            <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Draft</span></div>
-            <div class="project-title">Hawker Harvest</div>
-            <p class="project-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food daily across Singapore.</p>
-            <div class="btn-row"><button class="btn">Continue Editing</button></div>
-          </div>
-        </div>
+        <div id="dash-projects"></div>
       </div>
       <div>
         <div class="section-head">
-          <span class="lbl">Grants Applied</span>
-          <span class="lbl-link" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">Explore More →</span>
+          <span class="lbl">My Applications</span>
+          <span class="lbl-link" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">Explore Grants →</span>
         </div>
-        <div class="grant-card">
-          <div class="project-card-band"></div>
-          <div class="grant-card-inner">
-            <div class="grant-ref">TBYN-CIG-2025 · Community Impact Grant</div>
-            <div class="grant-title">Community Impact Grant 2025</div>
-            <span class="grant-amount">S$5,000 · Awarded</span>
-            <p class="grant-sub">For Unwoventhread. Funded by Tiong Bahru Youth Network · Oct 2025.</p>
-            <div class="tags" style="margin-bottom:0"><span class="tag tag-or">Awarded</span><span class="tag">Unwoventhread</span></div>
-          </div>
-        </div>
-        <div class="grant-card">
-          <div class="project-card-band-muted"></div>
-          <div class="grant-card-inner">
-            <div class="grant-ref">NYC-NYF-2025 · Government</div>
-            <div class="grant-title">National Youth Fund</div>
-            <span class="grant-amount">Up to 80% of project cost</span>
-            <p class="grant-sub">For Unwoventhread. Submitted · awaiting committee review.</p>
-            <div class="tags" style="margin-bottom:0"><span class="tag tag-dk">In Review</span><span class="tag">Unwoventhread</span></div>
-          </div>
-        </div>
-        <div class="grant-card">
-          <div class="project-card-band-muted"></div>
-          <div class="grant-card-inner">
-            <div class="grant-ref">NAC-AEF-2025 · Government</div>
-            <div class="grant-title">Arts Education Fund</div>
-            <span class="grant-amount">Up to S$50,000</span>
-            <p class="grant-sub">For Unwoventhread. Submitted · decision by 31 May 2026.</p>
-            <div class="tags" style="margin-bottom:0"><span class="tag tag-dk">Submitted</span><span class="tag">Unwoventhread</span></div>
-          </div>
-        </div>
+        <div id="dash-apps"></div>
       </div>
     </div>
   </div>
@@ -360,173 +342,42 @@ textarea.form-input { min-height:80px; }
       <span class="lbl">My Projects</span>
       <button class="btn btn-or" onclick="startNewProject()">+ New Project</button>
     </div>
-    <div class="project-card">
-      <div class="project-card-band"></div>
-      <div class="project-card-inner">
-        <div class="tags"><span class="tag tag-or">Backed + Funded</span><span class="tag tag-dk">Arts</span><span class="tag">Active</span><span class="tag">134 Views</span></div>
-        <div class="project-title">Unwoventhread</div>
-        <p class="project-sub">A community thrift and upcycling market rooted in Tiong Bahru, reconnecting youth with heritage craft and sustainable living.</p>
-        <div class="project-backed"><div class="backed-lbl">Backed By</div><div class="backed-val">PAYM — Tiong Bahru Youth Network · Oct 2025</div></div>
-        <div class="btn-row"><button class="btn">Edit Project</button><button class="btn btn-out">View Public</button><button class="btn btn-out">Share</button></div>
-      </div>
-    </div>
-    <div class="project-card">
-      <div class="project-card-band-muted"></div>
-      <div class="project-card-inner">
-        <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Draft</span></div>
-        <div class="project-title">Hawker Harvest</div>
-        <p class="project-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food daily across Singapore.</p>
-        <div class="btn-row"><button class="btn">Continue Editing</button><button class="btn btn-out">Preview</button></div>
-      </div>
-    </div>
+    <div id="projects-list"></div>
   </div>
 
   <!-- ═══ PAGE: EXPLORE GRANTS ═══ -->
   <div class="page" id="page-grants">
     <div class="section-head" style="margin-bottom:16px">
       <span class="lbl">Explore Grants</span>
-      <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;">17 grants match your profile</span>
+      <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;" id="grants-count"></span>
     </div>
 
-    <div class="filter-bar">
-      <div class="pill on">All</div>
-      <div class="pill">Government</div>
-      <div class="pill">Corporate</div>
-      <div class="pill">Community</div>
-      <div class="pill">Arts</div>
-      <div class="pill">Environment</div>
-      <div class="pill">Easy</div>
-      <div class="pill">Open Now</div>
+    <div class="filter-bar" id="grants-filters">
+      <div class="pill on" data-filter="all">All</div>
+      <div class="pill" data-filter="type:government">Government</div>
+      <div class="pill" data-filter="type:corporate">Corporate</div>
+      <div class="pill" data-filter="type:community">Community</div>
+      <div class="pill" data-filter="focus:Arts">Arts</div>
+      <div class="pill" data-filter="focus:Environment">Environment</div>
+      <div class="pill" data-filter="difficulty:easy">Easy</div>
+      <div class="pill" data-filter="open">Open Now</div>
     </div>
 
-    <div class="grant-explore-card">
-      <div class="grant-explore-band"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NYC-NYF-2025 · Government · Easy · Rolling Deadline</div>
-          <div class="grant-explore-title">National Youth Fund</div>
-          <span class="grant-explore-amount">Up to 80% of project cost</span>
-          <p class="grant-explore-sub">Singapore's most accessible youth grant, open to all registered youth-led initiatives. No fixed deadline — apply anytime.</p>
-          <div class="tags"><span class="tag tag-or">Best Match</span><span class="tag">Government</span><span class="tag">Easy</span><span class="tag">Arts</span><span class="tag">Community</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('National Youth Fund','NYC-NYF-2025 · Government · Easy','Up to 80% of project cost')">Apply with AI</button>
-          <a class="btn btn-out btn-sm" href="https://www.nyc.gov.sg/programmes-grants/grants---national-youth-fund" target="_blank" rel="noopener">View on NYC →</a>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grant-explore-card">
-      <div class="grant-explore-band-dim"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">SIF-YSE-2025 · Corporate · Selective · Jan–Mar Intake</div>
-          <div class="grant-explore-title">Young Social Entrepreneurs</div>
-          <span class="grant-explore-amount">Up to S$20,000</span>
-          <p class="grant-explore-sub">6-month incubator programme with mentorship, funding, and a cohort of fellow social entrepreneurs.</p>
-          <div class="tags"><span class="tag">Corporate</span><span class="tag">Selective</span><span class="tag">Mentorship</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('Young Social Entrepreneurs','SIF-YSE-2025 · Corporate · Selective','Up to S$20,000')">Apply with AI</button>
-          <a class="btn btn-out btn-sm" href="https://www.sif.org.sg/Our-Work/Youth/YSE-Global" target="_blank" rel="noopener">View on SIF →</a>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grant-explore-card">
-      <div class="grant-explore-band-dim"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NAC-AEF-2025 · Government · Moderate · Deadline 31 Mar 2026</div>
-          <div class="grant-explore-title">Arts Education Fund</div>
-          <span class="grant-explore-amount">Up to S$50,000</span>
-          <p class="grant-explore-sub">For projects that bring arts programming to underserved communities across Singapore.</p>
-          <div class="tags"><span class="tag">Government</span><span class="tag">Arts</span><span class="tag">Education</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('Arts Education Fund','NAC-AEF-2025 · Government · Moderate','Up to S$50,000')">Apply with AI</button>
-          <a class="btn btn-out btn-sm" href="https://www.nac.gov.sg/support/funding-and-schemes" target="_blank" rel="noopener">View on NAC →</a>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grant-explore-card">
-      <div class="grant-explore-band-dim"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">TBYN-CIG-2025 · Community · Easy · Deadline 30 Jun 2025</div>
-          <div class="grant-explore-title">Tiong Bahru Youth Network — Community Impact Grant</div>
-          <span class="grant-explore-amount">Up to S$5,000</span>
-          <p class="grant-explore-sub">Supports youth-led projects with a direct impact on the Tiong Bahru and surrounding communities.</p>
-          <div class="tags"><span class="tag">Community</span><span class="tag">Easy</span><span class="tag">Local</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('Tiong Bahru Youth Network Community Impact Grant','TBYN-CIG-2025 · Community · Easy','Up to S$5,000')">Apply with AI</button>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grant-explore-card">
-      <div class="grant-explore-band-dim"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NEA-3R-2025 · Government · Moderate · Rolling Deadline</div>
-          <div class="grant-explore-title">NEA 3R Fund</div>
-          <span class="grant-explore-amount">Up to S$300,000</span>
-          <p class="grant-explore-sub">Supports projects that promote reduce, reuse, and recycle behaviours among households, schools, and communities in Singapore.</p>
-          <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Government</span><span class="tag tag-or">AI Assisted</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('NEA 3R Fund','NEA-3R-2025 · Government · Moderate','Up to S$300,000')">Apply with AI</button>
-          <a class="btn btn-out btn-sm" href="https://www.nea.gov.sg/programmes-grants/grants-and-awards/3r-fund" target="_blank" rel="noopener">View on NEA →</a>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="grant-explore-card">
-      <div class="grant-explore-band-dim"></div>
-      <div class="grant-explore-inner">
-        <div class="grant-explore-left">
-          <div class="grant-ref" style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">NEA-EEF-2025 · Government · Moderate · Rolling Deadline</div>
-          <div class="grant-explore-title">NEA Environmental Education Fund</div>
-          <span class="grant-explore-amount">Up to S$50,000</span>
-          <p class="grant-explore-sub">Funds environmental education programmes that raise awareness and build capability for sustainable behaviours, especially among youth.</p>
-          <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Education</span><span class="tag tag-or">AI Assisted</span></div>
-        </div>
-        <div class="grant-explore-right">
-          <button class="btn btn-or" onclick="applyWithAI('NEA Environmental Education Fund','NEA-EEF-2025 · Government · Moderate','Up to S$50,000')">Apply with AI</button>
-          <a class="btn btn-out btn-sm" href="https://www.nea.gov.sg/programmes-grants/grants-and-awards" target="_blank" rel="noopener">View on NEA →</a>
-          <button class="btn btn-out btn-sm">Save</button>
-        </div>
-      </div>
-    </div>
+    <div id="grants-list"></div>
   </div>
 
   <!-- ═══ PAGE: PROFILE ═══ -->
   <div class="page" id="page-profile">
     <div class="section-head" style="margin-bottom:20px">
       <span class="lbl">My Profile</span>
-      <button class="btn btn-or">Save Changes</button>
     </div>
     <div class="profile-section">
-      <div class="profile-section-head"><span class="profile-section-title">Basic Info</span><button class="btn btn-out btn-sm">Edit</button></div>
+      <div class="profile-section-head"><span class="profile-section-title">Basic Info</span><button class="btn btn-out btn-sm" onclick="openBasicInfo()">Edit</button></div>
       <div class="profile-section-body">
-        <div class="profile-field"><div class="profile-field-label">Full Name</div><div class="profile-field-value">Jaslyn Tay</div></div>
-        <div class="profile-field"><div class="profile-field-label">University</div><div class="profile-field-value">National University of Singapore</div></div>
-        <div class="profile-field"><div class="profile-field-label">Field Of Study</div><div class="profile-field-value">Arts & Sustainability</div></div>
-        <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value">Singapore</div></div>
-      </div>
-    </div>
-    <div class="profile-section">
-      <div class="profile-section-head"><span class="profile-section-title">About</span><button class="btn btn-out btn-sm">Edit</button></div>
-      <div class="profile-section-body">
-        <div class="profile-field"><div class="profile-field-label">Bio</div><div class="profile-field-value">Building community-led creative spaces that reconnect Singapore's youth with heritage craft and sustainable living.</div></div>
-        <div class="profile-field"><div class="profile-field-label">Focus Areas</div><div class="tags" style="margin-bottom:0"><span class="tag tag-dk">Arts</span><span class="tag tag-dk">Sustainability</span><span class="tag tag-dk">Community</span></div></div>
+        <div class="profile-field"><div class="profile-field-label">Full Name</div><div class="profile-field-value" id="prof-name">—</div></div>
+        <div class="profile-field"><div class="profile-field-label">University</div><div class="profile-field-value" id="prof-uni">—</div></div>
+        <div class="profile-field"><div class="profile-field-label">Field Of Study</div><div class="profile-field-value" id="prof-fos">—</div></div>
+        <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value" id="prof-location">—</div></div>
       </div>
     </div>
 
@@ -541,18 +392,44 @@ textarea.form-input { min-height:80px; }
         <div class="profile-field"><div class="profile-field-label">Typical Budget Range</div><div class="profile-field-value" id="prof-ga-budget">—</div></div>
       </div>
     </div>
-    <div class="profile-section">
+    <div class="profile-section" id="prof-missing-section" style="display:none;">
       <div class="profile-section-head"><span class="profile-section-title">Missing — Complete To Reach 100%</span></div>
-      <div class="profile-section-body">
-        <div class="profile-field"><div class="profile-field-label">Profile Photo</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
-        <div class="profile-field"><div class="profile-field-label">LinkedIn URL</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
-        <div class="profile-field"><div class="profile-field-label">Past Experience</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>
-        <button class="btn btn-or" style="margin-top:6px">Complete Profile</button>
-      </div>
+      <div class="profile-section-body" id="prof-missing-body"></div>
     </div>
   </div>
 
 </div><!-- /main -->
+
+<!-- ═══ BASIC INFO EDIT MODAL ═══ -->
+<div class="modal-overlay" id="basicinfo-overlay" onclick="if(event.target===this){closeBasicInfo()}">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Basic Info</div>
+        <div class="modal-sub">Shown to backers on your public profile</div>
+      </div>
+      <button class="modal-close" onclick="closeBasicInfo()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section">
+        <div class="form-row"><div class="form-label"><span>Full name</span></div><input class="form-input" id="bi-name"/></div>
+        <div class="form-row"><div class="form-label"><span>Age</span></div><input class="form-input" id="bi-age" type="number" min="13" max="99"/></div>
+        <div class="form-row"><div class="form-label"><span>University</span></div><input class="form-input" id="bi-uni"/></div>
+        <div class="form-row"><div class="form-label"><span>Field of study</span></div><input class="form-input" id="bi-fos"/></div>
+        <div class="form-row"><div class="form-label"><span>Location</span></div><input class="form-input" id="bi-location"/></div>
+        <div class="form-row"><div class="form-label"><span>LinkedIn URL (optional)</span></div><input class="form-input" id="bi-linkedin" placeholder="https://linkedin.com/in/..."/></div>
+      </div>
+      <div id="bi-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="modal-footer-note">Saved to your coart account.</div>
+      <div class="btn-row">
+        <button class="btn btn-out" onclick="closeBasicInfo()">Cancel</button>
+        <button class="btn btn-or" onclick="saveBasicInfo()">Save →</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ═══ GENERAL APPLICATION MODAL ═══ -->
 <div class="modal-overlay" id="genapp-overlay" onclick="closeGenAppOutside(event)">
@@ -755,11 +632,7 @@ textarea.form-input { min-height:80px; }
           <div class="form-label">
             <span>Which project is this application for?</span>
           </div>
-          <select class="form-input" id="field-project">
-            <option>Select a project…</option>
-            <option selected>Unwoventhread</option>
-            <option>Hawker Harvest</option>
-          </select>
+          <select class="form-input" id="field-project"></select>
         </div>
       </div>
 
@@ -774,7 +647,7 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="field-impact" placeholder="Tell the grant committee what your project does and who it helps…"></textarea>
           <div class="ai-suggestion" id="suggest-impact">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
-            <div class="ai-suggestion-text">Unwoventhread is a community thrift and upcycling market rooted in Tiong Bahru. We create accessible spaces for Singapore's youth to engage with heritage crafts and sustainable fashion, reducing textile waste while building intergenerational connections. Our market events have attracted over 300 participants and diverted an estimated 400kg of clothing from landfill.</div>
+            <div class="ai-suggestion-text" id="sugtext-impact"></div>
             <div class="ai-suggestion-actions">
               <button class="ai-use" onclick="useField('impact')">Use This Draft</button>
               <button class="ai-dismiss" onclick="dismissSuggest('impact')">Dismiss</button>
@@ -790,7 +663,7 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="field-funding" placeholder="Break down how the grant money would be used…"></textarea>
           <div class="ai-suggestion" id="suggest-funding">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
-            <div class="ai-suggestion-text">Funding would be allocated across three areas: venue hire and logistics for four market events (40%), artisan stipends to support participating craftspeople (35%), and community outreach and communications to broaden participation in underserved neighbourhoods (25%).</div>
+            <div class="ai-suggestion-text" id="sugtext-funding"></div>
             <div class="ai-suggestion-actions">
               <button class="ai-use" onclick="useField('funding')">Use This Draft</button>
               <button class="ai-dismiss" onclick="dismissSuggest('funding')">Dismiss</button>
@@ -806,21 +679,11 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="field-founder" placeholder="Share your background and why you're uniquely placed to deliver this project…"></textarea>
           <div class="ai-suggestion" id="suggest-founder">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
-            <div class="ai-suggestion-text">As a final-year Arts & Sustainability student at NUS, I have spent three years studying the intersection of cultural heritage and environmental practice. I founded Unwoventhread after organising community pop-ups in Tiong Bahru and have since built relationships with over 20 local artisans and five NGO partners.</div>
+            <div class="ai-suggestion-text" id="sugtext-founder"></div>
             <div class="ai-suggestion-actions">
               <button class="ai-use" onclick="useField('founder')">Use This Draft</button>
               <button class="ai-dismiss" onclick="dismissSuggest('founder')">Dismiss</button>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div class="form-section">
-        <div class="form-section-title">Supporting Documents</div>
-        <div class="form-row">
-          <div class="form-label"><span>Project Budget (PDF or Excel)</span></div>
-          <div class="form-input" style="color:var(--hint);cursor:pointer;display:flex;align-items:center;gap:8px;">
-            <span>↑</span> Upload file…
           </div>
         </div>
       </div>
@@ -830,8 +693,8 @@ textarea.form-input { min-height:80px; }
     <div class="modal-footer">
       <div class="modal-footer-note">All AI-drafted content is editable. You submit, you sign off.</div>
       <div class="btn-row">
-        <button class="btn btn-out" onclick="closeModal()">Save Draft</button>
-        <button class="btn btn-or">Submit Application</button>
+        <button class="btn btn-out" onclick="saveApplicationDraft()">Save Draft</button>
+        <button class="btn btn-or" id="modal-submit-btn" onclick="submitApplication()">Submit Application</button>
       </div>
     </div>
   </div>
@@ -862,7 +725,7 @@ async function api(path, opts = {}) {
   const r = await fetch(API_BASE_URL + path, {
     ...opts,
     headers: {
-      'Content-Type': 'application/json',
+      ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
       ...(await authHeaders()),
       ...(opts.headers || {}),
     },
@@ -881,201 +744,38 @@ const pages = ['projects','grants','dashboard','profile'];
 const titles = {
   projects: 'My Projects',
   grants: 'Explore Grants',
-  dashboard: 'Good Morning, Jaslyn.',
+  dashboard: 'Good Morning.',
   profile: 'My Profile'
 };
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 function showPage(id, el) {
   pages.forEach(p => {
     document.getElementById('page-' + p).classList.toggle('on', p === id);
   });
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('on'));
   if (el) el.classList.add('on');
   document.getElementById('topbar-title').textContent = titles[id] || '';
   window.scrollTo(0, 0);
-  if (id === 'profile') renderProfileGenApp();
 }
 
-function renderProfileGenApp() {
-  const ga = (function() { try { return JSON.parse(localStorage.getItem('coart_general_application')); } catch(e) { return null; } })();
-  if (!ga) return;
-  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
-  set('prof-ga-bio', ga.bio);
-  set('prof-ga-focus', ga.focus);
-  set('prof-ga-community', ga.community);
-  set('prof-ga-credibility', ga.credibility);
-  set('prof-ga-budget', ga.budget);
-}
+// ───── STATE (all server-backed; nothing hard-coded) ─────
+let FOUNDER = null;       // founders row for the signed-in user
+let MY_PROJECTS = [];     // projects rows
+let ALL_GRANTS = [];      // active grants (with organization)
+let MY_APPS = [];         // applications rows
+let GRANT_FILTER = 'all';
 
-const grantQuestions = {
-  'NEA 3R Fund': {
-    note: 'NEA requires a Pre-Assessment Form emailed to WM_Fund@nea.gov.sg. Draft your answers below and coart will help structure them for submission.',
-    fields: [
-      { id: 'nea3r-org', label: 'Organisation name and type', placeholder: 'e.g. Unwoventhread, registered non-profit...', aiDraft: 'Unwoventhread is a registered community initiative operating as a non-profit in Singapore, focused on textile waste reduction through community thrift and upcycling markets in Tiong Bahru.' },
-      { id: 'nea3r-project', label: 'Project description - what waste problem does it solve?', placeholder: 'Describe your project and the waste it will reduce or recycle...', aiDraft: 'The project establishes a community upcycling and textile reuse marketplace in Tiong Bahru. By redirecting pre-loved clothing from household disposal into active reuse circuits, the project targets textile waste with an estimated 120 tonnes diverted from incineration over 18 months.' },
-      { id: 'nea3r-tonnage', label: 'Estimated waste reduced / recycled (minimum 100 tonnes over project duration)', placeholder: 'e.g. 120 tonnes of textile waste over 18 months...', aiDraft: 'Estimated 120 tonnes of textile and fabric waste reduced or recycled over the 18-month project duration, based on average garment weights and projected market throughput of 500 items per month.' },
-      { id: 'nea3r-timeline', label: 'Project timeline (preparatory max 6 months, operations max 3 years)', placeholder: 'e.g. Month 1-3: setup, Month 4-18: operations...', aiDraft: 'Months 1-3 (Preparatory): Secure venue, establish collection partnerships with 10 community organisations. Months 4-18 (Operations): Run monthly markets, operate ongoing drop-off and redistribution system. Total: 18 months.' },
-      { id: 'nea3r-budget', label: 'Budget breakdown - manpower, equipment, professional services, other', placeholder: 'Break down qualifying costs across the four categories...', aiDraft: 'Manpower (40%): Part-time coordinator and volunteers. Equipment and materials (35%): Collection bins, sorting infrastructure, upcycling tools. Professional services (15%): Project management and reporting. Other (10%): Community outreach. Total estimated qualifying cost: S$25,000.' }
-    ]
-  },
-  'NEA Environmental Education Fund': {
-    note: 'The NEA EEF supports environmental education programmes. Draft your answers below and coart will help structure them for NEA submission.',
-    fields: [
-      { id: 'neaeef-org', label: 'Organisation name and background', placeholder: 'Describe your organisation and its environmental work...', aiDraft: 'Unwoventhread is a Singapore-based community initiative founded in 2024, running thrift markets and upcycling workshops in Tiong Bahru with a focus on sustainable living and youth environmental education.' },
-      { id: 'neaeef-programme', label: 'Programme description - what environmental education will you deliver?', placeholder: 'Describe the programme content, format, and delivery...', aiDraft: 'A series of monthly hands-on upcycling workshops teaching textile repair, natural dyeing, and zero-waste fashion to youth aged 15-25. Sessions combine practical skills with education on fast fashion and Singapore zero-waste goals.' },
-      { id: 'neaeef-target', label: 'Target audience and expected reach', placeholder: 'Who will participate and how many people will you reach?', aiDraft: 'Primary audience: youth aged 15-25 in Tiong Bahru and surrounding estates. Expected reach: 300 participants across 12 workshop sessions, with secondary reach of 1,000+ through community market touchpoints.' },
-      { id: 'neaeef-outcomes', label: 'Expected environmental outcomes and how you will measure them', placeholder: 'What behaviour change do you expect and how will you track it?', aiDraft: 'Expected outcomes: increased awareness of textile waste (pre/post survey), adoption of repair and reuse behaviours (3-month follow-up). Measured via surveys, attendance records, and social media engagement.' },
-      { id: 'neaeef-budget', label: 'Programme budget breakdown', placeholder: 'Break down costs across materials, facilitators, venue, outreach...', aiDraft: 'Facilitator fees (40%): 2 trained educators per session. Materials and consumables (30%): Fabric, dye, repair tools. Venue and logistics (15%): Community centre space. Outreach and documentation (15%): Photography and impact reporting. Total: S$18,000 over 12 sessions.' }
-    ]
-  }
-};
-
-let currentCustomFields = {};
-
-function openModal(title, ref, amount) {
-  document.getElementById('modal-grant-title').textContent = title + ' - Application';
-  document.getElementById('modal-grant-ref').textContent = ref + ' · ' + amount;
-
-  const custom = grantQuestions[title];
-  const formSection = document.getElementById('modal-custom-fields');
-  const defaultSection = document.getElementById('modal-default-fields');
-  const neaNote = document.getElementById('modal-nea-note');
-
-  if (custom) {
-    currentCustomFields = {};
-    custom.fields.forEach(function(f) { currentCustomFields[f.id] = f.aiDraft; });
-    defaultSection.style.display = 'none';
-    neaNote.style.display = 'block';
-    neaNote.querySelector('.nea-note-text').textContent = custom.note;
-    formSection.style.display = 'block';
-
-    var html = '<div class="form-section-title">Application Questions</div>';
-    custom.fields.forEach(function(field) {
-      html += '<div class="form-row">';
-      html += '<div class="form-label"><span>' + field.label + '</span>';
-      html += '<span class="ai-autofill" data-fid="' + field.id + '" onclick="showCustomSuggest(this.getAttribute(\'data-fid\'))">&#10022; AI Draft</span></div>';
-      html += '<textarea class="form-input" id="' + field.id + '" placeholder="' + field.placeholder + '" rows="3"></textarea>';
-      html += '<div class="ai-suggestion" id="suggest-' + field.id + '">';
-      html += '<div class="ai-suggestion-label">&#10022; AI Draft - Review and Edit Before Using</div>';
-      html += '<div class="ai-suggestion-text" id="drafttext-' + field.id + '"></div>';
-      html += '<div class="ai-suggestion-actions">';
-      html += '<button class="ai-use" data-fid="' + field.id + '" onclick="useCustomField(this.getAttribute(\'data-fid\'))">Use This Draft</button>';
-      html += '<button class="ai-dismiss" data-fid="' + field.id + '" onclick="dismissSuggest(this.getAttribute(\'data-fid\'))">Dismiss</button>';
-      html += '</div></div></div>';
-    });
-    formSection.innerHTML = html;
-    custom.fields.forEach(function(field) {
-      var el = document.getElementById('drafttext-' + field.id);
-      if (el) el.textContent = field.aiDraft;
-    });
-  } else {
-    defaultSection.style.display = 'block';
-    neaNote.style.display = 'none';
-    formSection.style.display = 'none';
-  }
-
-  document.getElementById('modal-overlay').classList.add('on');
-  document.body.style.overflow = 'hidden';
-}
-
-function showCustomSuggest(id) {
-  var el = document.getElementById('suggest-' + id);
-  if (el) el.classList.add('on');
-}
-
-function useCustomField(id) {
-  var el = document.getElementById(id);
-  if (el) { el.value = currentCustomFields[id] || ''; el.classList.add('ai-filled'); }
-  var s = document.getElementById('suggest-' + id);
-  if (s) s.classList.remove('on');
-}
-
-
-
-function closeModal() {
-  document.getElementById('modal-overlay').classList.remove('on');
-  document.body.style.overflow = '';
-}
-
-function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
-}
-
-function autofillField(field) {
-  document.getElementById('suggest-' + field).classList.add('on');
-}
-
-function useField(field) {
-  const texts = {
-    impact: "Unwoventhread is a community thrift and upcycling market rooted in Tiong Bahru. We create accessible spaces for Singapore's youth to engage with heritage crafts and sustainable fashion, reducing textile waste while building intergenerational connections. Our market events have attracted over 300 participants and diverted an estimated 400kg of clothing from landfill.",
-    funding: "Funding would be allocated across three areas: venue hire and logistics for four market events (40%), artisan stipends to support participating craftspeople (35%), and community outreach and communications to broaden participation in underserved neighbourhoods (25%).",
-    founder: "As a final-year Arts & Sustainability student at NUS, I have spent three years studying the intersection of cultural heritage and environmental practice. I founded Unwoventhread after organising community pop-ups in Tiong Bahru and have since built relationships with over 20 local artisans and five NGO partners."
-  };
-  const el = document.getElementById('field-' + field);
-  el.value = texts[field];
-  el.classList.add('ai-filled');
-  document.getElementById('suggest-' + field).classList.remove('on');
-}
-
-function dismissSuggest(field) {
-  document.getElementById('suggest-' + field).classList.remove('on');
-}
-
-function autofillAll() {
-  ['impact','funding','founder'].forEach(f => {
-    autofillField(f);
-    setTimeout(() => useField(f), 300);
-  });
-}
-
-function clearAll() {
-  ['impact','funding','founder'].forEach(f => {
-    const el = document.getElementById('field-' + f);
-    el.value = '';
-    el.classList.remove('ai-filled');
-    document.getElementById('suggest-' + f).classList.remove('on');
-  });
-}
-
-// Filter pills toggle
-document.querySelectorAll('.pill').forEach(pill => {
-  pill.addEventListener('click', function() {
-    this.closest('.filter-bar').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-    this.classList.add('on');
-  });
-});
-
-// Hydrate profile general-application fields on first load
-if (document.readyState !== 'loading') {
-  setTimeout(() => { if (typeof renderProfileGenApp === 'function') renderProfileGenApp(); }, 0);
-} else {
-  document.addEventListener('DOMContentLoaded', () => renderProfileGenApp());
-}
-
-// ───── GENERAL APPLICATION + NEW PROJECT FLOW ─────
-const GEN_APP_KEY = 'coart_general_application';
-const PROJECTS_KEY = 'coart_projects';
-
-// Mock general application — seeded so the prototype demo flows from
-// Apply-with-AI straight into the project picker.
-const SEED_GEN_APP = {
-  bio: "Final-year Arts & Sustainability student at NUS, building community-led creative spaces that reconnect Singapore's youth with heritage craft and sustainable living.",
-  focus: "Arts, Sustainability, Community",
-  community: "Youth in Tiong Bahru and surrounding estates, plus local artisans and craftspeople",
-  credibility: "Three years studying the intersection of cultural heritage and environmental practice at NUS. Founded Unwoventhread after organising community pop-ups in Tiong Bahru; built relationships with 20+ local artisans and 5 NGO partners.",
-  budget: "S$5,000 – 25,000"
-};
-
+// ───── GENERAL APPLICATION CACHE ─────
 // The general application lives on the backend (founders table). Because
-// most callers of getGenApp() are synchronous, we hydrate a localStorage
-// cache from GET /founders/me on page load; getGenApp() reads that cache.
-// localStorage doubles as the offline fallback when the API is unreachable.
-//
-// Field mapping (front-end ↔ backend):
-//   bio         ↔ bio
-//   focus       ↔ focus_areas (comma-separated string ↔ text[])
-//   credibility ↔ past_experience
-//   community, budget — no DB column yet; kept in localStorage only.
+// several callers are synchronous, we keep a localStorage cache hydrated
+// from GET /founders/me. community + budget have no DB column yet and
+// live only in this cache.
+const GEN_APP_KEY = 'coart_general_application';
+
 function founderRowToGenApp(row, localGa) {
   return {
     bio: row.bio || '',
@@ -1086,102 +786,365 @@ function founderRowToGenApp(row, localGa) {
   };
 }
 
-function applyFounderIdentity(row) {
+function getGenApp() {
+  try { return JSON.parse(localStorage.getItem(GEN_APP_KEY)) || null; } catch(e) { return null; }
+}
+
+function renderProfileGenApp() {
+  const ga = getGenApp();
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || '—'; };
+  set('prof-ga-bio', ga && ga.bio);
+  set('prof-ga-focus', ga && ga.focus);
+  set('prof-ga-community', ga && ga.community);
+  set('prof-ga-credibility', ga && ga.credibility);
+  set('prof-ga-budget', ga && ga.budget);
+}
+
+// ───── IDENTITY + PROFILE RENDERING ─────
+function renderIdentity(row) {
   const name = row.full_name || 'Founder';
   titles.dashboard = 'Good Morning, ' + name.split(' ')[0] + '.';
-  const avi = document.querySelector('.profile-avi');
-  if (avi) avi.textContent = name.split(' ').map(w => w[0]).slice(0, 2).join('');
-  const pn = document.querySelector('.profile-name');
-  if (pn) pn.textContent = name;
-  const uni = [row.university, row.field_of_study].filter(Boolean).join(' · ');
-  const pu = document.querySelector('.profile-uni');
-  if (pu && uni) pu.textContent = uni;
+  if (document.getElementById('page-dashboard').classList.contains('on')) {
+    document.getElementById('topbar-title').textContent = titles.dashboard;
+  }
+  document.querySelector('.profile-avi').textContent =
+    name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  document.querySelector('.profile-name').textContent = name;
+  document.querySelector('.profile-uni').textContent =
+    [row.university, row.field_of_study].filter(Boolean).join(' · ');
+
+  const pct = row.profile_completion_pct ?? 0;
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('prog-fill').style.width = pct + '%';
+
+  const set = (id, val) => { document.getElementById(id).textContent = val || '—'; };
+  set('prof-name', row.full_name);
+  set('prof-uni', row.university);
+  set('prof-fos', row.field_of_study);
+  set('prof-location', row.location);
+
+  // "Missing" checklist — computed from the row, never hard-coded.
+  const missing = [];
+  if (!row.location) missing.push('Location');
+  if (!row.bio) missing.push('Short Bio');
+  if (!(row.focus_areas || []).length) missing.push('Focus Areas');
+  if (!row.past_experience) missing.push('Past Experience (Why You)');
+  if (!row.linkedin_url) missing.push('LinkedIn URL');
+  if (!row.profile_photo_url) missing.push('Profile Photo');
+  const section = document.getElementById('prof-missing-section');
+  if (missing.length === 0) {
+    section.style.display = 'none';
+  } else {
+    section.style.display = 'block';
+    document.getElementById('prof-missing-body').innerHTML = missing.map(m =>
+      '<div class="profile-field"><div class="profile-field-label">' + esc(m) +
+      '</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>'
+    ).join('');
+  }
 }
 
 function hydrateFromFounder(row) {
-  const ga = founderRowToGenApp(row, getGenApp());
-  localStorage.setItem(GEN_APP_KEY, JSON.stringify(ga));
-  applyFounderIdentity(row);
+  FOUNDER = row;
+  localStorage.setItem(GEN_APP_KEY, JSON.stringify(founderRowToGenApp(row, getGenApp())));
+  renderIdentity(row);
   renderProfileGenApp();
 }
 
+// ───── PROJECTS ─────
+function projectCard(p, compact) {
+  const statusTag = p.status === 'active'
+    ? '<span class="tag tag-or">Active</span>'
+    : '<span class="tag">' + esc(p.status.charAt(0).toUpperCase() + p.status.slice(1)) + '</span>';
+  const focusTags = (p.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('');
+  const buttons = compact
+    ? '<button class="btn" onclick="openEditProject(\'' + p.id + '\')">Edit Project</button>'
+    : '<button class="btn" onclick="openEditProject(\'' + p.id + '\')">Edit Project</button>' +
+      (p.status === 'draft'
+        ? '<button class="btn btn-out" onclick="publishProject(\'' + p.id + '\')">Publish</button>'
+        : '') +
+      '<button class="btn btn-out" onclick="archiveProject(\'' + p.id + '\')">Archive</button>';
+  return (
+    '<div class="project-card">' +
+      '<div class="' + (p.status === 'active' ? 'project-card-band' : 'project-card-band-muted') + '"></div>' +
+      '<div class="project-card-inner">' +
+        '<div class="tags">' + focusTags + statusTag +
+          (p.view_count ? '<span class="tag">' + p.view_count + ' Views</span>' : '') + '</div>' +
+        '<div class="project-title">' + esc(p.title) + '</div>' +
+        (p.tagline ? '<p class="project-sub">' + esc(p.tagline) + '</p>' : '') +
+        '<div class="btn-row">' + buttons + '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+const EMPTY_PROJECTS_HTML =
+  '<div class="project-card"><div class="project-card-band-muted"></div><div class="project-card-inner">' +
+  '<div class="project-title">No projects yet</div>' +
+  '<p class="project-sub">Create your first project — it\'s what backers discover and what grant applications are written about.</p>' +
+  '<div class="btn-row"><button class="btn btn-or" onclick="startNewProject()">+ New Project</button></div>' +
+  '</div></div>';
+
+function renderProjects() {
+  const live = MY_PROJECTS.filter(p => p.status !== 'archived');
+  document.getElementById('projects-list').innerHTML =
+    live.length ? live.map(p => projectCard(p, false)).join('') : EMPTY_PROJECTS_HTML;
+  document.getElementById('dash-projects').innerHTML =
+    live.length ? live.slice(0, 2).map(p => projectCard(p, true)).join('') : EMPTY_PROJECTS_HTML;
+}
+
+// ───── DASHBOARD ─────
+const APP_STATUS_LABELS = {
+  draft: 'Draft', submitted: 'Submitted', in_review: 'In Review',
+  shortlisted: 'Shortlisted', backed: 'Backed', rejected: 'Not Selected', withdrawn: 'Withdrawn'
+};
+
+function renderDashApps() {
+  const el = document.getElementById('dash-apps');
+  if (!MY_APPS.length) {
+    el.innerHTML =
+      '<div class="grant-card"><div class="project-card-band-muted"></div><div class="grant-card-inner">' +
+      '<div class="grant-title">No applications yet</div>' +
+      '<p class="grant-sub">Explore grants and apply with AI assistance — your applications will show up here.</p>' +
+      '</div></div>';
+    return;
+  }
+  el.innerHTML = MY_APPS.slice(0, 4).map(a => {
+    const active = ['submitted','in_review','shortlisted','backed'].includes(a.status);
+    return '<div class="grant-card">' +
+      '<div class="' + (active ? 'project-card-band' : 'project-card-band-muted') + '"></div>' +
+      '<div class="grant-card-inner">' +
+      '<div class="grant-title">' + esc(a.grant ? a.grant.title : 'Grant') + '</div>' +
+      '<p class="grant-sub">For ' + esc(a.project ? a.project.title : 'your project') + '.</p>' +
+      '<div class="tags" style="margin-bottom:0"><span class="tag ' + (active ? 'tag-or' : '') + '">' +
+      esc(APP_STATUS_LABELS[a.status] || a.status) + '</span></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+async function loadStats() {
+  try {
+    const s = await api('/founders/me/stats');
+    document.getElementById('stat-projects').textContent = s.active_projects;
+    document.getElementById('stat-views').textContent = s.profile_views_this_month;
+    document.getElementById('stat-grants').textContent = s.open_grants_count;
+  } catch (e) { /* stats are non-critical */ }
+}
+
+// ───── GRANTS ─────
+function grantDeadlineText(g) {
+  if (g.is_rolling) return 'Rolling Deadline';
+  if (g.application_closes_at) return 'Deadline ' + g.application_closes_at;
+  return '';
+}
+
+function grantCard(g, i) {
+  const org = g.organization || {};
+  const refLine = [g.reference_code, org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', g.difficulty ? g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1) : '', grantDeadlineText(g)]
+    .filter(Boolean).join(' · ');
+  const tags = (g.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('') +
+    (g.questions_hint ? '' : '') +
+    (org.name ? '<span class="tag">' + esc(org.name) + '</span>' : '');
+  const externalLink = g.external_portal_url
+    ? '<a class="btn btn-out btn-sm" href="' + esc(g.external_portal_url) + '" target="_blank" rel="noopener">View Source →</a>'
+    : '';
+  return (
+    '<div class="grant-explore-card">' +
+      '<div class="' + (i === 0 ? 'grant-explore-band' : 'grant-explore-band-dim') + '"></div>' +
+      '<div class="grant-explore-inner">' +
+        '<div class="grant-explore-left">' +
+          '<div class="grant-ref" style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">' + esc(refLine) + '</div>' +
+          '<div class="grant-explore-title">' + esc(g.title) + '</div>' +
+          '<span class="grant-explore-amount">' + esc(g.amount_display || '') + '</span>' +
+          '<p class="grant-explore-sub">' + esc(g.offering_description || '') + '</p>' +
+          '<div class="tags">' + tags + '</div>' +
+        '</div>' +
+        '<div class="grant-explore-right">' +
+          '<button class="btn btn-or" onclick="applyWithAI(\'' + g.id + '\')">Apply with AI</button>' +
+          externalLink +
+          '<button class="btn btn-out btn-sm" onclick="saveGrant(\'' + g.id + '\')">Save</button>' +
+        '</div>' +
+      '</div>' +
+    '</div>'
+  );
+}
+
+function grantMatchesFilter(g, f) {
+  if (f === 'all') return true;
+  if (f === 'open') {
+    if (g.is_rolling) return true;
+    return g.application_closes_at ? g.application_closes_at >= new Date().toISOString().slice(0, 10) : false;
+  }
+  const [kind, val] = f.split(':');
+  if (kind === 'type') return (g.organization && g.organization.type) === val;
+  if (kind === 'focus') return (g.focus_areas || []).includes(val);
+  if (kind === 'difficulty') return g.difficulty === val;
+  return true;
+}
+
+function renderGrants() {
+  const list = ALL_GRANTS.filter(g => grantMatchesFilter(g, GRANT_FILTER));
+  document.getElementById('grants-count').textContent =
+    list.length + ' grant' + (list.length === 1 ? '' : 's') + (GRANT_FILTER === 'all' ? ' available' : ' match this filter');
+  document.getElementById('grants-list').innerHTML = list.length
+    ? list.map((g, i) => grantCard(g, i)).join('')
+    : '<p style="font-size:13px;color:var(--muted);padding:20px 0;">No grants match this filter yet.</p>';
+}
+
+document.querySelectorAll('#grants-filters .pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('#grants-filters .pill').forEach(p => p.classList.remove('on'));
+    this.classList.add('on');
+    GRANT_FILTER = this.getAttribute('data-filter');
+    renderGrants();
+  });
+});
+
+async function saveGrant(grantId) {
+  try {
+    await api('/grants/' + grantId + '/save', { method: 'POST' });
+    showToast('✓ Grant saved to your list.');
+  } catch (e) { showToast('Could not save grant.'); }
+}
+
+// ───── DATA LOAD ─────
+async function loadAll() {
+  const results = await Promise.allSettled([
+    api('/projects/me'),
+    api('/grants'),
+    api('/applications/me'),
+  ]);
+  if (results[0].status === 'fulfilled') MY_PROJECTS = results[0].value.projects;
+  if (results[1].status === 'fulfilled') ALL_GRANTS = results[1].value.grants;
+  if (results[2].status === 'fulfilled') MY_APPS = results[2].value.applications;
+  renderProjects();
+  renderGrants();
+  renderDashApps();
+  loadStats();
+}
+
+// ───── INIT (role-aware) ─────
 (async function initApp() {
-  // Not signed in → back to the login page (except in local dev, where
-  // the X-Dev-User bypass stands in for a session).
   const { data } = await sbAuth.auth.getSession();
   if (!data.session && !IS_LOCAL_DEV) {
     window.location.replace('index.html');
     return;
   }
+  let me;
+  try {
+    me = await api('/auth/me');
+  } catch (e) {
+    document.querySelector('.profile-name').textContent = 'Offline';
+    showToast('Cannot reach the coart server.');
+    return;
+  }
+  if (me.role === 'backer') { window.location.replace('backer.html'); return; }
+  if (me.role === null) { openOnboarding(); return; }
   try {
     hydrateFromFounder(await api('/founders/me'));
+    loadAll();
   } catch (e) {
-    const msg = String(e.message || '');
-    // 404: signed in but no founders row yet. 403: no profiles row at all
-    // (role is null). Both mean first login → one-time onboarding.
-    if (msg.includes(': 404') || msg.includes(': 403')) {
-      openOnboarding();
-      return;
-    }
-    // API unreachable — fall back to the local seed so the demo still works.
-    if (!localStorage.getItem(GEN_APP_KEY)) {
-      localStorage.setItem(GEN_APP_KEY, JSON.stringify(SEED_GEN_APP));
-    }
-    renderProfileGenApp();
+    // profiles row says founder but founders row missing — finish onboarding
+    openOnboarding();
   }
 })();
 
-// ───── FIRST-LOGIN ONBOARDING ─────
+// ───── FIRST-LOGIN ONBOARDING (role choice) ─────
+let ONBOARD_ROLE = 'founder';
+
 function openOnboarding() {
+  document.querySelector('.profile-name').textContent = 'New here';
   document.getElementById('onboard-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 
+function setOnboardRole(role) {
+  ONBOARD_ROLE = role;
+  document.getElementById('ob-role-founder').className = 'btn ' + (role === 'founder' ? 'btn-or' : 'btn-out');
+  document.getElementById('ob-role-backer').className = 'btn ' + (role === 'backer' ? 'btn-or' : 'btn-out');
+  document.getElementById('ob-founder-fields').style.display = role === 'founder' ? 'block' : 'none';
+  document.getElementById('ob-backer-fields').style.display = role === 'backer' ? 'block' : 'none';
+}
+
 async function submitOnboarding() {
-  const name = document.getElementById('ob-name').value.trim();
-  const age = parseInt(document.getElementById('ob-age').value, 10);
-  const uni = document.getElementById('ob-uni').value.trim();
   const status = document.getElementById('ob-status');
-  if (name.length < 2) { status.textContent = 'Please enter your full name.'; return; }
-  if (!age || age < 13 || age > 99) { status.textContent = 'Please enter your age (13–99).'; return; }
-  status.textContent = 'Creating your profile…';
   try {
-    await api('/auth/profile', {
-      method: 'POST',
-      body: JSON.stringify({
-        role: 'founder',
-        founder: { full_name: name, age, ...(uni ? { university: uni } : {}) },
-      }),
-    });
-    const row = await api('/founders/me');
-    document.getElementById('onboard-overlay').classList.remove('on');
-    document.body.style.overflow = '';
-    hydrateFromFounder(row);
-    showToast('✓ Welcome to coart, ' + name.split(' ')[0] + '!');
+    if (ONBOARD_ROLE === 'founder') {
+      const name = document.getElementById('ob-name').value.trim();
+      const age = parseInt(document.getElementById('ob-age').value, 10);
+      const uni = document.getElementById('ob-uni').value.trim();
+      if (name.length < 2) { status.textContent = 'Please enter your full name.'; return; }
+      if (!age || age < 13 || age > 99) { status.textContent = 'Please enter your age (13–99).'; return; }
+      status.textContent = 'Creating your profile…';
+      await api('/auth/profile', {
+        method: 'POST',
+        body: JSON.stringify({ role: 'founder', founder: { full_name: name, age, ...(uni ? { university: uni } : {}) } }),
+      });
+      const row = await api('/founders/me');
+      document.getElementById('onboard-overlay').classList.remove('on');
+      document.body.style.overflow = '';
+      hydrateFromFounder(row);
+      loadAll();
+      showToast('✓ Welcome to coart, ' + name.split(' ')[0] + '!');
+    } else {
+      const orgName = document.getElementById('ob-org-name').value.trim();
+      const orgType = document.getElementById('ob-org-type').value;
+      const orgLoc = document.getElementById('ob-org-location').value.trim();
+      if (orgName.length < 2) { status.textContent = 'Please enter your organisation name.'; return; }
+      status.textContent = 'Creating your organisation…';
+      await api('/auth/profile', {
+        method: 'POST',
+        body: JSON.stringify({ role: 'backer', organization: { name: orgName, type: orgType, ...(orgLoc ? { location: orgLoc } : {}) } }),
+      });
+      window.location.replace('backer.html');
+    }
   } catch (e) {
     status.textContent = 'Could not create profile — ' + e.message;
   }
 }
 
-function getGenApp() {
-  try { return JSON.parse(localStorage.getItem(GEN_APP_KEY)) || null; } catch(e) { return null; }
+// ───── BASIC INFO EDIT ─────
+function openBasicInfo() {
+  if (!FOUNDER) return;
+  document.getElementById('bi-name').value = FOUNDER.full_name || '';
+  document.getElementById('bi-age').value = FOUNDER.age || '';
+  document.getElementById('bi-uni').value = FOUNDER.university || '';
+  document.getElementById('bi-fos').value = FOUNDER.field_of_study || '';
+  document.getElementById('bi-location').value = FOUNDER.location || '';
+  document.getElementById('bi-linkedin').value = FOUNDER.linkedin_url || '';
+  document.getElementById('bi-status').textContent = '';
+  document.getElementById('basicinfo-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
 }
-function getProjects() {
-  try { return JSON.parse(localStorage.getItem(PROJECTS_KEY)) || []; } catch(e) { return []; }
+function closeBasicInfo() {
+  document.getElementById('basicinfo-overlay').classList.remove('on');
+  document.body.style.overflow = '';
 }
-
-function startNewProject() {
-  const ga = getGenApp();
-  if (!ga) {
-    window.__genAppCameFromNewProject = true;
-    openGenApp();
-  } else {
-    openNewProj(ga);
+async function saveBasicInfo() {
+  const status = document.getElementById('bi-status');
+  const body = {
+    full_name: document.getElementById('bi-name').value.trim(),
+    university: document.getElementById('bi-uni').value.trim(),
+    field_of_study: document.getElementById('bi-fos').value.trim(),
+    location: document.getElementById('bi-location').value.trim(),
+  };
+  const age = parseInt(document.getElementById('bi-age').value, 10);
+  if (age) body.age = age;
+  const linkedin = document.getElementById('bi-linkedin').value.trim();
+  if (linkedin) body.linkedin_url = linkedin;
+  if (body.full_name.length < 2) { status.textContent = 'Name is required.'; return; }
+  status.textContent = 'Saving…';
+  try {
+    const row = await api('/founders/me', { method: 'PATCH', body: JSON.stringify(body) });
+    closeBasicInfo();
+    hydrateFromFounder(row);
+    showToast('✓ Profile updated.');
+  } catch (e) {
+    status.textContent = 'Could not save — ' + e.message;
   }
 }
 
+// ───── GENERAL APPLICATION MODAL ─────
 function openGenApp() {
-  // Prefill if already saved (re-opening to edit)
   const ga = getGenApp();
   if (ga) {
     document.getElementById('ga-bio').value = ga.bio || '';
@@ -1212,10 +1175,9 @@ async function saveGenApp() {
     showToast('Add at least a bio and focus areas.');
     return;
   }
-  // Always cache locally (also the only home for community + budget).
   localStorage.setItem(GEN_APP_KEY, JSON.stringify(ga));
   try {
-    await api('/founders/me', {
+    const row = await api('/founders/me', {
       method: 'PATCH',
       body: JSON.stringify({
         bio: ga.bio,
@@ -1223,21 +1185,35 @@ async function saveGenApp() {
         past_experience: ga.credibility
       })
     });
+    FOUNDER = row;
+    renderIdentity(row);
     showToast('✓ General application saved.');
   } catch (e) {
     showToast('Saved on this device — server unreachable.');
   }
   closeGenApp();
   renderProfileGenApp();
-  // Only continue into project flow if user came from + New Project (i.e. no projects yet — assume first-time)
   if (window.__genAppCameFromNewProject) {
     window.__genAppCameFromNewProject = false;
-    setTimeout(() => openNewProj(ga), 350);
+    setTimeout(() => openNewProj(getGenApp()), 350);
+  }
+}
+
+// ───── PROJECT CREATE / EDIT ─────
+let EDITING_PROJECT_ID = null;
+
+function startNewProject() {
+  const ga = getGenApp();
+  if (!ga || !ga.bio) {
+    window.__genAppCameFromNewProject = true;
+    openGenApp();
+  } else {
+    openNewProj(ga);
   }
 }
 
 function openNewProj(ga) {
-  // Reset project fields each time (don't carry over from last)
+  EDITING_PROJECT_ID = null;
   document.getElementById('np-name').value = '';
   document.getElementById('np-tagline').value = '';
   document.getElementById('np-impact').value = '';
@@ -1245,6 +1221,21 @@ function openNewProj(ga) {
   document.getElementById('newproj-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
+
+function openEditProject(id) {
+  const p = MY_PROJECTS.find(x => x.id === id);
+  if (!p) return;
+  EDITING_PROJECT_ID = id;
+  document.getElementById('np-name').value = p.title || '';
+  document.getElementById('np-tagline').value = p.tagline || '';
+  document.getElementById('np-impact').value = p.description || '';
+  document.getElementById('np-budget').value = '';
+  const cat = (p.focus_areas || [])[0];
+  if (cat) document.getElementById('np-category').value = cat;
+  document.getElementById('newproj-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+
 function closeNewProj() {
   document.getElementById('newproj-overlay').classList.remove('on');
   document.body.style.overflow = '';
@@ -1252,24 +1243,61 @@ function closeNewProj() {
 function closeNewProjOutside(e) {
   if (e.target === document.getElementById('newproj-overlay')) closeNewProj();
 }
-function saveProject() {
+
+async function saveProject() {
   const name = document.getElementById('np-name').value.trim();
   if (!name) { showToast('Give the project a name.'); return; }
-  const proj = {
-    id: 'p' + Date.now(),
-    name: name,
-    tagline: document.getElementById('np-tagline').value.trim(),
-    category: document.getElementById('np-category').value,
-    impact: document.getElementById('np-impact').value.trim(),
-    budget: document.getElementById('np-budget').value.trim(),
-    status: 'Draft',
-    createdAt: new Date().toISOString()
+  const budget = document.getElementById('np-budget').value.trim();
+  let description = document.getElementById('np-impact').value.trim();
+  // No budget column on projects yet — keep it inside the description.
+  if (budget && !description.includes('Estimated budget')) {
+    description += (description ? '\n\n' : '') + 'Estimated budget: S$' + budget;
+  }
+  const body = {
+    title: name,
+    tagline: document.getElementById('np-tagline').value.trim() || undefined,
+    description: description || undefined,
+    focus_areas: [document.getElementById('np-category').value],
   };
-  const list = getProjects();
-  list.push(proj);
-  localStorage.setItem(PROJECTS_KEY, JSON.stringify(list));
-  closeNewProj();
-  showToast('✓ Project saved as draft.');
+  try {
+    if (EDITING_PROJECT_ID) {
+      await api('/projects/' + EDITING_PROJECT_ID, { method: 'PATCH', body: JSON.stringify(body) });
+      showToast('✓ Project updated.');
+    } else {
+      await api('/projects', { method: 'POST', body: JSON.stringify(body) });
+      showToast('✓ Project saved as draft.');
+    }
+    closeNewProj();
+    const res = await api('/projects/me');
+    MY_PROJECTS = res.projects;
+    renderProjects();
+    loadStats();
+  } catch (e) {
+    showToast('Could not save project — ' + e.message);
+  }
+}
+
+async function publishProject(id) {
+  try {
+    await api('/projects/' + id, { method: 'PATCH', body: JSON.stringify({ status: 'active' }) });
+    const res = await api('/projects/me');
+    MY_PROJECTS = res.projects;
+    renderProjects();
+    loadStats();
+    showToast('✓ Project published — backers can now discover it.');
+  } catch (e) { showToast('Could not publish — ' + e.message); }
+}
+
+async function archiveProject(id) {
+  if (!confirm('Archive this project? It will disappear from backer discovery.')) return;
+  try {
+    await api('/projects/' + id, { method: 'DELETE' });
+    const res = await api('/projects/me');
+    MY_PROJECTS = res.projects;
+    renderProjects();
+    loadStats();
+    showToast('Project archived.');
+  } catch (e) { showToast('Could not archive — ' + e.message); }
 }
 
 function showToast(msg) {
@@ -1281,27 +1309,42 @@ function showToast(msg) {
 }
 
 // ───── APPLY-WITH-AI FLOW ─────
-function applyWithAI(grantTitle, grantRef, grantAmount) {
+// applyWithAI(grantId) → pick project → POST /applications (draft) →
+// modal with the grant's real questions → per-field AI drafts via
+// POST /ai/draft-field → answers saved via PATCH /applications/:id/answers.
+let CURRENT_GRANT = null;       // grant detail (with questions)
+let CURRENT_APPLICATION = null; // applications row
+
+async function applyWithAI(grantId) {
   const ga = getGenApp();
-  if (!ga) {
+  if (!ga || !ga.bio) {
     showToast('Fill your general application first ↓');
     setTimeout(openGenApp, 600);
     return;
   }
-  window.__pendingGrant = { title: grantTitle, ref: grantRef, amount: grantAmount };
-  showProjectPicker();
+  const live = MY_PROJECTS.filter(p => p.status !== 'archived');
+  if (!live.length) {
+    showToast('Create a project first — applications are per-project.');
+    setTimeout(startNewProject, 600);
+    return;
+  }
+  try {
+    CURRENT_GRANT = await api('/grants/' + grantId);
+  } catch (e) {
+    showToast('Could not load grant details.');
+    return;
+  }
+  showProjectPicker(live);
 }
 
-function showProjectPicker() {
+function showProjectPicker(projects) {
   const sel = document.getElementById('pp-project');
   sel.innerHTML = '';
-  // demo projects already shown on dashboard
-  ['Unwoventhread','Hawker Harvest'].forEach(n => {
-    const o = document.createElement('option'); o.value = n; o.textContent = n; sel.appendChild(o);
-  });
-  // user-created projects
-  getProjects().forEach(p => {
-    const o = document.createElement('option'); o.value = p.name; o.textContent = p.name + ' (Draft)'; sel.appendChild(o);
+  projects.forEach(p => {
+    const o = document.createElement('option');
+    o.value = p.id;
+    o.textContent = p.title + (p.status === 'draft' ? ' (Draft)' : '');
+    sel.appendChild(o);
   });
   document.getElementById('pp-step1').style.display = 'block';
   document.getElementById('pp-step2').style.display = 'none';
@@ -1317,74 +1360,258 @@ function closeProjectPicker() {
 function closePPOutside(e) {
   if (e.target === document.getElementById('pp-overlay')) closeProjectPicker();
 }
-function confirmProjectPicker() {
-  const project = document.getElementById('pp-project').value;
+
+async function confirmProjectPicker() {
+  const projectId = document.getElementById('pp-project').value;
+  const project = MY_PROJECTS.find(p => p.id === projectId);
   document.getElementById('pp-step1').style.display = 'none';
   document.getElementById('pp-step2').style.display = 'block';
   document.getElementById('pp-footer').style.display = 'none';
-  const loaderSteps = [
-    'Pulling your general application…',
-    'Reading project details for ' + project + '…',
-    'Matching to grant requirements…',
-    'Drafting your answers…'
-  ];
-  let i = 0;
-  document.getElementById('pp-loader-step').textContent = loaderSteps[0];
-  document.getElementById('pp-loader-fill').style.width = '25%';
-  const tick = setInterval(() => {
-    i++;
-    if (i < loaderSteps.length) {
-      document.getElementById('pp-loader-step').textContent = loaderSteps[i];
-      document.getElementById('pp-loader-fill').style.width = (25 * (i+1)) + '%';
-    } else {
-      clearInterval(tick);
-      closeProjectPicker();
-      const g = window.__pendingGrant;
-      openModal(g.title, g.ref, g.amount);
-      setTimeout(() => prefillFromGenApp(project), 120);
-    }
+  document.getElementById('pp-loader-step').textContent = 'Creating your application draft…';
+  document.getElementById('pp-loader-fill').style.width = '40%';
+  try {
+    CURRENT_APPLICATION = await api('/applications', {
+      method: 'POST',
+      body: JSON.stringify({ project_id: projectId, grant_id: CURRENT_GRANT.id }),
+    });
+  } catch (e) {
+    closeProjectPicker();
+    showToast('Could not start application — ' + e.message);
+    return;
+  }
+  document.getElementById('pp-loader-step').textContent = 'Preparing the application form…';
+  document.getElementById('pp-loader-fill').style.width = '100%';
+  setTimeout(() => {
+    closeProjectPicker();
+    openModal(CURRENT_GRANT, project);
   }, 400);
 }
 
-function prefillFromGenApp(projectName) {
-  const ga = getGenApp();
-  if (!ga) return;
-  // Project dropdown — select or add
-  const projSel = document.getElementById('field-project');
-  if (projSel) {
-    let matched = false;
-    for (const opt of projSel.options) {
-      if (opt.text === projectName || opt.value === projectName) { opt.selected = true; matched = true; break; }
+function openModal(grant, project) {
+  document.getElementById('modal-grant-title').textContent = grant.title + ' — Application';
+  document.getElementById('modal-grant-ref').textContent =
+    [grant.reference_code, grant.amount_display].filter(Boolean).join(' · ');
+
+  const formSection = document.getElementById('modal-custom-fields');
+  const defaultSection = document.getElementById('modal-default-fields');
+  const neaNote = document.getElementById('modal-nea-note');
+  const questions = grant.questions || [];
+
+  if (questions.length) {
+    defaultSection.style.display = 'none';
+    formSection.style.display = 'block';
+    if (grant.application_instructions) {
+      neaNote.style.display = 'block';
+      neaNote.querySelector('.nea-note-text').textContent = grant.application_instructions;
+    } else {
+      neaNote.style.display = 'none';
     }
-    if (!matched) {
-      const o = document.createElement('option');
-      o.text = projectName; o.value = projectName; o.selected = true;
-      projSel.appendChild(o);
-    }
+    let html = '<div class="form-section-title">Application Questions</div>';
+    questions.forEach(function(q) {
+      const key = q.question_key;
+      const existing = '';
+      html += '<div class="form-row">';
+      html += '<div class="form-label"><span>' + esc(q.label) + '</span>';
+      html += '<span class="ai-autofill" data-fid="' + esc(key) + '" onclick="draftCustomField(this.getAttribute(\'data-fid\'))">&#10022; AI Draft</span></div>';
+      html += '<textarea class="form-input" id="q-' + esc(key) + '" placeholder="' + esc(q.placeholder || '') + '" rows="3">' + existing + '</textarea>';
+      html += '<div class="ai-suggestion" id="suggest-q-' + esc(key) + '">';
+      html += '<div class="ai-suggestion-label">&#10022; AI Draft — Review and Edit Before Using</div>';
+      html += '<div class="ai-suggestion-text" id="drafttext-' + esc(key) + '"></div>';
+      html += '<div class="ai-suggestion-actions">';
+      html += '<button class="ai-use" data-fid="' + esc(key) + '" onclick="useCustomField(this.getAttribute(\'data-fid\'))">Use This Draft</button>';
+      html += '<button class="ai-dismiss" data-fid="' + esc(key) + '" onclick="dismissCustomSuggest(this.getAttribute(\'data-fid\'))">Dismiss</button>';
+      html += '</div></div></div>';
+    });
+    formSection.innerHTML = html;
+  } else {
+    defaultSection.style.display = 'block';
+    formSection.style.display = 'none';
+    neaNote.style.display = 'none';
+    prefillDefaultFields(project);
   }
-  // Default-form fields
-  const impact = document.getElementById('field-impact');
-  const funding = document.getElementById('field-funding');
-  const founder = document.getElementById('field-founder');
-  if (impact) {
-    impact.value = projectName + ' — ' + (ga.bio || '') +
-      (ga.community ? ('\n\nWho it serves: ' + ga.community + '.') : '') +
-      (ga.focus ? (' Focus areas: ' + ga.focus + '.') : '');
-    impact.classList.add('ai-filled');
-  }
-  if (funding) {
-    funding.value = 'Funding would support delivery of ' + projectName +
-      ' across our typical operating cost range (' + (ga.budget || 'S$5,000–25,000') +
-      '): programming and venue, community outreach, and partner stipends. Final breakdown attached as a budget document.';
-    funding.classList.add('ai-filled');
-  }
-  if (founder) {
-    founder.value = ga.credibility || ga.bio || '';
-    founder.classList.add('ai-filled');
-  }
-  // Custom (NEA etc.) fields — show suggestion banner so user can pull AI draft
-  document.querySelectorAll('#modal-custom-fields .ai-suggestion').forEach(el => el.classList.add('on'));
+
+  document.getElementById('modal-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
 }
+
+// Compose prefills for the generic 3-question form from the founder's own
+// general application + selected project — no canned text.
+function prefillDefaultFields(project) {
+  const ga = getGenApp() || {};
+  const projectName = project ? project.title : 'this project';
+  const sel = document.getElementById('field-project');
+  sel.innerHTML = '';
+  const o = document.createElement('option');
+  o.value = project ? project.id : '';
+  o.textContent = projectName;
+  o.selected = true;
+  sel.appendChild(o);
+
+  const compose = {
+    impact: (project && project.tagline ? project.tagline + ' ' : '') + (ga.bio || '') +
+      (ga.community ? '\n\nWho it serves: ' + ga.community + '.' : '') +
+      (ga.focus ? '\nFocus areas: ' + ga.focus + '.' : ''),
+    funding: 'Funding would support delivery of ' + projectName +
+      (ga.budget ? ' within our typical operating range (' + ga.budget + ')' : '') +
+      ': programming, outreach, and delivery costs.',
+    founder: ga.credibility || ga.bio || ''
+  };
+  ['impact','funding','founder'].forEach(f => {
+    document.getElementById('sugtext-' + f).textContent = compose[f];
+    const el = document.getElementById('field-' + f);
+    el.value = '';
+    el.classList.remove('ai-filled');
+    document.getElementById('suggest-' + f).classList.remove('on');
+  });
+}
+
+async function draftCustomField(key) {
+  const sug = document.getElementById('suggest-q-' + key);
+  const text = document.getElementById('drafttext-' + key);
+  sug.classList.add('on');
+  if (text.textContent) return; // already drafted
+  text.textContent = '✦ Drafting with AI…';
+  try {
+    const res = await api('/ai/draft-field', {
+      method: 'POST',
+      body: JSON.stringify({ application_id: CURRENT_APPLICATION.id, question_key: key }),
+    });
+    text.textContent = res.draft;
+  } catch (e) {
+    text.textContent = '';
+    sug.classList.remove('on');
+    showToast('AI draft failed — try again.');
+  }
+}
+
+function useCustomField(key) {
+  const el = document.getElementById('q-' + key);
+  const text = document.getElementById('drafttext-' + key).textContent;
+  if (el && text && !text.startsWith('✦')) { el.value = text; el.classList.add('ai-filled'); }
+  document.getElementById('suggest-q-' + key).classList.remove('on');
+}
+function dismissCustomSuggest(key) {
+  document.getElementById('suggest-q-' + key).classList.remove('on');
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+function closeModalOutside(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+// Generic-form AI helpers (suggestions composed from the user's own data)
+function autofillField(field) {
+  document.getElementById('suggest-' + field).classList.add('on');
+}
+function useField(field) {
+  const el = document.getElementById('field-' + field);
+  el.value = document.getElementById('sugtext-' + field).textContent;
+  el.classList.add('ai-filled');
+  document.getElementById('suggest-' + field).classList.remove('on');
+}
+function dismissSuggest(field) {
+  document.getElementById('suggest-' + field).classList.remove('on');
+}
+function autofillAll() {
+  if (document.getElementById('modal-custom-fields').style.display !== 'none') {
+    (CURRENT_GRANT.questions || []).forEach(q => draftCustomField(q.question_key));
+    return;
+  }
+  ['impact','funding','founder'].forEach(f => { autofillField(f); setTimeout(() => useField(f), 300); });
+}
+function clearAll() {
+  if (document.getElementById('modal-custom-fields').style.display !== 'none') {
+    (CURRENT_GRANT.questions || []).forEach(q => {
+      const el = document.getElementById('q-' + q.question_key);
+      if (el) { el.value = ''; el.classList.remove('ai-filled'); }
+      dismissCustomSuggest(q.question_key);
+    });
+    return;
+  }
+  ['impact','funding','founder'].forEach(f => {
+    const el = document.getElementById('field-' + f);
+    el.value = '';
+    el.classList.remove('ai-filled');
+    document.getElementById('suggest-' + f).classList.remove('on');
+  });
+}
+
+function collectAnswers() {
+  const answers = [];
+  if (document.getElementById('modal-custom-fields').style.display !== 'none') {
+    (CURRENT_GRANT.questions || []).forEach(q => {
+      const el = document.getElementById('q-' + q.question_key);
+      if (el && el.value.trim()) {
+        answers.push({ question_key: q.question_key, value: el.value.trim(), ai_drafted: el.classList.contains('ai-filled') });
+      }
+    });
+  } else {
+    ['impact','funding','founder'].forEach(f => {
+      const el = document.getElementById('field-' + f);
+      if (el && el.value.trim()) {
+        answers.push({ question_key: f, value: el.value.trim(), ai_drafted: el.classList.contains('ai-filled') });
+      }
+    });
+  }
+  return answers;
+}
+
+async function saveApplicationDraft() {
+  if (!CURRENT_APPLICATION) { closeModal(); return; }
+  const answers = collectAnswers();
+  try {
+    if (answers.length) {
+      await api('/applications/' + CURRENT_APPLICATION.id + '/answers', {
+        method: 'PATCH',
+        body: JSON.stringify({ answers }),
+      });
+    }
+    showToast('✓ Draft saved — find it on your dashboard.');
+    closeModal();
+    const res = await api('/applications/me');
+    MY_APPS = res.applications;
+    renderDashApps();
+  } catch (e) {
+    showToast('Could not save draft — ' + e.message);
+  }
+}
+
+async function submitApplication() {
+  if (!CURRENT_APPLICATION) return;
+  const answers = collectAnswers();
+  if (!answers.length) { showToast('Fill in at least one answer first.'); return; }
+  const btn = document.getElementById('modal-submit-btn');
+  btn.disabled = true;
+  try {
+    await api('/applications/' + CURRENT_APPLICATION.id + '/answers', {
+      method: 'PATCH',
+      body: JSON.stringify({ answers }),
+    });
+    if (CURRENT_GRANT.is_external) {
+      await api('/applications/' + CURRENT_APPLICATION.id + '/submit-external', {
+        method: 'POST',
+        body: JSON.stringify({ method: 'manual_copy' }),
+      });
+      showToast('✓ Recorded — submit the answers on the grant\'s own portal too.');
+    } else {
+      await api('/applications/' + CURRENT_APPLICATION.id + '/submit', { method: 'POST' });
+      showToast('✓ Application submitted!');
+    }
+    closeModal();
+    const res = await api('/applications/me');
+    MY_APPS = res.applications;
+    renderDashApps();
+    loadStats();
+  } catch (e) {
+    showToast('Could not submit — ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
 </script>
 </body>
 </html>

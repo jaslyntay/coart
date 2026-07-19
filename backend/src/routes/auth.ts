@@ -10,6 +10,12 @@ import { admin } from '../db.js';
 import { createProfileSchema } from '../schemas/index.js';
 
 export async function authRoutes(app: FastifyInstance) {
+  // GET /api/v1/auth/me — who am I and what role do I have?
+  // role === null means signed in but not yet onboarded.
+  app.get('/me', { preHandler: requireUser }, async (req) => {
+    return { id: req.user!.id, email: req.user!.email ?? null, role: req.user!.role };
+  });
+
   app.post('/profile', { preHandler: requireUser }, async (req, reply) => {
     const parsed = createProfileSchema.safeParse(req.body);
     if (!parsed.success) {

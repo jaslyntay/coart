@@ -210,8 +210,8 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   <div class="sidebar-logo"><div class="logo">coart<span class="logo-dot"></span></div></div>
   <div class="sidebar-org">
     <div class="org-badge">Backer Organisation</div>
-    <div class="org-name">Tiong Bahru Youth Network</div>
-    <div class="org-type">Community Organisation · Singapore</div>
+    <div class="org-name" id="sb-org-name">Loading…</div>
+    <div class="org-type" id="sb-org-type"></div>
   </div>
   <nav class="sidebar-nav">
     <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants">14</span></div>
@@ -221,9 +221,10 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="nav-item" onclick="showPage('orgprofile', this)"><span class="nav-icon">◉</span> Organisation Profile</div>
   </nav>
   <div class="sidebar-stats">
-    <div class="sidebar-stat"><span class="sidebar-stat-n">3</span><span class="sidebar-stat-l">Active Grants</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-n">14</span><span class="sidebar-stat-l">Total Applications</span></div>
-    <div class="sidebar-stat"><span class="sidebar-stat-n">6</span><span class="sidebar-stat-l">Projects Backed To Date</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-grants">—</span><span class="sidebar-stat-l">Active Grants</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-apps">—</span><span class="sidebar-stat-l">Total Applications</span></div>
+    <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-backed">—</span><span class="sidebar-stat-l">Projects Backed To Date</span></div>
+    <p style="margin-top:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a></p>
   </div>
 </div>
 
@@ -244,118 +245,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         <span class="lbl">Active Grants</span>
         <span class="lbl-link" onclick="showPage('postgrant', document.querySelector('[onclick*=postgrant]'))" style="cursor:pointer">+ Post A New Grant</span>
       </div>
-
-      <!-- GRANT 1 -->
-      <div class="grant-block">
-        <div class="grant-block-band"></div>
-        <div class="grant-block-header">
-          <div>
-            <div class="grant-ref">TBYN-CIG-2025 · Community Impact Grant</div>
-            <div class="grant-title">Community Impact Grant 2025</div>
-            <div class="grant-amount">Up to S$5,000 per project</div>
-            <div class="grant-meta">
-              <span class="tag tag-or">5 Applications</span>
-              <span class="tag">Deadline: 30 Jun 2025</span>
-              <span class="tag">Arts · Community · Environment</span>
-            </div>
-          </div>
-          <div class="grant-block-actions">
-            <button class="btn btn-out btn-sm">Edit Grant</button>
-            <button class="btn btn-sm">Close Grant</button>
-          </div>
-        </div>
-        <table class="applicant-table">
-          <thead>
-            <tr>
-              <th>Founder</th><th>Project</th><th>Focus</th><th>Status</th><th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">
-              <td><div class="applicant-name">Jaslyn Tay</div><div class="applicant-uni">NUS · Arts & Sustainability</div></td>
-              <td><div class="applicant-project">Unwoventhread</div><div class="applicant-project-sub">Community thrift & upcycling, Tiong Bahru</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Arts</span><span class="tag">Community</span></div></td>
-              <td><span class="status-badge status-shortlist">Shortlisted</span></td>
-              <td><div class="action-row"><button class="btn btn-or btn-sm" onclick="event.stopPropagation()">Back</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">View</button></div></td>
-            </tr>
-            <tr onclick="openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">
-              <td><div class="applicant-name">Ravi Pillai</div><div class="applicant-uni">SMU · Social Enterprise</div></td>
-              <td><div class="applicant-project">Craft Memory Archive</div><div class="applicant-project-sub">Oral histories from traditional craftsmen</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Heritage</span></div></td>
-              <td><span class="status-badge status-review">In Review</span></td>
-              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">View</button></div></td>
-            </tr>
-            <tr onclick="openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">
-              <td><div class="applicant-name">Aisha Che</div><div class="applicant-uni">LASALLE · Design</div></td>
-              <td><div class="applicant-project">Access Arts</div><div class="applicant-project-sub">Arts education for differently-abled youth</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Arts</span><span class="tag">Education</span></div></td>
-              <td><span class="status-badge status-new">New</span></td>
-              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation();openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">View</button></div></td>
-            </tr>
-            <tr onclick="openFounderModal('Yi Wen Lim','NTU · Environmental Science','Refill Network SG','Zero-waste refill network for wet markets','Environment, Food')">
-              <td><div class="applicant-name">Yi Wen Lim</div><div class="applicant-uni">NTU · Environmental Science</div></td>
-              <td><div class="applicant-project">Refill Network SG</div><div class="applicant-project-sub">Zero-waste refill network for wet markets</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Environment</span><span class="tag">Food</span></div></td>
-              <td><span class="status-badge status-new">New</span></td>
-              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
-            </tr>
-            <tr onclick="openFounderModal('Ben Ng','SUTD · Architecture','Void Deck Gardens','Modular community gardens for HDB estates','Community, Environment')">
-              <td><div class="applicant-name">Ben Ng</div><div class="applicant-uni">SUTD · Architecture</div></td>
-              <td><div class="applicant-project">Void Deck Gardens</div><div class="applicant-project-sub">Modular community gardens for HDB estates</div></td>
-              <td><div class="applicant-tags"><span class="tag">Community</span><span class="tag">Environment</span></div></td>
-              <td><span class="status-badge status-review">In Review</span></td>
-              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- GRANT 2 -->
-      <div class="grant-block">
-        <div class="grant-block-band-dim"></div>
-        <div class="grant-block-header">
-          <div>
-            <div class="grant-ref">TBYN-YSS-2025 · Youth Starter Stipend</div>
-            <div class="grant-title">Youth Starter Stipend</div>
-            <div class="grant-amount">S$1,500 flat stipend</div>
-            <div class="grant-meta">
-              <span class="tag tag-or">9 Applications</span>
-              <span class="tag">Deadline: 15 May 2025</span>
-              <span class="tag">Open Category</span>
-            </div>
-          </div>
-          <div class="grant-block-actions">
-            <button class="btn btn-out btn-sm">Edit Grant</button>
-            <button class="btn btn-sm" onclick="showPage('grants',document.querySelector('[onclick*=grants]'))">View All 9 →</button>
-          </div>
-        </div>
-        <table class="applicant-table">
-          <thead>
-            <tr><th>Founder</th><th>Project</th><th>Focus</th><th>Status</th><th>Actions</th></tr>
-          </thead>
-          <tbody>
-            <tr onclick="openFounderModal('Siti Rahimah','NIE · Early Childhood','Cerita Kita','Bilingual storytelling for migrant children','Education, Community')">
-              <td><div class="applicant-name">Siti Rahimah</div><div class="applicant-uni">NIE · Early Childhood</div></td>
-              <td><div class="applicant-project">Cerita Kita</div><div class="applicant-project-sub">Bilingual storytelling for migrant children</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Education</span><span class="tag">Community</span></div></td>
-              <td><span class="status-badge status-shortlist">Shortlisted</span></td>
-              <td><div class="action-row"><button class="btn btn-or btn-sm" onclick="event.stopPropagation()">Back</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
-            </tr>
-            <tr onclick="openFounderModal('Kai Lin Tan','NUS · Computer Science','Neighbours Online','Connecting elderly residents with youth volunteers','Tech, Community')">
-              <td><div class="applicant-name">Kai Lin Tan</div><div class="applicant-uni">NUS · Computer Science</div></td>
-              <td><div class="applicant-project">Neighbours Online</div><div class="applicant-project-sub">Connecting elderly residents with youth volunteers</div></td>
-              <td><div class="applicant-tags"><span class="tag tag-dk">Tech</span><span class="tag">Community</span></div></td>
-              <td><span class="status-badge status-new">New</span></td>
-              <td><div class="action-row"><button class="btn btn-sm" onclick="event.stopPropagation()">Shortlist</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">View</button></div></td>
-            </tr>
-            <tr>
-              <td colspan="5" style="text-align:center;padding:14px 22px;">
-                <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;cursor:pointer;">+ 7 More Applications — View All →</span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <div id="grants-container"></div>
     </div>
   </div>
 
@@ -364,116 +254,21 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="search-bar">
       <div class="search-box">
         <span class="search-icon">⌕</span>
-        <input class="search-input" placeholder="Search founders, projects, causes…" readonly/>
+        <input class="search-input" id="discover-search" placeholder="Search founders, projects, causes…" oninput="renderDiscover()"/>
       </div>
-      <div class="filter-bar">
-        <div class="pill on">All</div>
-        <div class="pill">Arts</div>
-        <div class="pill">Environment</div>
-        <div class="pill">Community</div>
-        <div class="pill">Education</div>
-        <div class="pill">Food</div>
-        <div class="pill">Heritage</div>
+      <div class="filter-bar" id="discover-filters">
+        <div class="pill on" data-filter="all">All</div>
+        <div class="pill" data-filter="Arts">Arts</div>
+        <div class="pill" data-filter="Environment">Environment</div>
+        <div class="pill" data-filter="Community">Community</div>
+        <div class="pill" data-filter="Education">Education</div>
+        <div class="pill" data-filter="Food">Food</div>
+        <div class="pill" data-filter="Heritage">Heritage</div>
       </div>
     </div>
     <div class="content">
-      <div class="section-head"><span class="lbl">Featured This Week</span></div>
-      <div class="featured-card">
-        <div class="featured-band"></div>
-        <div class="featured-left">
-          <div class="featured-kicker">Featured Founder</div>
-          <div class="featured-meta">
-            <div class="featured-avi">Jt</div>
-            <div>
-              <div class="featured-name">Jaslyn Tay</div>
-              <div class="featured-uni">NUS · Arts & Sustainability</div>
-            </div>
-          </div>
-          <p class="featured-bio">Building community-led creative spaces that reconnect Singapore's youth with heritage craft and sustainable living. Two active projects, open to backers.</p>
-          <div class="tags"><span class="tag tag-or">Arts</span><span class="tag tag-or">Sustainability</span><span class="tag tag-dk">Open To Backers</span></div>
-          <div class="btn-row">
-            <button class="btn btn-or" onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">Back This Founder</button>
-            <button class="btn btn-out" onclick="openFounderModal('Jaslyn Tay','NUS · Arts & Sustainability','Unwoventhread','Community thrift & upcycling, Tiong Bahru','Arts, Sustainability')">View Full Profile</button>
-            <button class="btn btn-out">Save</button>
-          </div>
-        </div>
-        <div class="featured-right">
-          <div class="preview-lbl">Active Project</div>
-          <div class="project-preview">
-            <div class="preview-title">Unwoventhread</div>
-            <p class="preview-sub">A community thrift and upcycling market rooted in Tiong Bahru. Already backed by PAYM.</p>
-          </div>
-          <div class="preview-lbl" style="margin-bottom:8px">Draft Project</div>
-          <div class="project-preview">
-            <div class="preview-title">Hawker Harvest</div>
-            <p class="preview-sub">Connecting hawker stalls with food rescue NGOs to redistribute unsold food across Singapore.</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="section-head"><span class="lbl">Browse All Founders</span><span class="lbl-link">128 Founders →</span></div>
-      <div class="founder-grid">
-        <div class="founder-card" onclick="openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage, Community')">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Rp</div><div><div class="fc-name">Ravi Pillai</div><div class="fc-uni">SMU · Social Enterprise</div></div></div>
-            <p class="fc-bio">Digitising oral histories from Singapore's last generation of traditional craftsmen.</p>
-            <div class="tags"><span class="tag tag-dk">Heritage</span><span class="tag">Community</span><span class="tag tag-or">Open To Backers</span></div>
-            <div class="fc-meta"><span>2</span> Projects · <span>1</span> Active</div>
-            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation();openFounderModal('Ravi Pillai','SMU · Social Enterprise','Craft Memory Archive','Oral histories from traditional craftsmen','Heritage')">View Profile</button><button class="btn btn-or btn-sm" onclick="event.stopPropagation();openInvite('Ravi Pillai')">✦ Invite to Apply</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
-          </div>
-        </div>
-        <div class="founder-card" onclick="openFounderModal('Yi Wen Lim','NTU · Environmental Science','Refill Network SG','Zero-waste refill network for wet markets','Environment, Food')">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Yw</div><div><div class="fc-name">Yi Wen Lim</div><div class="fc-uni">NTU · Environmental Science</div></div></div>
-            <p class="fc-bio">Building a zero-waste refill network for wet markets across Singapore.</p>
-            <div class="tags"><span class="tag tag-dk">Environment</span><span class="tag">Food</span><span class="tag tag-or">Seeking Grant Match</span></div>
-            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
-            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation()">View Profile</button><button class="btn btn-or btn-sm" onclick="event.stopPropagation();openInvite('Yi Wen Lim')">✦ Invite to Apply</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
-          </div>
-        </div>
-        <div class="founder-card" onclick="openFounderModal('Aisha Che','LASALLE · Design','Access Arts','Arts education for differently-abled youth','Arts, Education')">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Ac</div><div><div class="fc-name">Aisha Che</div><div class="fc-uni">LASALLE · Design</div></div></div>
-            <p class="fc-bio">Creating accessible arts education for differently-abled youth in Geylang.</p>
-            <div class="tags"><span class="tag tag-dk">Arts</span><span class="tag">Education</span><span class="tag tag-or">Open To Backers</span></div>
-            <div class="fc-meta"><span>1</span> Project · <span>1</span> Draft</div>
-            <div class="btn-row"><button class="btn btn-sm" onclick="event.stopPropagation()">View Profile</button><button class="btn btn-or btn-sm" onclick="event.stopPropagation();openInvite('Aisha Che')">✦ Invite to Apply</button><button class="btn btn-out btn-sm" onclick="event.stopPropagation()">Save</button></div>
-          </div>
-        </div>
-        <div class="founder-card">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Bn</div><div><div class="fc-name">Ben Ng</div><div class="fc-uni">SUTD · Architecture</div></div></div>
-            <p class="fc-bio">Designing modular community gardens for HDB void decks to build social cohesion.</p>
-            <div class="tags"><span class="tag tag-dk">Community</span><span class="tag">Environment</span><span class="tag tag-or">Open To Backers</span></div>
-            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
-            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-or btn-sm" onclick="openInvite('Ben Ng')">✦ Invite to Apply</button><button class="btn btn-out btn-sm">Save</button></div>
-          </div>
-        </div>
-        <div class="founder-card">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Sr</div><div><div class="fc-name">Siti Rahimah</div><div class="fc-uni">NIE · Early Childhood</div></div></div>
-            <p class="fc-bio">Running bilingual storytelling workshops for migrant children navigating dual cultural identities.</p>
-            <div class="tags"><span class="tag tag-dk">Education</span><span class="tag">Community</span></div>
-            <div class="fc-meta"><span>2</span> Projects · <span>2</span> Active</div>
-            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-or btn-sm" onclick="openInvite('Siti Rahimah')">✦ Invite to Apply</button><button class="btn btn-out btn-sm">Save</button></div>
-          </div>
-        </div>
-        <div class="founder-card">
-          <div class="founder-card-band"></div>
-          <div class="founder-card-inner">
-            <div class="fc-top"><div class="fc-avi">Kl</div><div><div class="fc-name">Kai Lin Tan</div><div class="fc-uni">NUS · Computer Science</div></div></div>
-            <p class="fc-bio">Building a platform connecting elderly residents with youth volunteers for tech and daily tasks.</p>
-            <div class="tags"><span class="tag tag-dk">Tech</span><span class="tag">Community</span><span class="tag tag-or">Open To Backers</span></div>
-            <div class="fc-meta"><span>1</span> Project · <span>1</span> Active</div>
-            <div class="btn-row"><button class="btn btn-sm">View Profile</button><button class="btn btn-or btn-sm" onclick="openInvite('Kai Lin Tan')">✦ Invite to Apply</button><button class="btn btn-out btn-sm">Save</button></div>
-          </div>
-        </div>
-      </div>
+      <div class="section-head"><span class="lbl">Browse All Founders</span><span class="lbl-link" id="founders-count"></span></div>
+      <div class="founder-grid" id="founder-grid"></div>
     </div>
   </div>
 
@@ -481,54 +276,38 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   <div class="page" id="page-backed">
     <div class="content">
       <div class="section-head" style="margin-bottom:20px"><span class="lbl">Projects We've Backed</span></div>
-      <div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-          <div><div class="backed-card-title">Unwoventhread</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.05em;margin-top:2px;">Jaslyn Tay · NUS</div></div>
-          <span class="tag tag-or">Active</span>
-        </div>
-        <p class="backed-card-sub">A community thrift and upcycling market rooted in Tiong Bahru. Backed via Community Impact Grant, Oct 2025.</p>
-        <div class="btn-row"><button class="btn btn-out btn-sm">View Project</button><button class="btn btn-out btn-sm">View Founder</button></div>
-      </div></div>
-      <div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">
-          <div><div class="backed-card-title">Cerita Kita</div><div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.05em;margin-top:2px;">Siti Rahimah · NIE</div></div>
-          <span class="tag tag-or">Active</span>
-        </div>
-        <p class="backed-card-sub">Bilingual storytelling workshops for migrant children. Backed via Youth Starter Stipend, Jan 2025.</p>
-        <div class="btn-row"><button class="btn btn-out btn-sm">View Project</button><button class="btn btn-out btn-sm">View Founder</button></div>
-      </div></div>
+      <div id="backed-list"></div>
     </div>
   </div>
 
   <!-- ═══ PAGE: ORG PROFILE ═══ -->
   <div class="page" id="page-orgprofile">
     <div class="content">
-      <div class="section-head" style="margin-bottom:20px"><span class="lbl">Organisation Profile</span><button class="btn btn-or">Save Changes</button></div>
+      <div class="section-head" style="margin-bottom:20px"><span class="lbl">Organisation Profile</span><button class="btn btn-out btn-sm" onclick="openOrgEdit()">Edit</button></div>
       <div class="profile-section">
-        <div class="profile-section-head"><span class="profile-section-title">Organisation Info</span><button class="btn btn-out btn-sm">Edit</button></div>
+        <div class="profile-section-head"><span class="profile-section-title">Organisation Info</span></div>
         <div class="profile-section-body">
-          <div class="profile-field"><div class="profile-field-label">Organisation Name</div><div class="profile-field-value">Tiong Bahru Youth Network</div></div>
-          <div class="profile-field"><div class="profile-field-label">Type</div><div class="profile-field-value">Community Organisation</div></div>
-          <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value">Tiong Bahru, Singapore</div></div>
-          <div class="profile-field"><div class="profile-field-label">Focus Areas</div><div class="tags" style="margin-bottom:0"><span class="tag tag-dk">Arts</span><span class="tag tag-dk">Community</span><span class="tag tag-dk">Sustainability</span></div></div>
+          <div class="profile-field"><div class="profile-field-label">Organisation Name</div><div class="profile-field-value" id="op-name">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Type</div><div class="profile-field-value" id="op-type">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value" id="op-location">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Focus Areas</div><div class="tags" style="margin-bottom:0" id="op-focus"></div></div>
         </div>
       </div>
       <div class="profile-section">
-        <div class="profile-section-head"><span class="profile-section-title">About</span><button class="btn btn-out btn-sm">Edit</button></div>
+        <div class="profile-section-head"><span class="profile-section-title">About</span></div>
         <div class="profile-section-body">
-          <div class="profile-field"><div class="profile-field-label">Description</div><div class="profile-field-value">We support youth-led projects that strengthen community bonds and promote sustainable living across the Tiong Bahru precinct and beyond.</div></div>
+          <div class="profile-field"><div class="profile-field-label">Description</div><div class="profile-field-value" id="op-description">—</div></div>
         </div>
       </div>
       <div class="profile-section">
-        <div class="profile-section-head"><span class="profile-section-title">Grant History</span></div>
+        <div class="profile-section-head"><span class="profile-section-title">Activity</span></div>
         <div class="profile-section-body">
-          <div class="profile-field"><div class="profile-field-label">Grants Posted</div><div class="profile-field-value">3 active · 4 closed</div></div>
-          <div class="profile-field"><div class="profile-field-label">Projects Backed</div><div class="profile-field-value">6 total since 2023</div></div>
+          <div class="profile-field"><div class="profile-field-label">Grants Posted</div><div class="profile-field-value" id="op-grants">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Projects Backed</div><div class="profile-field-value" id="op-backed">—</div></div>
         </div>
       </div>
     </div>
   </div>
-
 
   <!-- ═══ PAGE: POST A GRANT ═══ -->
   <div class="page" id="page-postgrant">
@@ -550,13 +329,13 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Grant Name <span class="pg-req">*</span></div>
-              <input class="pg-input" type="text" placeholder="e.g. Community Impact Grant 2026" required/>
+              <input class="pg-input" id="pg-name" type="text" placeholder="e.g. Community Impact Grant 2026" required/>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div class="pg-field">
                 <div class="pg-label">Grant Type <span class="pg-req">*</span></div>
-                <select class="pg-input" required>
+                <select class="pg-input" id="pg-type" required>
                   <option value="">Select type...</option>
                   <option>Cash Grant</option>
                   <option>Mentorship Programme</option>
@@ -568,7 +347,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Value Per Recipient <span class="pg-req">*</span></div>
-                <input class="pg-input" type="text" placeholder="e.g. Up to S$5,000 or describe if non-monetary" required/>
+                <input class="pg-input" id="pg-value" type="text" placeholder="e.g. Up to S$5,000 or describe if non-monetary" required/>
               </div>
             </div>
 
@@ -584,17 +363,17 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Application Opens <span class="pg-req">*</span></div>
-                <input class="pg-input" type="date" required/>
+                <input class="pg-input" id="pg-opens" type="date" required/>
               </div>
               <div class="pg-field">
                 <div class="pg-label">Application Closes <span class="pg-req">*</span></div>
-                <input class="pg-input" type="date" required/>
+                <input class="pg-input" id="pg-closes" type="date" required/>
               </div>
             </div>
 
             <div class="pg-field">
               <div class="pg-label">How Often Do You Run This?</div>
-              <select class="pg-input">
+              <select class="pg-input" id="pg-frequency">
                 <option>Annually</option>
                 <option>Every 6 months</option>
                 <option>Quarterly</option>
@@ -617,7 +396,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div class="pg-field">
                 <div class="pg-label">Age Range</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-age">
                   <option>15–18</option>
                   <option>18–21</option>
                   <option>21–25</option>
@@ -626,7 +405,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Project Stage</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-stage">
                   <option>Any stage welcome</option>
                   <option>Idea stage only</option>
                   <option>Planning phase and above</option>
@@ -639,7 +418,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div class="pg-field">
                 <div class="pg-label">Singapore Citizen / PR Required?</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-citizen">
                   <option>Yes — citizens and PRs</option>
                   <option>Yes — citizens only</option>
                   <option selected>No — open to all residents</option>
@@ -647,7 +426,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Team or Solo?</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-team">
                   <option selected>Both welcome</option>
                   <option>Solo founders only</option>
                   <option>Teams only</option>
@@ -672,7 +451,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Anything you are NOT looking to fund?</div>
-              <input class="pg-input" type="text" placeholder="e.g. Commercial for-profit businesses, projects outside Singapore..."/>
+              <input class="pg-input" id="pg-exclusions" type="text" placeholder="e.g. Commercial for-profit businesses, projects outside Singapore..."/>
             </div>
 
           </div>
@@ -688,18 +467,18 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Describe what you are offering <span class="pg-req">*</span></div>
-              <textarea class="pg-input" rows="3" placeholder="Founders will read this on your grant listing. Be specific about what support looks like — funding, mentorship, network access, etc." required style="min-height:80px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-offering" rows="3" placeholder="Founders will read this on your grant listing. Be specific about what support looks like — funding, mentorship, network access, etc." required style="min-height:80px;resize:vertical;"></textarea>
             </div>
 
             <div class="pg-field">
               <div class="pg-label">What do you expect from funded founders?</div>
-              <textarea class="pg-input" rows="2" placeholder="e.g. Monthly progress updates, participation in community events, public acknowledgement..." style="min-height:64px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-expectations" rows="2" placeholder="e.g. Monthly progress updates, participation in community events, public acknowledgement..." style="min-height:64px;resize:vertical;"></textarea>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
               <div class="pg-field">
                 <div class="pg-label">Engagement Style</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-engagement">
                   <option>Regular scheduled check-ins</option>
                   <option>On-demand — founders reach out when needed</option>
                   <option>Structured programme with milestones</option>
@@ -708,7 +487,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Response Time</div>
-                <select class="pg-input">
+                <select class="pg-input" id="pg-response">
                   <option>Within 24 hours</option>
                   <option selected>Within 3 days</option>
                   <option>Within a week</option>
@@ -730,7 +509,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">What should founders submit? <span class="pg-req">*</span></div>
-              <textarea class="pg-input" rows="2" placeholder="e.g. A completed coart application form answering 4 questions about their project, problem, target audience, and funding use." required style="min-height:64px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-instructions" rows="2" placeholder="e.g. A completed coart application form answering 4 questions about their project, problem, target audience, and funding use." required style="min-height:64px;resize:vertical;"></textarea>
             </div>
 
             <div class="pg-field">
@@ -743,7 +522,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div id="pg-pitch-details" style="display:none;background:var(--surface);border:1px solid var(--border);padding:14px 16px;">
               <div class="pg-label" style="margin-bottom:8px;">Pitch / interview format</div>
-              <select class="pg-input" style="margin-bottom:10px;">
+              <select class="pg-input" id="pg-pitch-format" style="margin-bottom:10px;">
                 <option>Online panel interview</option>
                 <option>Live pitch presentation</option>
                 <option>1-on-1 interview</option>
@@ -751,12 +530,12 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
                 <option>In-person</option>
               </select>
               <div class="pg-label" style="margin-bottom:6px;">What should founders prepare?</div>
-              <input class="pg-input" type="text" placeholder="e.g. A 5-minute pitch covering problem, solution, team, and ask"/>
+              <input class="pg-input" id="pg-pitch-prep" type="text" placeholder="e.g. A 5-minute pitch covering problem, solution, team, and ask"/>
             </div>
 
             <div class="pg-field">
               <div class="pg-label">How long after closing will decisions be made?</div>
-              <select class="pg-input">
+              <select class="pg-input" id="pg-decision">
                 <option>Within 2 weeks</option>
                 <option selected>Within 4 weeks</option>
                 <option>Within 6 weeks</option>
@@ -766,7 +545,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">How will successful founders be notified?</div>
-              <select class="pg-input">
+              <select class="pg-input" id="pg-notify">
                 <option selected>Through the coart platform</option>
                 <option>Email</option>
                 <option>Public announcement</option>
@@ -780,8 +559,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         <!-- SUBMIT -->
         <div style="display:flex;gap:10px;justify-content:flex-end;padding-bottom:40px;" id="pg-submit-row">
           <button type="button" class="btn btn-out" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">Cancel</button>
-          <button type="button" class="btn btn-out" onclick="saveGrantDraft()">Save Draft</button>
-          <button type="submit" class="btn btn-or">Publish Grant</button>
+          <button type="submit" class="btn btn-or" id="pg-publish-btn">Publish Grant</button>
         </div>
 
         <!-- SUCCESS STATE -->
@@ -843,6 +621,42 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   </div>
 </div>
 
+<!-- ═══ ORG EDIT MODAL ═══ -->
+<div class="modal-overlay" id="orgedit-overlay" onclick="if(event.target===this){closeOrgEdit()}">
+  <div class="modal" style="width:520px;">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">Organisation Profile</div>
+        <div class="modal-sub">Shown to founders on your grants</div>
+      </div>
+      <button class="modal-close" onclick="closeOrgEdit()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-section" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="pg-field"><div class="pg-label">Organisation name</div><input class="pg-input" id="oe-name"/></div>
+        <div class="pg-field"><div class="pg-label">Type</div>
+          <select class="pg-input" id="oe-type">
+            <option value="community">Community</option><option value="government">Government</option>
+            <option value="corporate">Corporate</option><option value="foundation">Foundation</option>
+            <option value="accelerator">Accelerator</option><option value="other">Other</option>
+          </select>
+        </div>
+        <div class="pg-field"><div class="pg-label">Location</div><input class="pg-input" id="oe-location"/></div>
+        <div class="pg-field"><div class="pg-label">Description</div><textarea class="pg-input" id="oe-description" rows="3" style="min-height:72px;resize:vertical;"></textarea></div>
+        <div class="pg-field"><div class="pg-label">Focus areas (comma separated)</div><input class="pg-input" id="oe-focus" placeholder="Arts, Community"/></div>
+      </div>
+      <div id="oe-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;margin-top:10px;"></div>
+    </div>
+    <div class="modal-footer">
+      <div></div>
+      <div style="display:flex;gap:8px;">
+        <button class="btn btn-out" onclick="closeOrgEdit()">Cancel</button>
+        <button class="btn btn-or" onclick="saveOrgEdit()">Save →</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ TOAST ═══ -->
 <div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 22px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;z-index:200;box-shadow:0 8px 24px rgba(30,12,0,0.25);"></div>
 
@@ -880,57 +694,25 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
             <div style="font-size:12px;color:var(--muted);line-height:1.6" id="modal-about">Loading...</div>
           </div>
 
-          <div style="margin-bottom:16px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Active Project</div>
+          <div style="margin-bottom:16px" id="modal-project-box">
+            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Project</div>
             <div style="background:var(--card);border:1px solid var(--border);padding:12px 14px">
-              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px" id="modal-project">Project</div>
-              <div style="font-size:11px;color:var(--muted);line-height:1.5" id="modal-project-sub">Description</div>
+              <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px" id="modal-project"></div>
+              <div style="font-size:11px;color:var(--muted);line-height:1.5" id="modal-project-sub"></div>
             </div>
           </div>
 
-          <div>
+          <div id="modal-applied-box" style="display:none;">
             <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Applied To</div>
             <div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:10px 12px">
-              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:.06em;margin-bottom:2px" id="modal-grant-name">Grant Name</div>
-              <div style="font-size:11px;color:var(--muted)" id="modal-grant-amount">Amount</div>
+              <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--orange);letter-spacing:.06em;margin-bottom:2px" id="modal-grant-name"></div>
+              <div style="font-size:11px;color:var(--muted)" id="modal-grant-amount"></div>
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: FULL APPLICATION -->
-        <div style="padding:22px;overflow-y:auto">
-          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Application Answers</div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Project Description</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-1">Loading...</div>
-          </div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Problem Statement</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-2">Loading...</div>
-          </div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Target Beneficiaries</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-3">Loading...</div>
-          </div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Intended Outcomes</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-4">Loading...</div>
-          </div>
-
-          <div style="margin-bottom:20px">
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">How Funding Will Be Used</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-5">Loading...</div>
-          </div>
-
-          <div>
-            <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">Why This Founder</div>
-            <div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px" id="modal-ans-6">Loading...</div>
-          </div>
-        </div>
+        <!-- RIGHT: dynamic detail -->
+        <div style="padding:22px;overflow-y:auto" id="modal-right"></div>
 
       </div>
     </div>
@@ -991,268 +773,551 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+// ───── BACKEND API + AUTH (same pattern as founder.html) ─────
+const SUPABASE_URL = 'https://vbnztpgnnkhpoxxkchkd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZibnp0cGdubmtocG94eGtjaGtkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMwMTQyNjAsImV4cCI6MjA5ODU5MDI2MH0.iU4YTlsaeI8XncdP0QIWQqPOXwEUJ0XfvTrUyR4crTE';
+const sbAuth = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const IS_LOCAL_DEV = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE_URL = IS_LOCAL_DEV ? 'http://localhost:3001/api/v1' : '/api/v1';
+
+async function authHeaders() {
+  const { data } = await sbAuth.auth.getSession();
+  if (data.session) return { Authorization: 'Bearer ' + data.session.access_token };
+  return {};
+}
+
+async function api(path, opts = {}) {
+  const r = await fetch(API_BASE_URL + path, {
+    ...opts,
+    headers: { ...(opts.body ? { 'Content-Type': 'application/json' } : {}), ...(await authHeaders()), ...(opts.headers || {}) },
+  });
+  if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
+  return r.status === 204 ? null : r.json();
+}
+
+async function signOut() {
+  try { await sbAuth.auth.signOut(); } catch (e) {}
+  window.location.href = 'index.html';
+}
+
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
 const pageIds = ['grants','discover','backed','orgprofile','postgrant'];
 const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', backed:'Backed Projects', orgprofile:'Organisation Profile', postgrant:'Post A Grant' };
 
 function showPage(id, el) {
   pageIds.forEach(p => document.getElementById('page-' + p).classList.toggle('on', p === id));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('on'));
+  document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('on'));
   if (el) el.classList.add('on');
   document.getElementById('topbar-title').textContent = pageTitles[id] || '';
   window.scrollTo(0, 0);
 }
 
-const founderData = {
-  'Jaslyn Tay': {
-    avi: 'Jt', uni: 'NUS · Arts & Sustainability',
-    about: 'Final-year Arts & Sustainability student at NUS. Founded Unwoventhread in 2024 after organising community pop-ups in Tiong Bahru. Passionate about making sustainable living accessible and fun for young people.',
-    tags: 'Arts, Sustainability, Community',
-    project: 'Unwoventhread',
-    projectSub: 'Community thrift & upcycling market, Tiong Bahru',
-    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
-    answers: {
-      1: 'Unwoventhread is a community-led upcycling and thrift market based in Tiong Bahru. The project creates accessible spaces where youth engage with sustainable fashion, heritage craft, and textile reuse — reducing waste while building intergenerational community connections.',
-      2: 'Singapore&#39;s youth are increasingly disconnected from sustainable consumption habits. Fast fashion contributes significantly to the 168,000 tonnes of textile waste disposed of annually. Young people lack accessible, affordable spaces to learn repair, reuse, and upcycling skills.',
-      3: 'Primary beneficiaries: youth aged 15–25 in Tiong Bahru and surrounding estates. Secondary beneficiaries: participating artisans and craftspeople, and the broader community through reduced textile waste.',
-      4: 'Within 6 months: 300+ youth participants across monthly market events; measurable reduction in textile waste disposal among participants; 20+ artisan partnerships; a self-sustaining community hub for sustainable fashion education.',
-      5: 'Venue hire and logistics for six market events (40%); artisan stipends to support participating craftspeople (35%); community outreach and communications (25%). Total requested: S$5,000.',
-      6: 'As a final-year Arts & Sustainability student at NUS, I have three years of study at the intersection of cultural heritage and environmental practice. I have organised three successful markets with 300+ attendees and built relationships with 20+ local artisans and five NGO partners including PAYM.'
-    }
-  },
-  'Ravi Pillai': {
-    avi: 'Rp', uni: 'SMU · Social Enterprise',
-    about: 'Third-year Social Enterprise student at SMU. Has been documenting traditional craftsmen in Singapore since 2023. Believes oral history is one of the most urgent preservation challenges facing the country.',
-    tags: 'Heritage, Community',
-    project: 'Craft Memory Archive',
-    projectSub: 'Oral histories from Singapore&#39;s traditional craftsmen',
-    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
-    answers: {
-      1: 'Craft Memory Archive is a digital oral history project documenting the lives, techniques, and stories of Singapore&#39;s last generation of traditional craftsmen — cobblers, rattan weavers, Chinese calligraphers, and metalworkers — before their knowledge is lost.',
-      2: 'Singapore&#39;s traditional craft trades are disappearing rapidly. Many master craftsmen are in their 70s and 80s with no apprentices and no documented record of their techniques. Once they pass, their knowledge is irretrievably lost.',
-      3: 'Primary: Singapore&#39;s traditional craftsmen aged 60+, who gain recognition and a lasting legacy. Secondary: youth and students who will engage with the archive through school partnerships, and the broader public through a public-facing digital portal.',
-      4: 'Within 6 months: 20+ craftsmen interviewed and documented; a publicly accessible archive launched at craftmemory.sg; school partnership with at least 2 secondary schools; 1,000+ archive visits.',
-      5: 'Videography equipment and editing (35%); archivists and translators for multi-dialect interviews (40%); web development for the public archive (15%); outreach and community events (10%). Total: S$5,000.',
-      6: 'I grew up in a family of craftspeople and speak Hokkien and Tamil, giving me direct access to communities that are rarely documented. I have already conducted 5 pilot interviews as proof of concept and have partnerships with the National Heritage Board and two community centres.'
-    }
-  },
-  'Aisha Che': {
-    avi: 'Ac', uni: 'LASALLE · Design',
-    about: 'Final-year Design student at LASALLE. Has been volunteering with disability arts organisations since her first year. Believes the arts should be radically accessible — not an afterthought.',
-    tags: 'Arts, Education',
-    project: 'Access Arts',
-    projectSub: 'Arts education for differently-abled youth in Geylang',
-    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
-    answers: {
-      1: 'Access Arts delivers hands-on arts education workshops for differently-abled youth aged 10–21 in Geylang, designed from the ground up for participants with physical, intellectual, and sensory disabilities. Every activity is co-designed with disability advocates.',
-      2: 'Arts education in Singapore is largely inaccessible to differently-abled youth. Most programmes lack adaptive equipment, trained facilitators, or sensory-friendly environments. Differently-abled children are frequently excluded from the creative experiences their peers take for granted.',
-      3: 'Differently-abled youth aged 10–21 in Geylang and the east, primarily from lower-income families. Secondary beneficiaries: parents and caregivers who gain respite time and community connection.',
-      4: 'Within 6 months: 80 differently-abled youth served across 12 workshop sessions; 3 trained adaptive arts facilitators; a free resource kit shared with 5 other disability organisations; 1 public showcase of participant work.',
-      5: 'Adaptive arts materials and equipment (40%); trained facilitators with disability experience (35%); venue at an accessible community space (15%); documentation and resource kit production (10%). Total: S$5,000.',
-      6: 'I have 3 years of experience volunteering with Cerebral Palsy Alliance Singapore and Very Special Arts Singapore. My design thesis was on universal design principles for arts spaces. This project grows directly from that research and my existing relationships with the disability community.'
-    }
-  },
-  'Yi Wen Lim': {
-    avi: 'Yw', uni: 'NTU · Environmental Science',
-    about: 'Second-year Environmental Science student at NTU. Has been studying zero-waste systems in Southeast Asia. Wants to make sustainable living the default, not the exception.',
-    tags: 'Environment, Food',
-    project: 'Refill Network SG',
-    projectSub: 'Zero-waste refill network for wet markets',
-    grant: 'Community Impact Grant 2025', grantAmount: 'Up to S$5,000',
-    answers: {
-      1: 'Refill Network SG pilots a zero-waste bulk refill system in two Singapore wet markets — Bedok and Clementi — allowing shoppers to refill common household products such as cooking oil, detergent, and rice in their own containers.',
-      2: 'Single-use plastic packaging from wet market purchases is one of the most persistent sources of household plastic waste in Singapore. Most shoppers would reduce packaging if given a convenient, affordable alternative.',
-      3: 'Wet market shoppers in Bedok and Clementi, particularly lower-income households who shop daily and generate the most packaging waste per capita.',
-      4: 'Within 6 months: 2 refill stations operational; 500+ repeat users; estimated 200kg of plastic packaging avoided; learnings published as a replication guide for other markets.',
-      5: 'Refill station equipment and installation (50%); participating stall-holder incentives (20%); communications and behaviour change campaign (20%); monitoring and evaluation (10%). Total: S$5,000.',
-      6: 'I have spent two semesters studying zero-waste wet market models in Thailand and Malaysia. I have existing relationships with the Bedok Interchange Hawker Centre management and three stall-holders who have agreed to participate in the pilot.'
-    }
-  },
-  'Ben Ng': {
-    avi: 'Bn', uni: 'SUTD · Architecture',
-    about: 'Third-year Architecture student at SUTD. Specialises in community-centred design. Convinced that HDB void decks are the most underused community asset in Singapore.',
-    tags: 'Community, Environment',
-    project: 'Void Deck Gardens',
-    projectSub: 'Modular community gardens for HDB void decks',
-    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
-    answers: {
-      1: 'Void Deck Gardens installs modular, low-maintenance growing systems in HDB void decks, designed to be managed collectively by residents. Each unit produces herbs and vegetables while creating a gathering point for neighbourly connection.',
-      2: 'HDB void decks are largely sterile, underused spaces. Simultaneously, urban farming interest in Singapore is growing but most residents lack space or access. There is no programme connecting these two gaps at the estate level.',
-      3: 'HDB residents in mature estates, particularly elderly residents who benefit from light activity and social connection, and families with children who gain access to food growing education.',
-      4: 'Within 6 months: 3 void deck garden installations across 2 HDB estates; 60+ regular participating residents; a management model tested and documented for replication.',
-      5: 'Modular planter fabrication and materials (60%); soil, seeds, and growing supplies (20%); resident workshops and onboarding (15%); documentation (5%). Total: S$1,500.',
-      6: 'My final-year architecture project at SUTD was a detailed design proposal for community urban farming infrastructure. I have conducted site visits with residents at Queenstown and Bishan and received positive interest from two Town Councils.'
-    }
-  },
-  'Siti Rahimah': {
-    avi: 'Sr', uni: 'NIE · Early Childhood',
-    about: 'Early Childhood educator at NIE. Has been running informal storytelling sessions for migrant families since 2022. Believes bilingualism is a strength, not a barrier.',
-    tags: 'Education, Community',
-    project: 'Cerita Kita',
-    projectSub: 'Bilingual storytelling for migrant children',
-    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
-    answers: {
-      1: 'Cerita Kita (Our Story) runs bilingual storytelling workshops for migrant children aged 4–10, using their mother tongue alongside English to build literacy, confidence, and a sense of belonging in Singapore.',
-      2: 'Migrant children in Singapore often struggle with identity and literacy as they navigate between their home language and English. Most early childhood programmes are English-only, leaving these children without culturally affirming experiences.',
-      3: 'Migrant children aged 4–10 primarily from Bangladesh, India, and Myanmar, living in Jurong West and Woodlands. Secondary beneficiaries: their parents, who gain community connection and parenting resources.',
-      4: 'Within 6 months: 60 children reached across 12 sessions; measurable improvement in literacy confidence (teacher and parent survey); a bilingual storybook co-created with participants and distributed to 3 community centres.',
-      5: 'Bilingual story materials and books (30%); facilitator fees for 2 mother-tongue educators (45%); venue at community centre (15%); storybook printing and distribution (10%). Total: S$1,500.',
-      6: 'I am a trained early childhood educator with a specialism in multilingual literacy. I have been running pilot sessions informally for the past year with 15 families, and have letters of support from the Jurong West CC and two primary schools.'
-    }
-  },
-  'Kai Lin Tan': {
-    avi: 'Kl', uni: 'NUS · Computer Science',
-    about: 'Final-year Computer Science student at NUS. Has been building side projects for social good since second year. Wants to use technology to reduce isolation among Singapore&#39;s elderly.',
-    tags: 'Tech, Community',
-    project: 'Neighbours Online',
-    projectSub: 'Connecting elderly residents with youth volunteers',
-    grant: 'Youth Starter Stipend', grantAmount: 'S$1,500 flat stipend',
-    answers: {
-      1: 'Neighbours Online is a simple matching platform connecting elderly residents who need help with everyday digital tasks — video calls, government app navigation, online shopping — with trained youth volunteers living nearby.',
-      2: 'Singapore&#39;s elderly population is growing rapidly, but digital inclusion remains low. Many older residents struggle with basic digital tasks that would significantly improve their independence and social connection, but cannot access consistent, patient help.',
-      3: 'Elderly residents aged 65+ in Queenstown and Toa Payoh who own smartphones but lack confidence using them. Secondary: youth volunteers aged 16–25 who gain structured volunteering experience and inter-generational connection.',
-      4: 'Within 6 months: 50 elderly residents matched with volunteers; 200+ help sessions completed; an onboarding programme for volunteers developed and tested with 3 secondary schools.',
-      5: 'Platform development and hosting (40%); volunteer training materials (20%); community outreach to recruit elderly participants (25%); evaluation and reporting (15%). Total: S$1,500.',
-      6: 'I built the initial prototype of Neighbours Online as my second-year software engineering project and piloted it with 10 residents at Queenstown. I have a partnership with Queenstown CC and letters of support from two secondary schools for volunteer recruitment.'
-    }
+// ───── STATE ─────
+let ORG = null;
+let MY_GRANTS = [];   // this org's grants, each with .applications
+let FOUNDERS = [];    // discoverable founders
+let BACKED = [];      // backings
+let DISCOVER_FILTER = 'all';
+
+// ───── INIT (role-aware) ─────
+(async function initApp() {
+  const { data } = await sbAuth.auth.getSession();
+  if (!data.session && !IS_LOCAL_DEV) { window.location.replace('index.html'); return; }
+  let me;
+  try {
+    me = await api('/auth/me');
+  } catch (e) {
+    document.getElementById('sb-org-name').textContent = 'Not signed in';
+    showToast('Sign in from the home page first.');
+    return;
   }
+  // Founders (and the not-yet-onboarded) belong on founder.html.
+  if (me.role !== 'backer') { window.location.replace('founder.html'); return; }
+  try {
+    ORG = await api('/organizations/me');
+  } catch (e) {
+    document.getElementById('sb-org-name').textContent = 'No organisation';
+    showToast('Could not load your organisation.');
+    return;
+  }
+  renderOrg();
+  loadAll();
+})();
+
+async function loadAll() {
+  const results = await Promise.allSettled([
+    api('/grants'),
+    api('/founders'),
+    api('/organizations/me/backed'),
+  ]);
+  if (results[0].status === 'fulfilled') {
+    MY_GRANTS = results[0].value.grants.filter(g => g.organization && g.organization.id === ORG.id);
+    // fetch applicants for each of our grants
+    const apps = await Promise.allSettled(MY_GRANTS.map(g => api('/grants/' + g.id + '/applications')));
+    apps.forEach((r, i) => { MY_GRANTS[i].applications = r.status === 'fulfilled' ? r.value.applications : []; });
+  }
+  if (results[1].status === 'fulfilled') FOUNDERS = results[1].value.founders;
+  if (results[2].status === 'fulfilled') BACKED = results[2].value.backings;
+  renderOurGrants();
+  renderDiscover();
+  renderBacked();
+  renderSidebarStats();
+  renderOrg();
+}
+
+// ───── ORG PROFILE ─────
+function renderOrg() {
+  if (!ORG) return;
+  const typeLabel = ORG.type ? ORG.type.charAt(0).toUpperCase() + ORG.type.slice(1) : '';
+  document.getElementById('sb-org-name').textContent = ORG.name;
+  document.getElementById('sb-org-type').textContent = [typeLabel, ORG.location].filter(Boolean).join(' · ');
+  document.getElementById('op-name').textContent = ORG.name || '—';
+  document.getElementById('op-type').textContent = typeLabel || '—';
+  document.getElementById('op-location').textContent = ORG.location || '—';
+  document.getElementById('op-description').textContent = ORG.description || '—';
+  document.getElementById('op-focus').innerHTML = (ORG.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('') || '<span style="font-size:12px;color:var(--hint)">Not set</span>';
+  document.getElementById('op-grants').textContent = MY_GRANTS.length + ' active';
+  document.getElementById('op-backed').textContent = BACKED.length + ' total';
+}
+
+function openOrgEdit() {
+  document.getElementById('oe-name').value = ORG.name || '';
+  document.getElementById('oe-type').value = ORG.type || 'community';
+  document.getElementById('oe-location').value = ORG.location || '';
+  document.getElementById('oe-description').value = ORG.description || '';
+  document.getElementById('oe-focus').value = (ORG.focus_areas || []).join(', ');
+  document.getElementById('oe-status').textContent = '';
+  document.getElementById('orgedit-overlay').classList.add('on');
+}
+function closeOrgEdit() { document.getElementById('orgedit-overlay').classList.remove('on'); }
+async function saveOrgEdit() {
+  const status = document.getElementById('oe-status');
+  status.textContent = 'Saving…';
+  try {
+    ORG = await api('/organizations/me', {
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: document.getElementById('oe-name').value.trim(),
+        type: document.getElementById('oe-type').value,
+        location: document.getElementById('oe-location').value.trim(),
+        description: document.getElementById('oe-description').value.trim(),
+        focus_areas: document.getElementById('oe-focus').value.split(',').map(s => s.trim()).filter(Boolean),
+      }),
+    });
+    closeOrgEdit();
+    renderOrg();
+    showToast('✓ Organisation profile updated.');
+  } catch (e) { status.textContent = 'Could not save — ' + e.message; }
+}
+
+function renderSidebarStats() {
+  document.getElementById('sb-stat-grants').textContent = MY_GRANTS.length;
+  document.getElementById('sb-stat-apps').textContent = MY_GRANTS.reduce((n, g) => n + (g.applications || []).length, 0);
+  document.getElementById('sb-stat-backed').textContent = BACKED.length;
+}
+
+// ───── OUR GRANTS + APPLICANTS ─────
+const STATUS_BADGES = {
+  submitted: ['status-new', 'New'],
+  in_review: ['status-review', 'In Review'],
+  shortlisted: ['status-shortlist', 'Shortlisted'],
+  backed: ['status-shortlist', 'Backed'],
+  rejected: ['status-review', 'Not Selected'],
 };
 
-function openFounderModal(name, uni, project, projectSub, tags) {
-  const data = founderData[name];
+function applicantRow(a, grant) {
+  const f = a.founder || {};
+  const p = a.project || {};
+  const [badgeClass, badgeLabel] = STATUS_BADGES[a.status] || ['status-new', a.status];
+  const focusTags = (p.focus_areas || f.focus_areas || []).slice(0, 2)
+    .map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('');
+  const actions =
+    (a.status !== 'shortlisted' && a.status !== 'backed'
+      ? '<button class="btn btn-sm" onclick="event.stopPropagation();shortlistApp(\'' + a.id + '\')">Shortlist</button>'
+      : '') +
+    (a.status !== 'backed'
+      ? '<button class="btn btn-or btn-sm" onclick="event.stopPropagation();backApp(\'' + a.id + '\')">Back</button>'
+      : '<span class="tag tag-or">Backed ✓</span>') +
+    '<button class="btn btn-out btn-sm" onclick="event.stopPropagation();openApplicantModal(\'' + a.id + '\',\'' + grant.id + '\')">View</button>';
+  return '<tr onclick="openApplicantModal(\'' + a.id + '\',\'' + grant.id + '\')">' +
+    '<td><div class="applicant-name">' + esc(f.full_name) + '</div><div class="applicant-uni">' + esc([f.university, f.field_of_study].filter(Boolean).join(' · ')) + '</div></td>' +
+    '<td><div class="applicant-project">' + esc(p.title) + '</div><div class="applicant-project-sub">' + esc(p.tagline || '') + '</div></td>' +
+    '<td><div class="applicant-tags">' + focusTags + '</div></td>' +
+    '<td><span class="status-badge ' + badgeClass + '">' + esc(badgeLabel) + '</span></td>' +
+    '<td><div class="action-row">' + actions + '</div></td></tr>';
+}
 
-  document.getElementById('modal-name').textContent = name;
-  document.getElementById('modal-uni').textContent = data ? data.uni : uni;
-  document.getElementById('modal-avi').textContent = data ? data.avi : name.split(' ').map(w=>w[0]).join('').toLowerCase();
-  document.getElementById('modal-about').textContent = data ? data.about : 'Profile not available.';
-  document.getElementById('modal-project').textContent = data ? data.project : project;
-  document.getElementById('modal-project-sub').textContent = data ? data.projectSub : projectSub;
-  document.getElementById('modal-grant-name').textContent = data ? data.grant : 'Grant Application';
-  document.getElementById('modal-grant-amount').textContent = data ? data.grantAmount : '';
-
-  const tagsEl = document.getElementById('modal-tags');
-  const tagStr = data ? data.tags : tags;
-  tagsEl.innerHTML = tagStr.split(',').map(t => '<span class="tag tag-dk">' + t.trim() + '</span>').join('');
-
-  if (data && data.answers) {
-    for (let i = 1; i <= 6; i++) {
-      const el = document.getElementById('modal-ans-' + i);
-      if (el) el.textContent = data.answers[i] || 'Not provided.';
-    }
+function renderOurGrants() {
+  const el = document.getElementById('grants-container');
+  if (!MY_GRANTS.length) {
+    el.innerHTML = '<div class="grant-block"><div class="grant-block-band-dim"></div><div class="grant-block-header"><div>' +
+      '<div class="grant-title">No grants posted yet</div>' +
+      '<div class="grant-amount" style="margin-top:6px;">Post your first grant and it becomes visible to every founder on coart.</div>' +
+      '<div class="btn-row" style="margin-top:12px;"><button class="btn btn-or" onclick="showPage(\'postgrant\', document.querySelector(\'[onclick*=postgrant]\'))">+ Post A Grant</button></div>' +
+      '</div></div></div>';
+    document.getElementById('badge-grants').textContent = '0';
+    return;
   }
+  document.getElementById('badge-grants').textContent =
+    MY_GRANTS.reduce((n, g) => n + (g.applications || []).length, 0);
+  el.innerHTML = MY_GRANTS.map((g, i) => {
+    const apps = g.applications || [];
+    const meta = '<span class="tag tag-or">' + apps.length + ' Application' + (apps.length === 1 ? '' : 's') + '</span>' +
+      (g.is_rolling ? '<span class="tag">Rolling</span>' : (g.application_closes_at ? '<span class="tag">Deadline: ' + esc(g.application_closes_at) + '</span>' : '')) +
+      ((g.focus_areas || []).length ? '<span class="tag">' + esc(g.focus_areas.join(' · ')) + '</span>' : '');
+    const table = apps.length
+      ? '<table class="applicant-table"><thead><tr><th>Founder</th><th>Project</th><th>Focus</th><th>Status</th><th>Actions</th></tr></thead><tbody>' +
+        apps.map(a => applicantRow(a, g)).join('') + '</tbody></table>'
+      : '<div style="padding:14px 22px;font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;">No applications yet.</div>';
+    return '<div class="grant-block">' +
+      '<div class="' + (i === 0 ? 'grant-block-band' : 'grant-block-band-dim') + '"></div>' +
+      '<div class="grant-block-header"><div>' +
+      '<div class="grant-ref">' + esc(g.reference_code || '') + '</div>' +
+      '<div class="grant-title">' + esc(g.title) + '</div>' +
+      '<div class="grant-amount">' + esc(g.amount_display || '') + '</div>' +
+      '<div class="grant-meta">' + meta + '</div>' +
+      '</div></div>' + table + '</div>';
+  }).join('');
+}
 
+async function shortlistApp(id) {
+  try {
+    await api('/applications/' + id + '/shortlist', { method: 'POST' });
+    showToast('✓ Shortlisted.');
+    await refreshApplications();
+  } catch (e) { showToast('Could not shortlist — ' + e.message); }
+}
+
+async function backApp(id) {
+  if (!confirm('Back this project? The founder will see your organisation as a backer.')) return;
+  try {
+    await api('/applications/' + id + '/status', { method: 'PATCH', body: JSON.stringify({ status: 'backed' }) });
+    showToast('✓ Project backed!');
+    const backed = await api('/organizations/me/backed');
+    BACKED = backed.backings;
+    await refreshApplications();
+    renderBacked();
+    renderSidebarStats();
+  } catch (e) { showToast('Could not back — ' + e.message); }
+}
+
+async function refreshApplications() {
+  const apps = await Promise.allSettled(MY_GRANTS.map(g => api('/grants/' + g.id + '/applications')));
+  apps.forEach((r, i) => { if (r.status === 'fulfilled') MY_GRANTS[i].applications = r.value.applications; });
+  renderOurGrants();
+  renderSidebarStats();
+}
+
+// ───── DISCOVER FOUNDERS ─────
+document.querySelectorAll('#discover-filters .pill').forEach(pill => {
+  pill.addEventListener('click', function() {
+    document.querySelectorAll('#discover-filters .pill').forEach(p => p.classList.remove('on'));
+    this.classList.add('on');
+    DISCOVER_FILTER = this.getAttribute('data-filter');
+    renderDiscover();
+  });
+});
+
+function initials(name) {
+  return String(name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function founderCard(f) {
+  const uni = [f.university, f.field_of_study].filter(Boolean).join(' · ');
+  const tags = (f.focus_areas || []).slice(0, 2).map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('') +
+    (f.open_to_backers ? '<span class="tag tag-or">Open To Backers</span>' : '') +
+    (f.seeking_grant_match ? '<span class="tag tag-or">Seeking Grant Match</span>' : '');
+  return '<div class="founder-card" onclick="openFounderProfile(\'' + f.id + '\')">' +
+    '<div class="founder-card-band"></div><div class="founder-card-inner">' +
+    '<div class="fc-top"><div class="fc-avi">' + esc(initials(f.full_name)) + '</div><div>' +
+    '<div class="fc-name">' + esc(f.full_name) + '</div><div class="fc-uni">' + esc(uni) + '</div></div></div>' +
+    '<p class="fc-bio">' + esc(f.bio || 'No bio yet.') + '</p>' +
+    '<div class="tags">' + tags + '</div>' +
+    '<div class="btn-row">' +
+    '<button class="btn btn-sm" onclick="event.stopPropagation();openFounderProfile(\'' + f.id + '\')">View Profile</button>' +
+    (MY_GRANTS.length ? '<button class="btn btn-or btn-sm" onclick="event.stopPropagation();openInvite(\'' + f.id + '\',\'' + esc(f.full_name) + '\')">✦ Invite to Apply</button>' : '') +
+    '</div></div></div>';
+}
+
+function renderDiscover() {
+  const q = (document.getElementById('discover-search').value || '').toLowerCase();
+  let list = FOUNDERS;
+  if (DISCOVER_FILTER !== 'all') list = list.filter(f => (f.focus_areas || []).includes(DISCOVER_FILTER));
+  if (q) list = list.filter(f =>
+    (f.full_name || '').toLowerCase().includes(q) ||
+    (f.bio || '').toLowerCase().includes(q) ||
+    (f.focus_areas || []).join(' ').toLowerCase().includes(q));
+  document.getElementById('founders-count').textContent =
+    list.length + ' Founder' + (list.length === 1 ? '' : 's');
+  document.getElementById('founder-grid').innerHTML = list.length
+    ? list.map(founderCard).join('')
+    : '<p style="font-size:13px;color:var(--muted);padding:16px 0;">No founders match — as founders join coart they\'ll show up here.</p>';
+}
+
+// ───── FOUNDER / APPLICANT MODAL ─────
+let MODAL_FOUNDER_ID = null;
+let MODAL_APPLICATION = null;
+
+function fillModalProfile(f) {
+  MODAL_FOUNDER_ID = f.id;
+  document.getElementById('modal-avi').textContent = initials(f.full_name);
+  document.getElementById('modal-name').textContent = f.full_name || '';
+  document.getElementById('modal-uni').textContent = [f.university, f.field_of_study].filter(Boolean).join(' · ');
+  document.getElementById('modal-tags').innerHTML = (f.focus_areas || []).map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('');
+  document.getElementById('modal-about').textContent = f.bio || 'No bio yet.';
+  document.getElementById('contact-panel').style.display = 'none';
+  document.getElementById('contact-sent').style.display = 'none';
   document.getElementById('modal-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
 
+async function openFounderProfile(founderId) {
+  MODAL_APPLICATION = null;
+  document.getElementById('modal-applied-box').style.display = 'none';
+  document.getElementById('modal-btn-shortlist').style.display = 'none';
+  document.getElementById('modal-btn-back').style.display = 'none';
+  try {
+    const [f, projRes] = await Promise.all([
+      api('/founders/' + founderId),
+      api('/founders/' + founderId + '/projects'),
+    ]);
+    fillModalProfile(f);
+    const projects = projRes.projects || [];
+    document.getElementById('modal-project-box').style.display = projects.length ? 'block' : 'none';
+    if (projects.length) {
+      document.getElementById('modal-project').textContent = projects[0].title;
+      document.getElementById('modal-project-sub').textContent = projects[0].tagline || '';
+    }
+    document.getElementById('modal-right').innerHTML =
+      '<div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Founder Detail</div>' +
+      section('Why This Founder', f.past_experience || 'Not provided yet.') +
+      (projects.length
+        ? projects.map(p => section('Project — ' + p.title, [p.tagline, p.description].filter(Boolean).join('\n\n') || 'No description yet.')).join('')
+        : section('Projects', 'No published projects yet.'));
+  } catch (e) {
+    showToast('Could not load founder — ' + e.message);
+  }
+}
+
+function section(label, text) {
+  return '<div style="margin-bottom:20px"><div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">' +
+    esc(label) + '</div><div style="font-size:13px;color:var(--text);line-height:1.7;background:var(--card);border:1px solid var(--border);padding:14px 16px;white-space:pre-line">' +
+    esc(text) + '</div></div>';
+}
+
+async function openApplicantModal(applicationId, grantId) {
+  const grant = MY_GRANTS.find(g => g.id === grantId);
+  const a = grant ? (grant.applications || []).find(x => x.id === applicationId) : null;
+  if (!a) return;
+  MODAL_APPLICATION = a;
+  document.getElementById('modal-btn-shortlist').style.display = a.status === 'shortlisted' || a.status === 'backed' ? 'none' : 'inline-block';
+  document.getElementById('modal-btn-back').style.display = a.status === 'backed' ? 'none' : 'inline-block';
+  document.getElementById('modal-applied-box').style.display = 'block';
+  document.getElementById('modal-grant-name').textContent = grant.title;
+  document.getElementById('modal-grant-amount').textContent = grant.amount_display || '';
+  try {
+    const f = await api('/founders/' + a.founder.id);
+    fillModalProfile(f);
+  } catch (e) {
+    fillModalProfile({ id: a.founder.id, ...a.founder });
+  }
+  const p = a.project || {};
+  document.getElementById('modal-project-box').style.display = 'block';
+  document.getElementById('modal-project').textContent = p.title || '';
+  document.getElementById('modal-project-sub').textContent = p.tagline || '';
+  document.getElementById('modal-right').innerHTML =
+    '<div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Application</div>' +
+    section('Project', [p.title, p.tagline].filter(Boolean).join(' — ') || '—') +
+    section('Status', (STATUS_BADGES[a.status] || [null, a.status])[1] + (a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : ''));
+}
+
 function shortlistFounder() {
-  const btn = document.getElementById('modal-btn-shortlist');
-  btn.textContent = 'Shortlisted ✓';
-  btn.disabled = true;
+  if (MODAL_APPLICATION) { shortlistApp(MODAL_APPLICATION.id); closeModal(); }
 }
-
 function backFounder() {
-  const btn = document.getElementById('modal-btn-back');
-  btn.textContent = 'Backed ✓';
-  btn.style.background = 'var(--text)';
-  btn.disabled = true;
-}
-
-function toggleContact() {
-  const panel = document.getElementById('contact-panel');
-  const sent = document.getElementById('contact-sent');
-  const btn = document.getElementById('modal-btn-contact');
-  if (sent.style.display !== 'none') return;
-  const isOpen = panel.style.display !== 'none';
-  panel.style.display = isOpen ? 'none' : 'block';
-  btn.textContent = isOpen ? 'Request a Call' : 'Cancel';
-}
-
-function sendContactRequest() {
-  const name = document.getElementById('modal-name').textContent;
-  const time = document.getElementById('contact-time').value;
-  const format = document.getElementById('contact-format').value;
-  document.getElementById('contact-panel').style.display = 'none';
-  document.getElementById('contact-sent').style.display = 'block';
-  document.getElementById('sent-msg').textContent = 'Call request sent to ' + name + ' — ' + format + ', ' + time.toLowerCase() + '.';
-  document.getElementById('modal-btn-contact').style.display = 'none';
+  if (MODAL_APPLICATION) { backApp(MODAL_APPLICATION.id); closeModal(); }
 }
 
 function closeModal() {
   document.getElementById('modal-overlay').classList.remove('on');
   document.body.style.overflow = '';
-  // reset contact panel
-  document.getElementById('contact-panel').style.display = 'none';
-  document.getElementById('contact-sent').style.display = 'none';
-  document.getElementById('modal-btn-contact').style.display = '';
-  document.getElementById('modal-btn-contact').textContent = 'Request a Call';
-  document.getElementById('contact-msg').value = '';
 }
-
 function closeModalOutside(e) {
   if (e.target === document.getElementById('modal-overlay')) closeModal();
 }
 
-document.querySelectorAll('.pill').forEach(pill => {
-  pill.addEventListener('click', function() {
-    this.closest('.filter-bar').querySelectorAll('.pill').forEach(p => p.classList.remove('on'));
-    this.classList.add('on');
+// ───── CONTACT REQUEST ─────
+function toggleContact() {
+  const panel = document.getElementById('contact-panel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
+
+async function sendContactRequest() {
+  if (!MODAL_FOUNDER_ID) return;
+  try {
+    await api('/organizations/contact/' + MODAL_FOUNDER_ID, {
+      method: 'POST',
+      body: JSON.stringify({
+        preferred_time: document.getElementById('contact-time').value,
+        format: document.getElementById('contact-format').value,
+        message: document.getElementById('contact-msg').value.trim() || undefined,
+      }),
+    });
+    document.getElementById('contact-panel').style.display = 'none';
+    document.getElementById('contact-sent').style.display = 'block';
+    document.getElementById('sent-msg').textContent = 'Request sent to ' + document.getElementById('modal-name').textContent + '.';
+  } catch (e) { showToast('Could not send request — ' + e.message); }
+}
+
+// ───── INVITE TO APPLY ─────
+let INVITE_FOUNDER_ID = null;
+
+function openInvite(founderId, name) {
+  INVITE_FOUNDER_ID = founderId;
+  document.getElementById('invite-name').textContent = name;
+  document.getElementById('invite-title').textContent = 'Invite ' + name.split(' ')[0] + ' to Apply';
+  const sel = document.getElementById('invite-grant');
+  sel.innerHTML = '';
+  MY_GRANTS.forEach(g => {
+    const o = document.createElement('option');
+    o.value = g.id;
+    o.textContent = g.title + (g.amount_display ? ' — ' + g.amount_display : '');
+    sel.appendChild(o);
   });
-});
+  document.getElementById('invite-form').style.display = 'block';
+  document.getElementById('invite-sent').style.display = 'none';
+  document.getElementById('invite-footer').style.display = 'flex';
+  document.getElementById('invite-note').value = '';
+  document.getElementById('invite-overlay').classList.add('on');
+}
+function closeInvite() { document.getElementById('invite-overlay').classList.remove('on'); }
+function closeInviteOutside(e) {
+  if (e.target === document.getElementById('invite-overlay')) closeInvite();
+}
+
+async function sendInvite() {
+  const sel = document.getElementById('invite-grant');
+  const grantTitle = sel.options[sel.selectedIndex] ? sel.options[sel.selectedIndex].textContent : 'our grant';
+  const note = document.getElementById('invite-note').value.trim();
+  try {
+    await api('/organizations/contact/' + INVITE_FOUNDER_ID, {
+      method: 'POST',
+      body: JSON.stringify({
+        preferred_time: 'n/a',
+        format: 'invite-to-apply',
+        message: 'Invitation to apply: ' + grantTitle + (note ? ' — ' + note : ''),
+      }),
+    });
+    document.getElementById('invite-form').style.display = 'none';
+    document.getElementById('invite-footer').style.display = 'none';
+    document.getElementById('invite-sent').style.display = 'block';
+    document.getElementById('invite-sent-msg').textContent =
+      'They\'ll see your invitation for ' + grantTitle + ' on their coart dashboard.';
+  } catch (e) { showToast('Could not send invite — ' + e.message); }
+}
+
+// ───── BACKED PROJECTS ─────
+function renderBacked() {
+  const el = document.getElementById('backed-list');
+  if (!BACKED.length) {
+    el.innerHTML = '<div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">' +
+      '<div class="backed-card-title">Nothing backed yet</div>' +
+      '<p class="backed-card-sub">When you back an applicant from Our Grants, the project shows up here.</p>' +
+      '</div></div>';
+    return;
+  }
+  el.innerHTML = BACKED.map(b => {
+    const p = b.project || {};
+    const f = p.founder || {};
+    return '<div class="backed-card"><div class="backed-card-band"></div><div class="backed-card-inner">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">' +
+      '<div><div class="backed-card-title">' + esc(p.title) + '</div>' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.05em;margin-top:2px;">' +
+      esc([f.full_name, f.university].filter(Boolean).join(' · ')) + '</div></div>' +
+      '<span class="tag tag-or">Backed</span></div>' +
+      '<p class="backed-card-sub">' + esc(p.tagline || '') +
+      (b.grant ? ' Backed via ' + esc(b.grant.title) + (b.backed_at ? ', ' + b.backed_at.slice(0, 10) : '') + '.' : '') + '</p>' +
+      '<div class="btn-row"><button class="btn btn-out btn-sm" onclick="openFounderProfile(\'' + esc(f.id || '') + '\')">View Founder</button></div>' +
+      '</div></div>';
+  }).join('');
+}
+
+// ───── POST A GRANT ─────
+const GRANT_TYPE_MAP = {
+  'Cash Grant': 'cash', 'Mentorship Programme': 'mentorship', 'Incubation Programme': 'incubation',
+  'Mixed — Funding + Mentorship': 'mixed', 'Resource Grant': 'resource', 'Scholarship': 'scholarship',
+};
+const AGE_MAP = { '15–18': [15, 18], '18–21': [18, 21], '21–25': [21, 25], 'All ages on platform (15–25)': [15, 25] };
 
 function togglePitchDetails() {
-  const val = document.getElementById('pg-pitch-toggle').value;
-  document.getElementById('pg-pitch-details').style.display = val === 'yes' ? 'block' : 'none';
+  document.getElementById('pg-pitch-details').style.display =
+    document.getElementById('pg-pitch-toggle').value === 'yes' ? 'block' : 'none';
 }
 
-function saveGrantDraft() {
-  const btn = event.target;
-  btn.textContent = 'Draft Saved ✓';
-  btn.disabled = true;
-  setTimeout(() => { btn.textContent = 'Save Draft'; btn.disabled = false; }, 2000);
-}
-
-function submitGrant(e) {
+async function submitGrant(e) {
   e.preventDefault();
-  document.getElementById('pg-submit-row').style.display = 'none';
-  document.getElementById('pg-success').style.display = 'block';
-  document.getElementById('pg-success').scrollIntoView({ behavior: 'smooth' });
+  const v = id => document.getElementById(id).value;
+  const focus = [...document.querySelectorAll('#focus-tags input:checked')]
+    .map(c => c.value).filter(x => x !== 'All Categories');
+  const [ageMin, ageMax] = AGE_MAP[v('pg-age')] || [15, 25];
+  const hasPitch = v('pg-pitch-toggle') === 'yes';
+  const body = {
+    title: v('pg-name').trim(),
+    grant_type: GRANT_TYPE_MAP[v('pg-type')] || 'cash',
+    amount_display: v('pg-value').trim(),
+    application_opens_at: v('pg-opens') || undefined,
+    application_closes_at: v('pg-closes') || undefined,
+    is_rolling: v('pg-frequency') === 'Rolling / ongoing',
+    frequency: v('pg-frequency'),
+    eligibility_age_min: ageMin,
+    eligibility_age_max: ageMax,
+    eligibility_stage: v('pg-stage'),
+    eligibility_citizenship: v('pg-citizen'),
+    eligibility_team_solo: v('pg-team'),
+    eligibility_exclusions: v('pg-exclusions').trim() || undefined,
+    focus_areas: focus,
+    offering_description: v('pg-offering').trim(),
+    expectations: v('pg-expectations').trim() || undefined,
+    engagement_style: v('pg-engagement'),
+    response_time: v('pg-response'),
+    application_instructions: v('pg-instructions').trim(),
+    has_pitch_round: hasPitch,
+    ...(hasPitch ? { pitch_format: v('pg-pitch-format'), pitch_prep: v('pg-pitch-prep').trim() || undefined } : {}),
+    decision_timeline: v('pg-decision'),
+    notification_method: v('pg-notify'),
+    // Standard coart application questions — founders answer these with AI help.
+    questions: [
+      { question_key: 'impact', label: 'Describe your project and its impact', field_type: 'long_text', required: true, order_index: 0 },
+      { question_key: 'funding', label: 'How will you use this grant?', field_type: 'long_text', required: true, order_index: 1 },
+      { question_key: 'founder', label: 'What makes you the right person to lead this?', field_type: 'long_text', required: true, order_index: 2 },
+    ],
+  };
+  const btn = document.getElementById('pg-publish-btn');
+  btn.disabled = true;
+  try {
+    const grant = await api('/grants', { method: 'POST', body: JSON.stringify(body) });
+    grant.applications = [];
+    grant.organization = { id: ORG.id, name: ORG.name, type: ORG.type };
+    MY_GRANTS.unshift(grant);
+    document.getElementById('pg-submit-row').style.display = 'none';
+    document.getElementById('pg-success').style.display = 'block';
+    renderOurGrants();
+    renderSidebarStats();
+  } catch (err) {
+    showToast('Could not publish — ' + err.message);
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 function resetPostGrant() {
   document.getElementById('pg-submit-row').style.display = 'flex';
   document.getElementById('pg-success').style.display = 'none';
-}
-
-// ───── INVITE TO APPLY ─────
-function openInvite(name) {
-  document.getElementById('invite-name').textContent = name;
-  document.getElementById('invite-title').textContent = 'Invite ' + name + ' to Apply';
-  document.getElementById('invite-note').value = '';
-  document.getElementById('invite-form').style.display = 'block';
-  document.getElementById('invite-sent').style.display = 'none';
-  document.getElementById('invite-footer').style.display = 'flex';
-  document.getElementById('invite-overlay').classList.add('on');
-  document.body.style.overflow = 'hidden';
-  window.__inviteName = name;
-}
-function closeInvite() {
-  document.getElementById('invite-overlay').classList.remove('on');
-  document.body.style.overflow = '';
-}
-function closeInviteOutside(e) {
-  if (e.target === document.getElementById('invite-overlay')) closeInvite();
-}
-function sendInvite() {
-  const grant = document.getElementById('invite-grant').value;
-  const name = window.__inviteName || 'founder';
-  document.getElementById('invite-form').style.display = 'none';
-  document.getElementById('invite-sent').style.display = 'block';
-  document.getElementById('invite-footer').style.display = 'none';
-  document.getElementById('invite-sent-msg').textContent =
-    'Invited ' + name + ' to apply for ' + grant.split(' — ')[0] + '. We\'ll let you know when they respond.';
-  showToast('✓ Invite sent to ' + name);
-  setTimeout(closeInvite, 1800);
 }
 
 function showToast(msg) {
@@ -1262,6 +1327,7 @@ function showToast(msg) {
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2400);
 }
+
 </script>
 </body>
 </html>
