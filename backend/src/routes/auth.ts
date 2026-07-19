@@ -16,6 +16,40 @@ export async function authRoutes(app: FastifyInstance) {
     return { id: req.user!.id, email: req.user!.email ?? null, role: req.user!.role };
   });
 
+  // DELETE /api/v1/auth/profile — reset role so the user can re-onboard.
+  // For a mistaken role choice: removes the role-specific rows (cascading
+  // founder data), keeps the auth user so they can sign in and pick again.
+  app.delete('/profile', { preHandler: requireUser }, async (req, reply) => {
+    const userId = req.user!.id;
+    const { data: profile } = await admin.from('profiles').select('role').eq('id', userId).maybeSingle();
+    if (!profile) return { ok: true };
+
+    if (profile.role === 'founder') {
+      const { error } = await admin.from('founders').delete().eq('id', userId);
+      if (error) return reply.code(500).send({ error: error.message });
+    } else {
+      const { data: member } = await admin
+        .from('backer_members')
+        .select('organization_id')
+        .eq('user_id', userId)
+        .maybeSingle();
+      await admin.from('backer_members').delete().eq('user_id', userId);
+      if (member) {
+        // Remove the org too, but only if it has no other members and no grants.
+        const [{ count: members }, { count: grants }] = await Promise.all([
+          admin.from('backer_members').select('id', { count: 'exact', head: true }).eq('organization_id', member.organization_id),
+          admin.from('grants').select('id', { count: 'exact', head: true }).eq('organization_id', member.organization_id),
+        ]);
+        if (!members && !grants) {
+          await admin.from('organizations').delete().eq('id', member.organization_id);
+        }
+      }
+    }
+    const { error: pErr } = await admin.from('profiles').delete().eq('id', userId);
+    if (pErr) return reply.code(500).send({ error: pErr.message });
+    return { ok: true };
+  });
+
   app.post('/profile', { preHandler: requireUser }, async (req, reply) => {
     const parsed = createProfileSchema.safeParse(req.body);
     if (!parsed.success) {

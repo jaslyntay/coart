@@ -232,7 +232,7 @@ textarea.form-input { min-height:80px; }
     <div class="prog-label"><span>Profile Completion</span><span id="prog-pct">—</span></div>
     <div class="prog"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
     <p class="prog-note">Backers are 3× more likely to reach out to complete profiles.</p>
-    <p style="margin-top:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a></p>
+    <p style="margin-top:14px;display:flex;gap:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a><a href="#" onclick="switchRole();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">⇄ Switch role</a></p>
   </div>
 </div>
 
@@ -249,11 +249,11 @@ textarea.form-input { min-height:80px; }
       <div class="form-section">
         <div class="form-section-title">I'm joining as…</div>
         <div class="btn-row" style="margin-bottom:6px;">
-          <button class="btn btn-or" id="ob-role-founder" onclick="setOnboardRole('founder')">A Founder</button>
-          <button class="btn btn-out" id="ob-role-backer" onclick="setOnboardRole('backer')">A Backer / Organisation</button>
+          <button class="btn btn-out" id="ob-role-founder" onclick="setOnboardRole('founder')">A Founder — I have a project or idea</button>
+          <button class="btn btn-out" id="ob-role-backer" onclick="setOnboardRole('backer')">A Backer — I represent an organisation</button>
         </div>
       </div>
-      <div class="form-section" id="ob-founder-fields">
+      <div class="form-section" id="ob-founder-fields" style="display:none;">
         <div class="form-row">
           <div class="form-label"><span>Full name</span></div>
           <input class="form-input" id="ob-name" placeholder="Your full name"/>
@@ -293,7 +293,7 @@ textarea.form-input { min-height:80px; }
     <div class="modal-footer">
       <div class="modal-footer-note">One-time setup · saved to your coart account.</div>
       <div class="btn-row">
-        <button class="btn btn-or" onclick="submitOnboarding()">Create my profile →</button>
+        <button class="btn btn-or" id="ob-submit-btn" style="display:none;" onclick="submitOnboarding()">Create my profile →</button>
       </div>
     </div>
   </div>
@@ -741,6 +741,16 @@ async function signOut() {
   window.location.href = 'index.html';
 }
 
+// Chose the wrong role at onboarding? Reset and pick again.
+async function switchRole() {
+  if (!confirm('Reset your coart profile and choose founder/backer again?\n\nThis removes your profile and any projects or applications on it. Your login stays.')) return;
+  try {
+    await api('/auth/profile', { method: 'DELETE' });
+    localStorage.removeItem('coart_general_application');
+    window.location.reload();
+  } catch (e) { showToast('Could not reset — ' + e.message); }
+}
+
 const pages = ['projects','grants','dashboard','profile'];
 const titles = {
   projects: 'My Projects',
@@ -1050,7 +1060,7 @@ async function loadAll() {
 })();
 
 // ───── FIRST-LOGIN ONBOARDING (role choice) ─────
-let ONBOARD_ROLE = 'founder';
+let ONBOARD_ROLE = null;
 
 function openOnboarding() {
   document.querySelector('.profile-name').textContent = 'New here';
@@ -1064,10 +1074,12 @@ function setOnboardRole(role) {
   document.getElementById('ob-role-backer').className = 'btn ' + (role === 'backer' ? 'btn-or' : 'btn-out');
   document.getElementById('ob-founder-fields').style.display = role === 'founder' ? 'block' : 'none';
   document.getElementById('ob-backer-fields').style.display = role === 'backer' ? 'block' : 'none';
+  document.getElementById('ob-submit-btn').style.display = 'inline-block';
 }
 
 async function submitOnboarding() {
   const status = document.getElementById('ob-status');
+  if (!ONBOARD_ROLE) { status.textContent = 'Pick founder or backer first.'; return; }
   try {
     if (ONBOARD_ROLE === 'founder') {
       const name = document.getElementById('ob-name').value.trim();

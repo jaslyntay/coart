@@ -224,7 +224,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-grants">—</span><span class="sidebar-stat-l">Active Grants</span></div>
     <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-apps">—</span><span class="sidebar-stat-l">Total Applications</span></div>
     <div class="sidebar-stat"><span class="sidebar-stat-n" id="sb-stat-backed">—</span><span class="sidebar-stat-l">Projects Backed To Date</span></div>
-    <p style="margin-top:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a></p>
+    <p style="margin-top:14px;display:flex;gap:14px;"><a href="#" onclick="signOut();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">↩ Sign out</a><a href="#" onclick="switchRole();return false;" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">⇄ Switch role</a></p>
   </div>
 </div>
 
@@ -800,6 +800,15 @@ async function api(path, opts = {}) {
 async function signOut() {
   try { await sbAuth.auth.signOut(); } catch (e) {}
   window.location.href = 'index.html';
+}
+
+// Chose the wrong role at onboarding? Reset and pick again.
+async function switchRole() {
+  if (!confirm('Reset your coart profile and choose founder/backer again?\n\nThis removes your organisation link (the org itself stays if it has posted grants). Your login stays.')) return;
+  try {
+    await api('/auth/profile', { method: 'DELETE' });
+    window.location.href = 'founder.html'; // onboarding lives there
+  } catch (e) { showToast('Could not reset — ' + e.message); }
 }
 
 function esc(s) {
