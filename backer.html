@@ -993,8 +993,21 @@ function renderOurGrants() {
       '<div class="grant-title">' + esc(g.title) + '</div>' +
       '<div class="grant-amount">' + esc(g.amount_display || '') + '</div>' +
       '<div class="grant-meta">' + meta + '</div>' +
-      '</div></div>' + table + '</div>';
+      '</div>' +
+      '<div class="grant-block-actions"><button class="btn btn-out btn-sm" onclick="closeGrant(\'' + g.id + '\')">Close Grant</button></div>' +
+      '</div>' + table + '</div>';
   }).join('');
+}
+
+async function closeGrant(id) {
+  if (!confirm('Close this grant? It disappears from founders\' Explore page immediately. Existing applications are kept.')) return;
+  try {
+    await api('/grants/' + id, { method: 'PATCH', body: JSON.stringify({ status: 'closed' }) });
+    MY_GRANTS = MY_GRANTS.filter(g => g.id !== id);
+    renderOurGrants();
+    renderSidebarStats();
+    showToast('Grant closed.');
+  } catch (e) { showToast('Could not close — ' + e.message); }
 }
 
 async function shortlistApp(id) {
@@ -1341,6 +1354,11 @@ async function submitGrant(e) {
     MY_GRANTS.unshift(grant);
     document.getElementById('pg-submit-row').style.display = 'none';
     document.getElementById('pg-success').style.display = 'block';
+    // Blank the form — a re-submit of stale values is how duplicates happen.
+    ['pg-name','pg-value','pg-opens','pg-closes','pg-exclusions','pg-offering','pg-expectations','pg-instructions','pg-pitch-prep']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('pg-type').value = '';
+    document.getElementById('pg-success').scrollIntoView({ behavior: 'smooth', block: 'center' });
     renderOurGrants();
     renderSidebarStats();
   } catch (err) {

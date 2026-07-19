@@ -46,6 +46,8 @@ export const updateFounderSchema = z.object({
   profile_photo_url: z.string().url().optional(),
   linkedin_url: z.string().url().optional(),
   past_experience: z.string().max(2000).optional(),
+  community: z.string().max(1000).optional(),
+  typical_budget: z.string().max(200).optional(),
   open_to_backers: z.boolean().optional(),
   seeking_grant_match: z.boolean().optional(),
 });

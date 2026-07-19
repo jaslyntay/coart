@@ -111,6 +111,28 @@ export async function grantsRoutes(app: FastifyInstance) {
     return grant;
   });
 
+  // PATCH /api/v1/grants/:id — backer closes (or reopens) their own grant
+  app.patch('/:id', { preHandler: [requireUser, requireBacker] }, async (req, reply) => {
+    const { id } = req.params as { id: string };
+    const { status } = (req.body ?? {}) as { status?: string };
+    if (!status || !['active', 'closed'].includes(status)) {
+      return reply.code(400).send({ error: "status must be 'active' or 'closed'" });
+    }
+    const { data: member } = await admin
+      .from('backer_members')
+      .select('organization_id')
+      .eq('user_id', req.user!.id)
+      .maybeSingle();
+    if (!member) return reply.code(403).send({ error: 'No organisation' });
+    const { data: grant } = await admin.from('grants').select('organization_id').eq('id', id).maybeSingle();
+    if (!grant || grant.organization_id !== member.organization_id) {
+      return reply.code(403).send({ error: 'Not your grant' });
+    }
+    const { data, error } = await admin.from('grants').update({ status }).eq('id', id).select('*').single();
+    if (error) return reply.code(500).send({ error: error.message });
+    return data;
+  });
+
   // POST /api/v1/grants/:id/save — founder saves grant
   app.post('/:id/save', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
     const { id } = req.params as { id: string };

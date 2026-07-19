@@ -479,7 +479,7 @@ textarea.form-input { min-height:80px; }
       </div>
     </div>
     <div class="modal-footer">
-      <div class="modal-footer-note">Saved on this device · you can edit anytime from Profile.</div>
+      <div class="modal-footer-note">Saved to your coart account · edit anytime from Profile.</div>
       <div class="btn-row">
         <button class="btn btn-out" onclick="closeGenApp()">Cancel</button>
         <button class="btn btn-or" onclick="saveGenApp()">Save & Continue →</button>
@@ -780,25 +780,21 @@ let ALL_GRANTS = [];      // active grants (with organization)
 let MY_APPS = [];         // applications rows
 let GRANT_FILTER = 'all';
 
-// ───── GENERAL APPLICATION CACHE ─────
-// The general application lives on the backend (founders table). Because
-// several callers are synchronous, we keep a localStorage cache hydrated
-// from GET /founders/me. community + budget have no DB column yet and
-// live only in this cache.
-const GEN_APP_KEY = 'coart_general_application';
-
-function founderRowToGenApp(row, localGa) {
+// ───── GENERAL APPLICATION ─────
+// Lives entirely on the founders row — filled once, prefills every
+// project and grant application, editable any time from Profile.
+function founderRowToGenApp(row) {
   return {
     bio: row.bio || '',
     focus: Array.isArray(row.focus_areas) ? row.focus_areas.join(', ') : '',
     credibility: row.past_experience || '',
-    community: (localGa && localGa.community) || '',
-    budget: (localGa && localGa.budget) || ''
+    community: row.community || '',
+    budget: row.typical_budget || ''
   };
 }
 
 function getGenApp() {
-  try { return JSON.parse(localStorage.getItem(GEN_APP_KEY)) || null; } catch(e) { return null; }
+  return FOUNDER ? founderRowToGenApp(FOUNDER) : null;
 }
 
 function renderProfileGenApp() {
@@ -856,7 +852,6 @@ function renderIdentity(row) {
 
 function hydrateFromFounder(row) {
   FOUNDER = row;
-  localStorage.setItem(GEN_APP_KEY, JSON.stringify(founderRowToGenApp(row, getGenApp())));
   renderIdentity(row);
   renderProfileGenApp();
 }
@@ -1035,6 +1030,9 @@ async function loadAll() {
 
 // ───── INIT (role-aware) ─────
 (async function initApp() {
+  // One-time purge of legacy device-local data from earlier versions.
+  localStorage.removeItem('coart_general_application');
+  localStorage.removeItem('coart_projects');
   const { data } = await sbAuth.auth.getSession();
   if (!data.session && !IS_LOCAL_DEV) {
     window.location.replace('index.html');
@@ -1188,24 +1186,24 @@ async function saveGenApp() {
     showToast('Add at least a bio and focus areas.');
     return;
   }
-  localStorage.setItem(GEN_APP_KEY, JSON.stringify(ga));
   try {
     const row = await api('/founders/me', {
       method: 'PATCH',
       body: JSON.stringify({
         bio: ga.bio,
         focus_areas: ga.focus.split(',').map(s => s.trim()).filter(Boolean),
-        past_experience: ga.credibility
+        past_experience: ga.credibility,
+        community: ga.community,
+        typical_budget: ga.budget
       })
     });
-    FOUNDER = row;
-    renderIdentity(row);
-    showToast('✓ General application saved.');
+    hydrateFromFounder(row);
+    showToast('✓ General application saved to your account.');
   } catch (e) {
-    showToast('Saved on this device — server unreachable.');
+    showToast('Could not save — ' + e.message);
+    return; // keep the modal open so nothing typed is lost
   }
   closeGenApp();
-  renderProfileGenApp();
   if (window.__genAppCameFromNewProject) {
     window.__genAppCameFromNewProject = false;
     setTimeout(() => openNewProj(getGenApp()), 350);
