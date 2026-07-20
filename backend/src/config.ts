@@ -36,9 +36,10 @@ export const config = {
     model: optional('ANTHROPIC_MODEL', 'claude-sonnet-4-6'),
   },
 
+  siteUrl: optional('SITE_URL', 'https://coart.vercel.app'),
   resend: {
     apiKey: optional('RESEND_API_KEY'),
-    fromEmail: optional('RESEND_FROM_EMAIL', 'applications@coart.com'),
+    fromEmail: optional('RESEND_FROM_EMAIL', 'notifications@coartsg.com'),
     enabled: optional('RESEND_API_KEY') !== '',
   },
 } as const;

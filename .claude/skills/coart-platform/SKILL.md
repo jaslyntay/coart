@@ -154,9 +154,11 @@ backed (→ founder, announces contact reveal), contact request / grant invite
 (→ founder). To add a new type: call `notify()` at the event site — the UI
 needs no changes.
 
-Email notifications: NOT yet wired — requires a domain + Resend
-(RESEND_API_KEY placeholder already in .env.example). Extend `notify()` to
-also send email once available.
+Email notifications: wired. `notify()` also emails the recipient's login
+address via Resend (from notifications@coartsg.com — domain verified in
+Resend, DNS at Porkbun under Shivani's account). Needs RESEND_API_KEY,
+RESEND_FROM_EMAIL, and SITE_URL env vars (in backend/.env locally and in
+Vercel for production). Addresses ending in .test are skipped (fixtures).
 
 ## AI drafting
 
@@ -183,8 +185,10 @@ call; usage at console.anthropic.com.
 
 ## Known gaps / roadmap
 
-- Email notifications (needs domain + Resend + DNS).
-- Custom domain for the site; Google consent screen shows the supabase.co
+- Site domain coartsg.com bought (Porkbun, Shivani) — Vercel connection
+  pending (Jaslyn adds it in Settings → Domains; then update Supabase
+  redirect URLs, Google OAuth origins, CORS_ORIGINS, SITE_URL).
+- Google consent screen shows the supabase.co
   domain until Supabase Pro + custom auth domain (~$35/mo) — cosmetic.
 - Magic-link email rate limit (~2–4/hour) until custom SMTP.
 - No "rejected" notification (deliberate); no application withdrawal UI;
