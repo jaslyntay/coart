@@ -17,9 +17,13 @@ import { applicationsRoutes } from './routes/applications.js';
 import { organizationsRoutes } from './routes/organizations.js';
 import { aiRoutes } from './routes/ai.js';
 import { authRoutes } from './routes/auth.js';
+import { notificationsRoutes } from './routes/notifications.js';
 
 export async function build() {
   const app = Fastify({
+    // Avatar/logo uploads arrive as base64 JSON (client downscales to
+    // ≤512px first); Vercel caps request bodies at ~4.5MB.
+    bodyLimit: 4 * 1024 * 1024,
     logger: config.isProd
       ? true
       : {
@@ -51,6 +55,7 @@ export async function build() {
   await app.register(applicationsRoutes, { prefix: '/api/v1/applications' });
   await app.register(organizationsRoutes, { prefix: '/api/v1/organizations' });
   await app.register(aiRoutes, { prefix: '/api/v1/ai' });
+  await app.register(notificationsRoutes, { prefix: '/api/v1/notifications' });
 
   return app;
 }

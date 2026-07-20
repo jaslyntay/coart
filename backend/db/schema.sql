@@ -481,3 +481,45 @@ create policy "profile_views: founder reads own"
 -- ─── DONE ────────────────────────────────────────────────────────────
 -- After running this, seed initial external orgs and curated grants
 -- via a separate seed script (db/seed.sql — TODO).
+
+
+-- ─── MIGRATIONS APPLIED AFTER INITIAL SCHEMA (via dashboard SQL editor) ──
+-- 2026-07-19: general application server-side
+-- alter table founders add column if not exists community text;
+-- alter table founders add column if not exists typical_budget text;
+--
+-- 2026-07-20: contact exchange + notifications (see below, run as one block)
+alter table founders add column if not exists community text;
+alter table founders add column if not exists typical_budget text;
+alter table founders add column if not exists contact_email text;
+alter table founders add column if not exists contact_phone text;
+alter table organizations add column if not exists contact_name text;
+alter table organizations add column if not exists contact_email text;
+alter table organizations add column if not exists contact_phone text;
+
+-- Contact details must never be readable through the public PostgREST API.
+-- NOTE: column-level REVOKE alone is a no-op while a table-level GRANT
+-- exists (PG privileges are additive) — revoke the table, grant columns.
+-- New columns added later are NOT readable via direct PostgREST unless
+-- granted here; the backend (service role) is unaffected.
+revoke select on founders from anon, authenticated;
+grant select (id, full_name, age, university, field_of_study, location, bio, focus_areas, profile_photo_url, linkedin_url, past_experience, community, typical_budget, open_to_backers, seeking_grant_match, created_at, updated_at) on founders to anon, authenticated;
+revoke select on organizations from anon, authenticated;
+grant select (id, name, type, location, description, focus_areas, is_external, external_url, logo_url, created_at, updated_at) on organizations to anon, authenticated;
+
+create table if not exists notifications (
+  id          uuid primary key default uuid_generate_v4(),
+  user_id     uuid not null references profiles(id) on delete cascade,
+  type        text not null,
+  title       text not null,
+  body        text,
+  link        text,
+  read        boolean not null default false,
+  created_at  timestamptz not null default now()
+);
+create index if not exists notifications_user_time on notifications(user_id, created_at desc);
+alter table notifications enable row level security;
+drop policy if exists "notifications: read own" on notifications;
+create policy "notifications: read own" on notifications for select using (auth.uid() = user_id);
+drop policy if exists "notifications: update own" on notifications;
+create policy "notifications: update own" on notifications for update using (auth.uid() = user_id);

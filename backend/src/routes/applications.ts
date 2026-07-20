@@ -16,6 +16,25 @@ import {
   submitExternalSchema,
   updateApplicationStatusSchema,
 } from '../schemas/index.js';
+import { notify, notifyOrgMembers } from '../notify.js';
+
+// Fire the "new application" notification to the grant's org after a
+// founder submits (internal or external path).
+async function notifySubmission(applicationId: string) {
+  const { data: a } = await admin
+    .from('applications')
+    .select('id, founder:founders(full_name), project:projects(title), grant:grants(title, organization_id)')
+    .eq('id', applicationId)
+    .maybeSingle();
+  const g = (a as any)?.grant;
+  if (!g?.organization_id) return;
+  await notifyOrgMembers(
+    g.organization_id,
+    'application_received',
+    'New application to ' + g.title,
+    ((a as any).founder?.full_name ?? 'A founder') + ' applied with "' + ((a as any).project?.title ?? 'a project') + '".',
+  );
+}
 
 export async function applicationsRoutes(app: FastifyInstance) {
   // GET /api/v1/applications/me
@@ -72,7 +91,7 @@ export async function applicationsRoutes(app: FastifyInstance) {
     const { data: appli, error } = await sb
       .from('applications')
       .select(
-        '*, project:projects(*), grant:grants(*, questions:grant_questions(*))',
+        '*, project:projects(*), grant:grants(*, questions:grant_questions(*), organization:organizations(id, name, type, logo_url, contact_name, contact_email, contact_phone))',
       )
       .eq('id', id)
       .maybeSingle();
@@ -83,6 +102,14 @@ export async function applicationsRoutes(app: FastifyInstance) {
       .from('application_answers')
       .select('*')
       .eq('application_id', id);
+
+    // Org contact details are revealed to the founder only once backed.
+    const org = (appli as any).grant?.organization;
+    if (org && appli.status !== 'backed') {
+      delete org.contact_name;
+      delete org.contact_email;
+      delete org.contact_phone;
+    }
 
     return { ...appli, answers: answers ?? [] };
   });
@@ -135,6 +162,7 @@ export async function applicationsRoutes(app: FastifyInstance) {
     // TODO: bump grants.application_count via a DB trigger (cleaner than
     // doing it inline — racy under load).
 
+    await notifySubmission(id);
     return data;
   });
 
@@ -167,6 +195,7 @@ export async function applicationsRoutes(app: FastifyInstance) {
       // TODO: if method === 'email_sent', actually send the email here via Resend.
       // For MVP we just record the confirmation.
 
+      await notifySubmission(id);
       return data;
     },
   );
@@ -219,6 +248,24 @@ export async function applicationsRoutes(app: FastifyInstance) {
         });
       }
 
+      if (['shortlisted', 'backed'].includes(parsed.data.status)) {
+        const { data: org } = await admin
+          .from('organizations')
+          .select('name')
+          .eq('id', member.organization_id)
+          .single();
+        const { data: g } = await admin.from('grants').select('title').eq('id', appli.grant_id).single();
+        if (parsed.data.status === 'shortlisted') {
+          await notify(appli.founder_id, 'shortlisted',
+            'You\'ve been shortlisted for ' + (g?.title ?? 'a grant'),
+            (org?.name ?? 'The organisation') + ' shortlisted your application.');
+        } else {
+          await notify(appli.founder_id, 'backed',
+            '🎉 You\'re backed — ' + (g?.title ?? 'grant'),
+            (org?.name ?? 'The organisation') + ' backed your project. Contact details are now visible on your application.');
+        }
+      }
+
       return data;
     },
   );
@@ -244,6 +291,19 @@ export async function applicationsRoutes(app: FastifyInstance) {
         return reply.code(500).send({ error: error.message });
       }
       await admin.from('applications').update({ status: 'shortlisted' }).eq('id', id);
+
+      const { data: a } = await admin
+        .from('applications')
+        .select('founder_id, grant:grants(title)')
+        .eq('id', id)
+        .maybeSingle();
+      if (a) {
+        const { data: org } = await admin
+          .from('organizations').select('name').eq('id', member.organization_id).single();
+        await notify(a.founder_id, 'shortlisted',
+          'You\'ve been shortlisted for ' + ((a as any).grant?.title ?? 'a grant'),
+          (org?.name ?? 'The organisation') + ' shortlisted your application.');
+      }
       return { ok: true };
     },
   );

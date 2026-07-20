@@ -133,6 +133,17 @@ export async function grantsRoutes(app: FastifyInstance) {
     return data;
   });
 
+  // GET /api/v1/grants/saved/list — ids of grants the founder saved
+  app.get('/saved/list', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
+    const sb = userClient(req.user!.jwt);
+    const { data, error } = await sb
+      .from('founder_saved_grants')
+      .select('grant_id')
+      .eq('founder_id', req.user!.id);
+    if (error) return reply.code(500).send({ error: error.message });
+    return { grant_ids: (data ?? []).map((r) => r.grant_id) };
+  });
+
   // POST /api/v1/grants/:id/save — founder saves grant
   app.post('/:id/save', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
     const { id } = req.params as { id: string };
@@ -187,7 +198,7 @@ export async function grantsRoutes(app: FastifyInstance) {
         admin
           .from('applications')
           .select(
-            'id, status, submitted_at, founder:founders(id, full_name, university, field_of_study, focus_areas), project:projects(id, title, tagline, description, focus_areas), answers:application_answers(question_key, value, ai_drafted)',
+            'id, status, submitted_at, founder:founders(id, full_name, university, field_of_study, focus_areas, profile_photo_url, contact_email, contact_phone), project:projects(id, title, tagline, description, focus_areas), answers:application_answers(question_key, value, ai_drafted)',
           )
           .eq('grant_id', id)
           .order('submitted_at', { ascending: false }),
@@ -198,6 +209,13 @@ export async function grantsRoutes(app: FastifyInstance) {
           .order('order_index', { ascending: true }),
       ]);
       if (error) return reply.code(500).send({ error: error.message });
+      // Founder contact details are revealed to the org only once backed.
+      (data ?? []).forEach((a) => {
+        if (a.status !== 'backed' && (a as any).founder) {
+          delete (a as any).founder.contact_email;
+          delete (a as any).founder.contact_phone;
+        }
+      });
       return { applications: data ?? [], questions: questions ?? [] };
     },
   );

@@ -8,17 +8,17 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-  --bg: #F5EFE4;
-  --surface: #EDE5D6;
-  --card: #FAF6EF;
-  --border: rgba(90,50,15,0.12);
-  --border-strong: rgba(90,50,15,0.22);
-  --text: #3B1F08;
-  --muted: #7A5C3A;
-  --hint: #B09070;
-  --orange: #F26400;
-  --orange-dim: rgba(242,100,0,0.08);
-  --orange-border: rgba(242,100,0,0.35);
+  --bg: #F2F6FB;
+  --surface: #E7EEF7;
+  --card: #FBFDFF;
+  --border: rgba(11,37,69,0.12);
+  --border-strong: rgba(11,37,69,0.22);
+  --text: #0B2545;
+  --muted: #3E5C7E;
+  --hint: #8AA2BD;
+  --orange: #1F6FEB;
+  --orange-dim: rgba(31,111,235,0.08);
+  --orange-border: rgba(31,111,235,0.35);
   --sidebar-w: 260px;
 }
 body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text); min-height:100vh; display:flex; }
@@ -104,7 +104,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 .applicant-table th { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.08em; color:var(--hint); text-align:left; padding:10px 22px; border-bottom:1px solid var(--border); background:var(--surface); }
 .applicant-table td { padding:14px 22px; border-bottom:1px solid var(--border); vertical-align:middle; }
 .applicant-table tr:last-child td { border-bottom:none; }
-.applicant-table tr:hover td { background:rgba(90,50,15,0.03); cursor:pointer; }
+.applicant-table tr:hover td { background:rgba(11,37,69,0.03); cursor:pointer; }
 .applicant-name { font-family:'Instrument Serif',serif; font-size:16px; font-style:italic; color:var(--text); }
 .applicant-uni { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.05em; margin-top:2px; }
 .applicant-project { font-size:13px; font-weight:600; color:var(--text); }
@@ -176,7 +176,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 /* FOUNDER PROFILE MODAL */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(30,12,0,0.5); z-index:100; align-items:center; justify-content:center; }
 .modal-overlay.on { display:flex; }
-.modal { background:var(--bg); width:860px; max-height:90vh; overflow-y:auto; border:1px solid var(--border-strong); box-shadow:0 24px 80px rgba(30,12,0,0.25); }
+.modal { background:var(--bg); width:860px; max-height:90vh; overflow-y:auto; border:1px solid var(--border-strong); box-shadow:0 24px 80px rgba(11,37,69,0.25); }
 .modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
 .modal-close { background:none; border:none; font-size:20px; color:var(--hint); cursor:pointer; padding:4px; line-height:1; }
 .modal-close:hover { color:var(--text); }
@@ -233,6 +233,10 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:14px;"><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">Our Grants & Applicants</div></div>
     <div class="topbar-right">
+      <div style="position:relative;">
+        <button class="btn btn-out" onclick="toggleNotifs()" title="Notifications" style="position:relative;">&#128276;<span id="notif-badge" style="display:none;position:absolute;top:-7px;right:-7px;background:var(--orange);color:#fff;font-size:9px;line-height:1;padding:3px 6px;border-radius:9px;font-family:'DM Mono',monospace;"></span></button>
+        <div id="notif-panel" style="display:none;position:absolute;right:0;top:44px;width:360px;max-height:440px;overflow-y:auto;background:var(--card);border:1px solid var(--border-strong);box-shadow:0 14px 36px rgba(11,37,69,.18);z-index:150;text-align:left;"></div>
+      </div>
       <button class="btn btn-out" onclick="showPage('orgprofile', document.querySelector('[onclick*=orgprofile]'))">View Public Profile</button>
       <button class="btn btn-or" onclick="showPage('postgrant', document.querySelector('[onclick*=postgrant]'))">+ Post A Grant</button>
     </div>
@@ -297,6 +301,14 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         <div class="profile-section-head"><span class="profile-section-title">About</span></div>
         <div class="profile-section-body">
           <div class="profile-field"><div class="profile-field-label">Description</div><div class="profile-field-value" id="op-description">—</div></div>
+        </div>
+      </div>
+      <div class="profile-section">
+        <div class="profile-section-head"><span class="profile-section-title">Point of Contact — shared only with founders you back</span></div>
+        <div class="profile-section-body">
+          <div class="profile-field"><div class="profile-field-label">Name</div><div class="profile-field-value" id="op-cname">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Email</div><div class="profile-field-value" id="op-cemail">—</div></div>
+          <div class="profile-field"><div class="profile-field-label">Phone</div><div class="profile-field-value" id="op-cphone">—</div></div>
         </div>
       </div>
       <div class="profile-section">
@@ -644,6 +656,16 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         <div class="pg-field"><div class="pg-label">Location</div><input class="pg-input" id="oe-location"/></div>
         <div class="pg-field"><div class="pg-label">Description</div><textarea class="pg-input" id="oe-description" rows="3" style="min-height:72px;resize:vertical;"></textarea></div>
         <div class="pg-field"><div class="pg-label">Focus areas (comma separated)</div><input class="pg-input" id="oe-focus" placeholder="Arts, Community"/></div>
+        <div class="pg-field"><div class="pg-label">Point of contact — name</div><input class="pg-input" id="oe-cname"/></div>
+        <div class="pg-field"><div class="pg-label">Point of contact — email</div><input class="pg-input" id="oe-cemail" type="email"/></div>
+        <div class="pg-field"><div class="pg-label">Point of contact — phone</div><input class="pg-input" id="oe-cphone"/></div>
+        <div class="pg-field">
+          <div class="pg-label">Organisation logo</div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div id="oe-logo-preview" style="width:52px;height:52px;border-radius:8px;background:var(--surface);border:1px solid var(--border-strong);background-size:cover;background-position:center;flex-shrink:0;"></div>
+            <input type="file" id="oe-logo" accept="image/jpeg,image/png,image/webp" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+          </div>
+        </div>
       </div>
       <div id="oe-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;margin-top:10px;"></div>
     </div>
@@ -658,7 +680,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 </div>
 
 <!-- ═══ TOAST ═══ -->
-<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 22px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;z-index:200;box-shadow:0 8px 24px rgba(30,12,0,0.25);"></div>
+<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 22px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;z-index:200;box-shadow:0 8px 24px rgba(11,37,69,0.25);"></div>
 
 <!-- FOUNDER APPLICATION MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
@@ -856,6 +878,7 @@ let DISCOVER_FILTER = 'all';
   }
   renderOrg();
   loadAll();
+  loadNotifs();
 })();
 
 async function loadAll() {
@@ -889,6 +912,16 @@ function renderOrg() {
   document.getElementById('sb-org-name').textContent = ORG.name;
   document.getElementById('sb-org-type').textContent = [typeLabel, ORG.location].filter(Boolean).join(' · ');
   document.getElementById('op-name').textContent = ORG.name || '—';
+  document.getElementById('op-cname').textContent = ORG.contact_name || '—';
+  document.getElementById('op-cemail').textContent = ORG.contact_email || '—';
+  document.getElementById('op-cphone').textContent = ORG.contact_phone || '—';
+  const avi = document.querySelector('.profile-avi');
+  if (avi && ORG.logo_url) {
+    avi.textContent = '';
+    avi.style.backgroundImage = 'url(' + ORG.logo_url + ')';
+    avi.style.backgroundSize = 'cover';
+    avi.style.backgroundPosition = 'center';
+  }
   document.getElementById('op-type').textContent = typeLabel || '—';
   document.getElementById('op-location').textContent = ORG.location || '—';
   document.getElementById('op-description').textContent = ORG.description || '—';
@@ -898,6 +931,12 @@ function renderOrg() {
 }
 
 function openOrgEdit() {
+  document.getElementById('oe-cname').value = ORG.contact_name || '';
+  document.getElementById('oe-cemail').value = ORG.contact_email || '';
+  document.getElementById('oe-cphone').value = ORG.contact_phone || '';
+  document.getElementById('oe-logo').value = '';
+  document.getElementById('oe-logo-preview').style.backgroundImage =
+    ORG.logo_url ? 'url(' + ORG.logo_url + ')' : 'none';
   document.getElementById('oe-name').value = ORG.name || '';
   document.getElementById('oe-type').value = ORG.type || 'community';
   document.getElementById('oe-location').value = ORG.location || '';
@@ -909,6 +948,18 @@ function openOrgEdit() {
 function closeOrgEdit() { document.getElementById('orgedit-overlay').classList.remove('on'); }
 async function saveOrgEdit() {
   const status = document.getElementById('oe-status');
+  // Upload a new logo first, if chosen
+  const logoInput = document.getElementById('oe-logo');
+  if (logoInput.files && logoInput.files[0]) {
+    status.textContent = 'Uploading logo…';
+    try {
+      const base64 = await resizeImage(logoInput.files[0]);
+      await api('/organizations/me/logo', {
+        method: 'POST',
+        body: JSON.stringify({ image_base64: base64, content_type: 'image/jpeg' }),
+      });
+    } catch (e) { status.textContent = 'Logo upload failed — ' + e.message; return; }
+  }
   status.textContent = 'Saving…';
   try {
     ORG = await api('/organizations/me', {
@@ -917,6 +968,9 @@ async function saveOrgEdit() {
         name: document.getElementById('oe-name').value.trim(),
         type: document.getElementById('oe-type').value,
         location: document.getElementById('oe-location').value.trim(),
+        contact_name: document.getElementById('oe-cname').value.trim(),
+        contact_email: document.getElementById('oe-cemail').value.trim(),
+        contact_phone: document.getElementById('oe-cphone').value.trim(),
         description: document.getElementById('oe-description').value.trim(),
         focus_areas: document.getElementById('oe-focus').value.split(',').map(s => s.trim()).filter(Boolean),
       }),
@@ -1170,6 +1224,14 @@ async function openApplicantModal(applicationId, grantId) {
     founder: 'What makes you the right person to lead this?',
   };
   const answers = a.answers || [];
+  const f = a.founder || {};
+  const contactHtml = (f.contact_email || f.contact_phone)
+    ? '<div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 18px;margin-top:14px;">' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.07em;color:var(--orange);margin-bottom:8px;">BACKED — FOUNDER CONTACT DETAILS</div>' +
+      section('Email', f.contact_email || '—') +
+      section('Phone', f.contact_phone || '—') +
+      '</div>'
+    : '';
   const answersHtml = answers.length
     ? answers.map(ans => {
         const label = labels[ans.question_key] || FALLBACK_LABELS[ans.question_key] || ans.question_key;
@@ -1181,7 +1243,8 @@ async function openApplicantModal(applicationId, grantId) {
     '<div style="font-family:\'DM Mono\',monospace;font-size:9px;letter-spacing:.1em;color:var(--hint);text-transform:uppercase;margin-bottom:18px">Application</div>' +
     section('Status', (STATUS_BADGES[a.status] || [null, a.status])[1] + (a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : '')) +
     (p.description ? section('About the project', p.description) : '') +
-    answersHtml;
+    answersHtml +
+    contactHtml;
 }
 
 function shortlistFounder() {
@@ -1371,6 +1434,63 @@ async function submitGrant(e) {
 function resetPostGrant() {
   document.getElementById('pg-submit-row').style.display = 'flex';
   document.getElementById('pg-success').style.display = 'none';
+}
+
+// ───── NOTIFICATIONS ─────
+let NOTIFS = [];
+async function loadNotifs() {
+  try {
+    const res = await api('/notifications');
+    NOTIFS = res.notifications;
+    const badge = document.getElementById('notif-badge');
+    if (res.unread > 0) { badge.textContent = res.unread; badge.style.display = 'block'; }
+    else badge.style.display = 'none';
+  } catch (e) { /* non-critical */ }
+}
+function renderNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (!NOTIFS.length) {
+    panel.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);">No notifications yet — they\'ll appear when founders apply to your grants.</div>';
+    return;
+  }
+  panel.innerHTML = NOTIFS.map(n =>
+    '<div style="padding:14px 16px;border-bottom:1px solid var(--border);' + (n.read ? 'opacity:.65;' : '') + '">' +
+    '<div style="font-size:12.5px;color:var(--text);font-weight:600;margin-bottom:3px;">' + esc(n.title) + '</div>' +
+    (n.body ? '<div style="font-size:12px;color:var(--muted);line-height:1.5;">' + esc(n.body) + '</div>' : '') +
+    '<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);margin-top:5px;">' + esc((n.created_at || '').slice(0, 16).replace('T', ' ')) + '</div>' +
+    '</div>'
+  ).join('');
+}
+async function toggleNotifs() {
+  const panel = document.getElementById('notif-panel');
+  const opening = panel.style.display === 'none';
+  panel.style.display = opening ? 'block' : 'none';
+  if (opening) {
+    renderNotifPanel();
+    if (NOTIFS.some(n => !n.read)) {
+      try { await api('/notifications/read-all', { method: 'POST' }); } catch (e) {}
+      document.getElementById('notif-badge').style.display = 'none';
+      NOTIFS.forEach(n => { n.read = true; });
+    }
+  }
+}
+
+// ───── IMAGE RESIZE (client-side, ≤512px JPEG) ─────
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      resolve(canvas.toDataURL('image/jpeg', 0.86).split(',')[1]);
+    };
+    img.onerror = () => reject(new Error('Could not read image'));
+    img.src = URL.createObjectURL(file);
+  });
 }
 
 function showToast(msg) {

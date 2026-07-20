@@ -8,17 +8,17 @@
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
 :root {
-  --bg: #F5EFE4;
-  --surface: #EDE5D6;
-  --card: #FAF6EF;
-  --border: rgba(90,50,15,0.12);
-  --border-strong: rgba(90,50,15,0.22);
-  --text: #3B1F08;
-  --muted: #7A5C3A;
-  --hint: #B09070;
-  --orange: #F26400;
-  --orange-dim: rgba(242,100,0,0.08);
-  --orange-border: rgba(242,100,0,0.35);
+  --bg: #F2F6FB;
+  --surface: #E7EEF7;
+  --card: #FBFDFF;
+  --border: rgba(11,37,69,0.12);
+  --border-strong: rgba(11,37,69,0.22);
+  --text: #0B2545;
+  --muted: #3E5C7E;
+  --hint: #8AA2BD;
+  --orange: #1F6FEB;
+  --orange-dim: rgba(31,111,235,0.08);
+  --orange-border: rgba(31,111,235,0.35);
   --sidebar-w: 240px;
 }
 body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text); min-height:100vh; display:flex; }
@@ -144,7 +144,7 @@ a.btn { text-decoration:none; display:block; text-align:center; width:100%; }
 .modal {
   background:var(--bg); width:720px; max-height:90vh; overflow-y:auto;
   border:1px solid var(--border-strong);
-  box-shadow:0 24px 80px rgba(30,12,0,0.25);
+  box-shadow:0 24px 80px rgba(11,37,69,0.25);
 }
 .modal-header { padding:24px 28px; border-bottom:1px solid var(--border); display:flex; align-items:flex-start; justify-content:space-between; }
 .modal-title { font-family:'Instrument Serif',serif; font-size:22px; font-style:italic; color:var(--text); margin-bottom:3px; }
@@ -266,6 +266,14 @@ textarea.form-input { min-height:80px; }
           <div class="form-label"><span>University (optional)</span></div>
           <input class="form-input" id="ob-uni" placeholder="e.g. NUS"/>
         </div>
+        <div class="form-row">
+          <div class="form-label"><span>Contact email — shared only when a backer backs you</span></div>
+          <input class="form-input" id="ob-cemail" type="email" placeholder="you@email.com"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Contact number — shared only when a backer backs you</span></div>
+          <input class="form-input" id="ob-cphone" placeholder="+65 9123 4567"/>
+        </div>
       </div>
       <div class="form-section" id="ob-backer-fields" style="display:none;">
         <div class="form-row">
@@ -287,6 +295,18 @@ textarea.form-input { min-height:80px; }
           <div class="form-label"><span>Location (optional)</span></div>
           <input class="form-input" id="ob-org-location" placeholder="e.g. Singapore"/>
         </div>
+        <div class="form-row">
+          <div class="form-label"><span>Point of contact — name</span></div>
+          <input class="form-input" id="ob-oc-name" placeholder="Who founders will speak to"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Point of contact — email (shared only with founders you back)</span></div>
+          <input class="form-input" id="ob-oc-email" type="email" placeholder="contact@org.com"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Point of contact — phone (shared only with founders you back)</span></div>
+          <input class="form-input" id="ob-oc-phone" placeholder="+65 9123 4567"/>
+        </div>
       </div>
       <div id="ob-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
     </div>
@@ -306,6 +326,10 @@ textarea.form-input { min-height:80px; }
   <div class="topbar">
     <div style="display:flex;align-items:center;gap:14px;"><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">My Projects</div></div>
     <div class="topbar-right">
+      <div style="position:relative;">
+        <button class="btn btn-out" onclick="toggleNotifs()" title="Notifications" style="position:relative;">&#128276;<span id="notif-badge" style="display:none;position:absolute;top:-7px;right:-7px;background:var(--orange);color:#fff;font-size:9px;line-height:1;padding:3px 6px;border-radius:9px;font-family:'DM Mono',monospace;"></span></button>
+        <div id="notif-panel" style="display:none;position:absolute;right:0;top:44px;width:360px;max-height:440px;overflow-y:auto;background:var(--card);border:1px solid var(--border-strong);box-shadow:0 14px 36px rgba(11,37,69,.18);z-index:150;text-align:left;"></div>
+      </div>
       <button class="btn btn-out" onclick="showPage('profile', document.querySelector('[onclick*=profile]'))">View Public Profile</button>
       <button class="btn btn-or" onclick="startNewProject()">+ New Project</button>
     </div>
@@ -361,6 +385,7 @@ textarea.form-input { min-height:80px; }
       <div class="pill" data-filter="focus:Environment">Environment</div>
       <div class="pill" data-filter="difficulty:easy">Easy</div>
       <div class="pill" data-filter="open">Open Now</div>
+      <div class="pill" data-filter="saved">★ Saved</div>
     </div>
 
     <div id="grants-list"></div>
@@ -418,6 +443,15 @@ textarea.form-input { min-height:80px; }
         <div class="form-row"><div class="form-label"><span>Field of study</span></div><input class="form-input" id="bi-fos"/></div>
         <div class="form-row"><div class="form-label"><span>Location</span></div><input class="form-input" id="bi-location"/></div>
         <div class="form-row"><div class="form-label"><span>LinkedIn URL (optional)</span></div><input class="form-input" id="bi-linkedin" placeholder="https://linkedin.com/in/..."/></div>
+        <div class="form-row"><div class="form-label"><span>Contact email — shared only when backed</span></div><input class="form-input" id="bi-cemail" type="email"/></div>
+        <div class="form-row"><div class="form-label"><span>Contact number — shared only when backed</span></div><input class="form-input" id="bi-cphone"/></div>
+        <div class="form-row">
+          <div class="form-label"><span>Profile photo</span></div>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div id="bi-avatar-preview" style="width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);background-size:cover;background-position:center;flex-shrink:0;"></div>
+            <input type="file" id="bi-avatar" accept="image/jpeg,image/png,image/webp" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+          </div>
+        </div>
       </div>
       <div id="bi-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
     </div>
@@ -588,8 +622,26 @@ textarea.form-input { min-height:80px; }
   </div>
 </div>
 
+<!-- ═══ MY APPLICATION DETAIL MODAL ═══ -->
+<div class="modal-overlay" id="appdetail-overlay" onclick="if(event.target===this){closeAppDetail()}">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="ad-title">Application</div>
+        <div class="modal-sub" id="ad-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeAppDetail()">✕</button>
+    </div>
+    <div class="modal-body" id="ad-body"></div>
+    <div class="modal-footer">
+      <div class="modal-footer-note" id="ad-footer-note"></div>
+      <div class="btn-row"><button class="btn btn-out" onclick="closeAppDetail()">Close</button></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ TOAST ═══ -->
-<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 22px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;z-index:200;box-shadow:0 8px 24px rgba(30,12,0,0.25);"></div>
+<div id="toast" style="display:none;position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:12px 22px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.06em;z-index:200;box-shadow:0 8px 24px rgba(11,37,69,0.25);"></div>
 
 <!-- APPLICATION MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
@@ -778,7 +830,9 @@ let FOUNDER = null;       // founders row for the signed-in user
 let MY_PROJECTS = [];     // projects rows
 let ALL_GRANTS = [];      // active grants (with organization)
 let MY_APPS = [];         // applications rows
+let SAVED_IDS = new Set(); // saved grant ids
 let GRANT_FILTER = 'all';
+let APP_BY_GRANT = {};    // latest application per grant id
 
 // ───── GENERAL APPLICATION ─────
 // Lives entirely on the founders row — filled once, prefills every
@@ -814,8 +868,16 @@ function renderIdentity(row) {
   if (document.getElementById('page-dashboard').classList.contains('on')) {
     document.getElementById('topbar-title').textContent = titles.dashboard;
   }
-  document.querySelector('.profile-avi').textContent =
-    name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  const avi = document.querySelector('.profile-avi');
+  if (row.profile_photo_url) {
+    avi.textContent = '';
+    avi.style.backgroundImage = 'url(' + row.profile_photo_url + ')';
+    avi.style.backgroundSize = 'cover';
+    avi.style.backgroundPosition = 'center';
+  } else {
+    avi.style.backgroundImage = 'none';
+    avi.textContent = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+  }
   document.querySelector('.profile-name').textContent = name;
   document.querySelector('.profile-uni').textContent =
     [row.university, row.field_of_study].filter(Boolean).join(' · ');
@@ -838,6 +900,7 @@ function renderIdentity(row) {
   if (!row.past_experience) missing.push('Past Experience (Why You)');
   if (!row.linkedin_url) missing.push('LinkedIn URL');
   if (!row.profile_photo_url) missing.push('Profile Photo');
+  if (!row.contact_email || !row.contact_phone) missing.push('Contact Info (revealed only when backed)');
   const section = document.getElementById('prof-missing-section');
   if (missing.length === 0) {
     section.style.display = 'none';
@@ -916,13 +979,17 @@ function renderDashApps() {
   }
   el.innerHTML = MY_APPS.slice(0, 4).map(a => {
     const active = ['submitted','in_review','shortlisted','backed'].includes(a.status);
-    return '<div class="grant-card">' +
+    const onclick = a.status === 'draft'
+      ? 'continueDraft(\'' + a.id + '\')'
+      : 'openMyApplication(\'' + a.id + '\')';
+    return '<div class="grant-card" style="cursor:pointer;" onclick="' + onclick + '">' +
       '<div class="' + (active ? 'project-card-band' : 'project-card-band-muted') + '"></div>' +
       '<div class="grant-card-inner">' +
       '<div class="grant-title">' + esc(a.grant ? a.grant.title : 'Grant') + '</div>' +
       '<p class="grant-sub">For ' + esc(a.project ? a.project.title : 'your project') + '.</p>' +
       '<div class="tags" style="margin-bottom:0"><span class="tag ' + (active ? 'tag-or' : '') + '">' +
-      esc(APP_STATUS_LABELS[a.status] || a.status) + '</span></div>' +
+      esc(APP_STATUS_LABELS[a.status] || a.status) + '</span>' +
+      '<span class="tag">' + (a.status === 'draft' ? 'Continue →' : 'View →') + '</span></div>' +
       '</div></div>';
   }).join('');
 }
@@ -953,6 +1020,19 @@ function grantCard(g, i) {
   const externalLink = g.external_portal_url
     ? '<a class="btn btn-out btn-sm" href="' + esc(g.external_portal_url) + '" target="_blank" rel="noopener">View Source →</a>'
     : '';
+  const myApp = APP_BY_GRANT[g.id];
+  let primaryBtn;
+  if (!myApp) {
+    primaryBtn = '<button class="btn btn-or" onclick="applyWithAI(\'' + g.id + '\')">Apply with AI</button>';
+  } else if (myApp.status === 'draft') {
+    primaryBtn = '<button class="btn btn-or" onclick="continueDraft(\'' + myApp.id + '\')">Continue Draft →</button>';
+  } else {
+    primaryBtn = '<span class="tag tag-or" style="text-align:center;">' + esc(APP_STATUS_LABELS[myApp.status] || myApp.status) + '</span>' +
+      '<button class="btn btn-out btn-sm" onclick="openMyApplication(\'' + myApp.id + '\')">View Application</button>';
+  }
+  const saveBtn = SAVED_IDS.has(g.id)
+    ? '<button class="btn btn-out btn-sm" onclick="toggleSaveGrant(\'' + g.id + '\')">★ Saved</button>'
+    : '<button class="btn btn-out btn-sm" onclick="toggleSaveGrant(\'' + g.id + '\')">Save</button>';
   return (
     '<div class="grant-explore-card">' +
       '<div class="' + (i === 0 ? 'grant-explore-band' : 'grant-explore-band-dim') + '"></div>' +
@@ -965,9 +1045,9 @@ function grantCard(g, i) {
           '<div class="tags">' + tags + '</div>' +
         '</div>' +
         '<div class="grant-explore-right">' +
-          '<button class="btn btn-or" onclick="applyWithAI(\'' + g.id + '\')">Apply with AI</button>' +
+          primaryBtn +
           externalLink +
-          '<button class="btn btn-out btn-sm" onclick="saveGrant(\'' + g.id + '\')">Save</button>' +
+          saveBtn +
         '</div>' +
       '</div>' +
     '</div>'
@@ -976,6 +1056,7 @@ function grantCard(g, i) {
 
 function grantMatchesFilter(g, f) {
   if (f === 'all') return true;
+  if (f === 'saved') return SAVED_IDS.has(g.id);
   if (f === 'open') {
     if (g.is_rolling) return true;
     return g.application_closes_at ? g.application_closes_at >= new Date().toISOString().slice(0, 10) : false;
@@ -1005,11 +1086,28 @@ document.querySelectorAll('#grants-filters .pill').forEach(pill => {
   });
 });
 
-async function saveGrant(grantId) {
+async function toggleSaveGrant(grantId) {
   try {
-    await api('/grants/' + grantId + '/save', { method: 'POST' });
-    showToast('✓ Grant saved to your list.');
-  } catch (e) { showToast('Could not save grant.'); }
+    if (SAVED_IDS.has(grantId)) {
+      await api('/grants/' + grantId + '/save', { method: 'DELETE' });
+      SAVED_IDS.delete(grantId);
+      showToast('Removed from saved grants.');
+    } else {
+      await api('/grants/' + grantId + '/save', { method: 'POST' });
+      SAVED_IDS.add(grantId);
+      showToast('✓ Saved — find it under the ★ Saved filter.');
+    }
+    renderGrants();
+  } catch (e) { showToast('Could not update saved grants.'); }
+}
+
+function rebuildAppMap() {
+  APP_BY_GRANT = {};
+  // MY_APPS is newest-first; keep the newest application per grant.
+  MY_APPS.forEach(a => {
+    const gid = a.grant ? a.grant.id : a.grant_id;
+    if (gid && !APP_BY_GRANT[gid]) APP_BY_GRANT[gid] = a;
+  });
 }
 
 // ───── DATA LOAD ─────
@@ -1018,14 +1116,18 @@ async function loadAll() {
     api('/projects/me'),
     api('/grants'),
     api('/applications/me'),
+    api('/grants/saved/list'),
   ]);
   if (results[0].status === 'fulfilled') MY_PROJECTS = results[0].value.projects;
   if (results[1].status === 'fulfilled') ALL_GRANTS = results[1].value.grants;
   if (results[2].status === 'fulfilled') MY_APPS = results[2].value.applications;
+  if (results[3].status === 'fulfilled') SAVED_IDS = new Set(results[3].value.grant_ids);
+  rebuildAppMap();
   renderProjects();
   renderGrants();
   renderDashApps();
   loadStats();
+  loadNotifs();
 }
 
 // ───── INIT (role-aware) ─────
@@ -1062,6 +1164,14 @@ let ONBOARD_ROLE = null;
 
 function openOnboarding() {
   document.querySelector('.profile-name').textContent = 'New here';
+  // Prefill contact email from the login email
+  sbAuth.auth.getSession().then(({ data }) => {
+    const email = data.session?.user?.email || '';
+    if (email) {
+      document.getElementById('ob-cemail').value = email;
+      document.getElementById('ob-oc-email').value = email;
+    }
+  });
   document.getElementById('onboard-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
@@ -1083,12 +1193,16 @@ async function submitOnboarding() {
       const name = document.getElementById('ob-name').value.trim();
       const age = parseInt(document.getElementById('ob-age').value, 10);
       const uni = document.getElementById('ob-uni').value.trim();
+      const cemail = document.getElementById('ob-cemail').value.trim();
+      const cphone = document.getElementById('ob-cphone').value.trim();
       if (name.length < 2) { status.textContent = 'Please enter your full name.'; return; }
       if (!age || age < 13 || age > 99) { status.textContent = 'Please enter your age (13–99).'; return; }
+      if (!cemail.includes('@')) { status.textContent = 'Please enter a contact email.'; return; }
+      if (cphone.replace(/\D/g, '').length < 8) { status.textContent = 'Please enter a contact number (min 8 digits).'; return; }
       status.textContent = 'Creating your profile…';
       await api('/auth/profile', {
         method: 'POST',
-        body: JSON.stringify({ role: 'founder', founder: { full_name: name, age, ...(uni ? { university: uni } : {}) } }),
+        body: JSON.stringify({ role: 'founder', founder: { full_name: name, age, contact_email: cemail, contact_phone: cphone, ...(uni ? { university: uni } : {}) } }),
       });
       const row = await api('/founders/me');
       document.getElementById('onboard-overlay').classList.remove('on');
@@ -1100,11 +1214,17 @@ async function submitOnboarding() {
       const orgName = document.getElementById('ob-org-name').value.trim();
       const orgType = document.getElementById('ob-org-type').value;
       const orgLoc = document.getElementById('ob-org-location').value.trim();
+      const ocName = document.getElementById('ob-oc-name').value.trim();
+      const ocEmail = document.getElementById('ob-oc-email').value.trim();
+      const ocPhone = document.getElementById('ob-oc-phone').value.trim();
       if (orgName.length < 2) { status.textContent = 'Please enter your organisation name.'; return; }
+      if (ocName.length < 2) { status.textContent = 'Please enter a contact person.'; return; }
+      if (!ocEmail.includes('@')) { status.textContent = 'Please enter a contact email.'; return; }
+      if (ocPhone.replace(/\D/g, '').length < 8) { status.textContent = 'Please enter a contact number (min 8 digits).'; return; }
       status.textContent = 'Creating your organisation…';
       await api('/auth/profile', {
         method: 'POST',
-        body: JSON.stringify({ role: 'backer', organization: { name: orgName, type: orgType, ...(orgLoc ? { location: orgLoc } : {}) } }),
+        body: JSON.stringify({ role: 'backer', organization: { name: orgName, type: orgType, contact_name: ocName, contact_email: ocEmail, contact_phone: ocPhone, ...(orgLoc ? { location: orgLoc } : {}) } }),
       });
       window.location.replace('backer.html');
     }
@@ -1122,6 +1242,11 @@ function openBasicInfo() {
   document.getElementById('bi-fos').value = FOUNDER.field_of_study || '';
   document.getElementById('bi-location').value = FOUNDER.location || '';
   document.getElementById('bi-linkedin').value = FOUNDER.linkedin_url || '';
+  document.getElementById('bi-cemail').value = FOUNDER.contact_email || '';
+  document.getElementById('bi-cphone').value = FOUNDER.contact_phone || '';
+  document.getElementById('bi-avatar').value = '';
+  document.getElementById('bi-avatar-preview').style.backgroundImage =
+    FOUNDER.profile_photo_url ? 'url(' + FOUNDER.profile_photo_url + ')' : 'none';
   document.getElementById('bi-status').textContent = '';
   document.getElementById('basicinfo-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
@@ -1142,9 +1267,24 @@ async function saveBasicInfo() {
   if (age) body.age = age;
   const linkedin = document.getElementById('bi-linkedin').value.trim();
   if (linkedin) body.linkedin_url = linkedin;
+  const cemail = document.getElementById('bi-cemail').value.trim();
+  const cphone = document.getElementById('bi-cphone').value.trim();
+  if (cemail) body.contact_email = cemail;
+  if (cphone) body.contact_phone = cphone;
   if (body.full_name.length < 2) { status.textContent = 'Name is required.'; return; }
   status.textContent = 'Saving…';
   try {
+    // Upload a new photo first, if one was chosen
+    const fileInput = document.getElementById('bi-avatar');
+    if (fileInput.files && fileInput.files[0]) {
+      status.textContent = 'Uploading photo…';
+      const base64 = await resizeImage(fileInput.files[0]);
+      await api('/founders/me/avatar', {
+        method: 'POST',
+        body: JSON.stringify({ image_base64: base64, content_type: 'image/jpeg' }),
+      });
+      status.textContent = 'Saving…';
+    }
     const row = await api('/founders/me', { method: 'PATCH', body: JSON.stringify(body) });
     closeBasicInfo();
     hydrateFromFounder(row);
@@ -1339,6 +1479,130 @@ function showToast(msg) {
   t.style.display = 'block';
   clearTimeout(window.__toastTimer);
   window.__toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2400);
+}
+
+// ───── MY APPLICATION DETAIL + CONTINUE DRAFT ─────
+async function openMyApplication(appId) {
+  let a;
+  try { a = await api('/applications/' + appId); }
+  catch (e) { showToast('Could not load application.'); return; }
+  const g = a.grant || {};
+  document.getElementById('ad-title').textContent = (g.title || 'Grant') + ' — Application';
+  document.getElementById('ad-sub').textContent =
+    [g.reference_code, g.amount_display].filter(Boolean).join(' · ');
+
+  const labels = {};
+  (g.questions || []).forEach(q => { labels[q.question_key] = q.label; });
+  const FALLBACK = {
+    impact: 'Describe your project and its impact',
+    funding: 'How will you use this grant?',
+    founder: 'What makes you the right person to lead this?',
+  };
+  const sect = (label, value) =>
+    '<div class="profile-field"><div class="profile-field-label">' + esc(label) +
+    '</div><div class="profile-field-value" style="white-space:pre-wrap;">' + esc(value || '—') + '</div></div>';
+
+  let html = '';
+  const when = a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : '';
+  html += sect('Status', (APP_STATUS_LABELS[a.status] || a.status) + when);
+  html += sect('Project', a.project ? a.project.title : '—');
+  (a.answers || []).forEach(ans => {
+    html += sect(labels[ans.question_key] || FALLBACK[ans.question_key] || ans.question_key,
+      ans.value + (ans.ai_drafted ? '\n\n✦ drafted with AI assistance' : ''));
+  });
+  if (!(a.answers || []).length) html += sect('Answers', 'No written answers yet.');
+
+  // Contact block — the backend only includes these once you are backed.
+  const org = g.organization;
+  if (org && (org.contact_email || org.contact_phone)) {
+    html += '<div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 18px;margin-top:6px;">' +
+      '<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.07em;color:var(--orange);margin-bottom:8px;">🎉 YOU\'RE BACKED — CONTACT ' + esc((org.name || '').toUpperCase()) + '</div>' +
+      (org.contact_name ? sect('Contact person', org.contact_name) : '') +
+      sect('Email', org.contact_email) +
+      sect('Phone', org.contact_phone) +
+      '</div>';
+  }
+  document.getElementById('ad-body').innerHTML = html;
+  document.getElementById('ad-footer-note').textContent =
+    a.status === 'backed' ? 'The backer received your contact details too — expect to hear from them.' : '';
+  document.getElementById('appdetail-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeAppDetail() {
+  document.getElementById('appdetail-overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
+async function continueDraft(appId) {
+  let a;
+  try { a = await api('/applications/' + appId); }
+  catch (e) { showToast('Could not load draft.'); return; }
+  CURRENT_GRANT = a.grant;
+  CURRENT_APPLICATION = a;
+  openModal(a.grant, a.project);
+  // Refill previously saved answers
+  (a.answers || []).forEach(ans => {
+    const el = document.getElementById('q-' + ans.question_key) || document.getElementById('field-' + ans.question_key);
+    if (el) { el.value = ans.value; if (ans.ai_drafted) el.classList.add('ai-filled'); }
+  });
+}
+
+// ───── NOTIFICATIONS ─────
+let NOTIFS = [];
+async function loadNotifs() {
+  try {
+    const res = await api('/notifications');
+    NOTIFS = res.notifications;
+    const badge = document.getElementById('notif-badge');
+    if (res.unread > 0) { badge.textContent = res.unread; badge.style.display = 'block'; }
+    else badge.style.display = 'none';
+  } catch (e) { /* non-critical */ }
+}
+function renderNotifPanel() {
+  const panel = document.getElementById('notif-panel');
+  if (!NOTIFS.length) {
+    panel.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);">No notifications yet — they\'ll appear when you\'re shortlisted, backed, or invited to apply.</div>';
+    return;
+  }
+  panel.innerHTML = NOTIFS.map(n =>
+    '<div style="padding:14px 16px;border-bottom:1px solid var(--border);' + (n.read ? 'opacity:.65;' : '') + '">' +
+    '<div style="font-size:12.5px;color:var(--text);font-weight:600;margin-bottom:3px;">' + esc(n.title) + '</div>' +
+    (n.body ? '<div style="font-size:12px;color:var(--muted);line-height:1.5;">' + esc(n.body) + '</div>' : '') +
+    '<div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);margin-top:5px;">' + esc((n.created_at || '').slice(0, 16).replace('T', ' ')) + '</div>' +
+    '</div>'
+  ).join('');
+}
+async function toggleNotifs() {
+  const panel = document.getElementById('notif-panel');
+  const opening = panel.style.display === 'none';
+  panel.style.display = opening ? 'block' : 'none';
+  if (opening) {
+    renderNotifPanel();
+    if (NOTIFS.some(n => !n.read)) {
+      try { await api('/notifications/read-all', { method: 'POST' }); } catch (e) {}
+      document.getElementById('notif-badge').style.display = 'none';
+      NOTIFS.forEach(n => { n.read = true; });
+    }
+  }
+}
+
+// ───── IMAGE RESIZE (client-side, ≤512px JPEG) ─────
+function resizeImage(file) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const max = 512;
+      const scale = Math.min(1, max / Math.max(img.width, img.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.86);
+      resolve(dataUrl.split(',')[1]); // base64 without prefix
+    };
+    img.onerror = () => reject(new Error('Could not read image'));
+    img.src = URL.createObjectURL(file);
+  });
 }
 
 // ───── APPLY-WITH-AI FLOW ─────

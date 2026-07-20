@@ -71,7 +71,7 @@ async function main() {
     await fetch(`${API_BASE}/auth/profile`, {
       method: 'POST',
       headers: H,
-      body: JSON.stringify({ role: 'founder', founder: { full_name: 'Auth Test', age: 21 } }),
+      body: JSON.stringify({ role: 'founder', founder: { full_name: 'Auth Test', age: 21, contact_email: 'authtest.dev@coart.test', contact_phone: '+6591234567' } }),
     }),
   );
 

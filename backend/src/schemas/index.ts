@@ -16,6 +16,8 @@ export const createProfileSchema = z.object({
       university: z.string().max(200).optional(),
       field_of_study: z.string().max(200).optional(),
       location: z.string().max(200).optional(),
+      contact_email: z.string().email().max(200),
+      contact_phone: z.string().min(8).max(30),
     })
     .optional(),
   // For backers:
@@ -31,6 +33,9 @@ export const createProfileSchema = z.object({
         'other',
       ]),
       location: z.string().max(200).optional(),
+      contact_name: z.string().min(2).max(100),
+      contact_email: z.string().email().max(200),
+      contact_phone: z.string().min(8).max(30),
     })
     .optional(),
 });
@@ -48,6 +53,8 @@ export const updateFounderSchema = z.object({
   past_experience: z.string().max(2000).optional(),
   community: z.string().max(1000).optional(),
   typical_budget: z.string().max(200).optional(),
+  contact_email: z.string().email().max(200).optional(),
+  contact_phone: z.string().min(8).max(30).optional(),
   open_to_backers: z.boolean().optional(),
   seeking_grant_match: z.boolean().optional(),
 });

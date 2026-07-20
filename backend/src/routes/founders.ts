@@ -6,6 +6,7 @@ import type { FastifyInstance } from 'fastify';
 import { requireUser, requireFounder, requireBacker } from '../auth.js';
 import { admin, userClient } from '../db.js';
 import { updateFounderSchema } from '../schemas/index.js';
+import { uploadImage } from '../storage.js';
 
 const FOUNDER_FIELDS_REQUIRED = [
   'full_name',
@@ -32,8 +33,9 @@ function calcCompletion(f: Record<string, unknown>): number {
 export async function foundersRoutes(app: FastifyInstance) {
   // GET /api/v1/founders/me
   app.get('/me', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
-    const sb = userClient(req.user!.jwt);
-    const { data, error } = await sb.from('founders').select('*').eq('id', req.user!.id).maybeSingle();
+    // admin client, scoped by the authenticated id — userClient would hit
+    // the column-privilege lock that hides contact_* from PostgREST roles.
+    const { data, error } = await admin.from('founders').select('*').eq('id', req.user!.id).maybeSingle();
     if (error) return reply.code(500).send({ error: error.message });
     if (!data) return reply.code(404).send({ error: 'Founder profile not found' });
     return { ...data, profile_completion_pct: calcCompletion(data) };
@@ -45,8 +47,7 @@ export async function foundersRoutes(app: FastifyInstance) {
     if (!parsed.success) {
       return reply.code(400).send({ error: 'Invalid input', details: parsed.error.flatten() });
     }
-    const sb = userClient(req.user!.jwt);
-    const { data, error } = await sb
+    const { data, error } = await admin
       .from('founders')
       .update(parsed.data)
       .eq('id', req.user!.id)
@@ -54,6 +55,30 @@ export async function foundersRoutes(app: FastifyInstance) {
       .single();
     if (error) return reply.code(500).send({ error: error.message });
     return { ...data, profile_completion_pct: calcCompletion(data) };
+  });
+
+  // POST /api/v1/founders/me/avatar — { image_base64, content_type }
+  app.post('/me/avatar', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
+    const { image_base64, content_type } = (req.body ?? {}) as {
+      image_base64?: string;
+      content_type?: string;
+    };
+    if (!image_base64 || !content_type) {
+      return reply.code(400).send({ error: 'image_base64 and content_type required' });
+    }
+    try {
+      const url = await uploadImage(req.user!.id, image_base64, content_type);
+      const { data, error } = await admin
+        .from('founders')
+        .update({ profile_photo_url: url })
+        .eq('id', req.user!.id)
+        .select('*')
+        .single();
+      if (error) return reply.code(500).send({ error: error.message });
+      return data;
+    } catch (e) {
+      return reply.code(400).send({ error: (e as Error).message });
+    }
   });
 
   // GET /api/v1/founders/me/stats — dashboard numbers
@@ -113,6 +138,8 @@ export async function foundersRoutes(app: FastifyInstance) {
 
     const { data, count, error } = await query;
     if (error) return reply.code(500).send({ error: error.message });
+    // Contact details are private until a backing exists — never in discovery.
+    (data ?? []).forEach((f) => { delete (f as any).contact_email; delete (f as any).contact_phone; });
     return { founders: data ?? [], total: count ?? 0 };
   });
 
@@ -152,6 +179,8 @@ export async function foundersRoutes(app: FastifyInstance) {
       }
     }
 
+    delete (data as any).contact_email;
+    delete (data as any).contact_phone;
     return data;
   });
 }

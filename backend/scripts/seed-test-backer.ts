@@ -57,7 +57,15 @@ async function main() {
   if (!member) {
     const { data: org, error: oErr } = await admin
       .from('organizations')
-      .insert({ name: ORG_NAME, type: 'community', location: 'Singapore', is_external: false })
+      .insert({
+        name: ORG_NAME,
+        type: 'community',
+        location: 'Singapore',
+        is_external: false,
+        contact_name: 'Dev Backer',
+        contact_email: 'backertest.dev@coart.test',
+        contact_phone: '+6598765432',
+      })
       .select('id')
       .single();
     if (oErr) throw new Error(`org insert failed: ${oErr.message}`);
