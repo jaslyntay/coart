@@ -176,6 +176,9 @@ export const contactRequestSchema = z.object({
 export const draftFieldSchema = z.object({
   application_id: z.string().uuid(),
   question_key: z.string().min(1).max(50),
+  // For "revise this draft" round-trips:
+  current_draft: z.string().max(10000).optional(),
+  instructions: z.string().max(2000).optional(),
 });
 
 export const chatSchema = z.object({

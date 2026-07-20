@@ -774,17 +774,33 @@ async function authHeaders() {
   return {};
 }
 
+// ───── GLOBAL LOADING BAR (visible whenever an API call is in flight) ─────
+const _loadbar = document.createElement('div');
+_loadbar.style.cssText = 'position:fixed;top:0;left:0;height:3px;width:100%;background:var(--orange);z-index:9999;opacity:0;transition:opacity .15s;pointer-events:none;';
+document.body.appendChild(_loadbar);
+let _inflight = 0;
+function _busy(d) {
+  _inflight = Math.max(0, _inflight + d);
+  _loadbar.style.opacity = _inflight > 0 ? '1' : '0';
+  document.documentElement.style.cursor = _inflight > 0 ? 'progress' : '';
+}
+
 async function api(path, opts = {}) {
-  const r = await fetch(API_BASE_URL + path, {
-    ...opts,
-    headers: {
-      ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
-      ...(await authHeaders()),
-      ...(opts.headers || {}),
-    },
-  });
-  if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
-  return r.status === 204 ? null : r.json();
+  _busy(1);
+  try {
+    const r = await fetch(API_BASE_URL + path, {
+      ...opts,
+      headers: {
+        ...(opts.body ? { 'Content-Type': 'application/json' } : {}),
+        ...(await authHeaders()),
+        ...(opts.headers || {}),
+      },
+    });
+    if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
+    return r.status === 204 ? null : r.json();
+  } finally {
+    _busy(-1);
+  }
 }
 
 async function signOut() {
@@ -1717,6 +1733,10 @@ function openModal(grant, project) {
       html += '<div class="ai-suggestion-actions">';
       html += '<button class="ai-use" data-fid="' + esc(key) + '" onclick="useCustomField(this.getAttribute(\'data-fid\'))">Use This Draft</button>';
       html += '<button class="ai-dismiss" data-fid="' + esc(key) + '" onclick="dismissCustomSuggest(this.getAttribute(\'data-fid\'))">Dismiss</button>';
+      html += '</div>';
+      html += '<div style="display:flex;gap:8px;margin-top:10px;">';
+      html += '<input class="form-input" id="revise-' + esc(key) + '" placeholder="Tell the AI what to add or change — numbers, names, details…" style="flex:1;margin:0;" onkeydown="if(event.key===\'Enter\')reviseCustomField(\'' + esc(key) + '\')"/>';
+      html += '<button class="ai-use" data-fid="' + esc(key) + '" onclick="reviseCustomField(this.getAttribute(\'data-fid\'))">↻ Revise</button>';
       html += '</div></div></div>';
     });
     formSection.innerHTML = html;
@@ -1778,6 +1798,31 @@ async function draftCustomField(key) {
     text.textContent = '';
     sug.classList.remove('on');
     showToast('AI draft failed — try again.');
+  }
+}
+
+async function reviseCustomField(key) {
+  const input = document.getElementById('revise-' + key);
+  const text = document.getElementById('drafttext-' + key);
+  const instructions = input.value.trim();
+  if (!instructions) { showToast('Type what you want changed first.'); return; }
+  const currentDraft = text.textContent.startsWith('✦') ? '' : text.textContent;
+  text.textContent = '✦ Revising with your input…';
+  try {
+    const res = await api('/ai/draft-field', {
+      method: 'POST',
+      body: JSON.stringify({
+        application_id: CURRENT_APPLICATION.id,
+        question_key: key,
+        current_draft: currentDraft,
+        instructions,
+      }),
+    });
+    text.textContent = res.draft;
+    input.value = '';
+  } catch (e) {
+    text.textContent = currentDraft;
+    showToast('Revision failed — try again.');
   }
 }
 

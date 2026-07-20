@@ -96,7 +96,7 @@ export async function aiRoutes(app: FastifyInstance) {
     if (!parsed.success) {
       return reply.code(400).send({ error: 'Invalid input', details: parsed.error.flatten() });
     }
-    const { application_id, question_key } = parsed.data;
+    const { application_id, question_key, current_draft, instructions } = parsed.data;
 
     const ctx = await loadContext(application_id, req.user!.id);
     if (!ctx) return reply.code(404).send({ error: 'Application not found' });
@@ -106,7 +106,11 @@ export async function aiRoutes(app: FastifyInstance) {
       return reply.code(404).send({ error: 'Question not found for this grant' });
     }
 
-    const userPrompt = `${formatContextForPrompt(ctx)}\n\nTASK\nDraft an answer for this single question, in the founder's voice.\n${formatQuestionForPrompt(question)}\n\nReturn ONLY the drafted answer text — no preamble, no JSON, no markdown.`;
+    const reviseBlock =
+      current_draft && instructions
+        ? `\n\nCURRENT DRAFT (to revise, not to repeat verbatim):\n${current_draft}\n\nTHE FOUNDER'S REVISION REQUEST / EXTRA DETAILS:\n${instructions}\n\nRevise the draft to incorporate the founder's input. Keep what already works.`
+        : '';
+    const userPrompt = `${formatContextForPrompt(ctx)}\n\nTASK\nDraft an answer for this single question, in the founder's voice.\n${formatQuestionForPrompt(question)}${reviseBlock}\n\nReturn ONLY the drafted answer text — no preamble, no JSON, no markdown.`;
 
     const resp = await anthropic.messages.create({
       model: config.anthropic.model,

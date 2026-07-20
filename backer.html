@@ -810,13 +810,29 @@ async function authHeaders() {
   return {};
 }
 
+// ───── GLOBAL LOADING BAR (visible whenever an API call is in flight) ─────
+const _loadbar = document.createElement('div');
+_loadbar.style.cssText = 'position:fixed;top:0;left:0;height:3px;width:100%;background:var(--orange);z-index:9999;opacity:0;transition:opacity .15s;pointer-events:none;';
+document.body.appendChild(_loadbar);
+let _inflight = 0;
+function _busy(d) {
+  _inflight = Math.max(0, _inflight + d);
+  _loadbar.style.opacity = _inflight > 0 ? '1' : '0';
+  document.documentElement.style.cursor = _inflight > 0 ? 'progress' : '';
+}
+
 async function api(path, opts = {}) {
-  const r = await fetch(API_BASE_URL + path, {
-    ...opts,
-    headers: { ...(opts.body ? { 'Content-Type': 'application/json' } : {}), ...(await authHeaders()), ...(opts.headers || {}) },
-  });
-  if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
-  return r.status === 204 ? null : r.json();
+  _busy(1);
+  try {
+    const r = await fetch(API_BASE_URL + path, {
+      ...opts,
+      headers: { ...(opts.body ? { 'Content-Type': 'application/json' } : {}), ...(await authHeaders()), ...(opts.headers || {}) },
+    });
+    if (!r.ok) throw new Error(`API ${path}: ${r.status} ${await r.text()}`);
+    return r.status === 204 ? null : r.json();
+  } finally {
+    _busy(-1);
+  }
 }
 
 async function signOut() {
@@ -1111,9 +1127,23 @@ function initials(name) {
   return String(name || '?').split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
 }
 
+// Which founders has OUR org already backed, and for which grants?
+// Derived from our grants' applications — no extra API call needed.
+function backedByUs(founderId) {
+  const grants = [];
+  MY_GRANTS.forEach(g => (g.applications || []).forEach(a => {
+    if (a.status === 'backed' && a.founder && a.founder.id === founderId) grants.push(g.title);
+  }));
+  return grants;
+}
+
 function founderCard(f) {
   const uni = [f.university, f.field_of_study].filter(Boolean).join(' · ');
-  const tags = (f.focus_areas || []).slice(0, 2).map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('') +
+  const backed = backedByUs(f.id);
+  const tags = (backed.length
+      ? '<span class="tag" style="background:var(--orange);color:#fff;border-color:var(--orange);">✓ Backed by you · ' + esc(backed.join(', ')) + '</span>'
+      : '') +
+    (f.focus_areas || []).slice(0, 2).map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('') +
     (f.open_to_backers ? '<span class="tag tag-or">Open To Backers</span>' : '') +
     (f.seeking_grant_match ? '<span class="tag tag-or">Seeking Grant Match</span>' : '');
   return '<div class="founder-card" onclick="openFounderProfile(\'' + f.id + '\')">' +
@@ -1124,7 +1154,7 @@ function founderCard(f) {
     '<div class="tags">' + tags + '</div>' +
     '<div class="btn-row">' +
     '<button class="btn btn-sm" onclick="event.stopPropagation();openFounderProfile(\'' + f.id + '\')">View Profile</button>' +
-    (MY_GRANTS.length ? '<button class="btn btn-or btn-sm" onclick="event.stopPropagation();openInvite(\'' + f.id + '\',\'' + esc(f.full_name) + '\')">✦ Invite to Apply</button>' : '') +
+    (MY_GRANTS.length ? '<button class="btn ' + (backed.length ? 'btn-out' : 'btn-or') + ' btn-sm" onclick="event.stopPropagation();openInvite(\'' + f.id + '\',\'' + esc(f.full_name) + '\')">' + (backed.length ? 'Invite Again' : '✦ Invite to Apply') + '</button>' : '') +
     '</div></div></div>';
 }
 
