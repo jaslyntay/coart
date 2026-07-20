@@ -33,12 +33,23 @@ export async function build() {
 
   await app.register(sensible);
 
+  // Our own domains are always allowed regardless of the CORS_ORIGINS env
+  // var — a missing env entry must never take the production site down.
+  const ALWAYS_ALLOWED = [
+    'https://coartsg.com',
+    'https://www.coartsg.com',
+    'https://coart.vercel.app',
+    'http://localhost:8000',
+  ];
+  const allowedOrigins = new Set([...config.corsOrigins, ...ALWAYS_ALLOWED]);
+
   await app.register(cors, {
     origin: (origin, cb) => {
       // Allow tools like curl (no origin header) in dev
       if (!origin) return cb(null, true);
-      if (config.corsOrigins.includes(origin)) return cb(null, true);
-      cb(new Error(`Origin ${origin} not allowed`), false);
+      // Unknown origins get no CORS headers (browser blocks them) — but we
+      // never throw, since that turns every request into a 500.
+      cb(null, allowedOrigins.has(origin));
     },
     credentials: true,
   });
