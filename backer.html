@@ -203,9 +203,33 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 }
 .pg-checkbox:hover { border-color:var(--border-strong); color:var(--text); }
 .pg-checkbox input { accent-color:var(--orange); }
+
+/* ── Mobile: collapsible sidebar ── */
+.menu-btn { display:none; background:none; border:1px solid var(--border-strong); color:var(--text); font-size:16px; padding:6px 12px; cursor:pointer; }
+.sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(11,37,69,.35); z-index:250; }
+@media (max-width: 900px) {
+  .sidebar { position:fixed; top:0; left:0; bottom:0; z-index:300; transform:translateX(-105%); transition:transform .25s ease; width:min(80vw, 300px); box-shadow:8px 0 30px rgba(11,37,69,.15); overflow-y:auto; }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-backdrop.on { display:block; }
+  .main { margin-left:0; }
+  .menu-btn { display:inline-flex; }
+  .two-col { display:block; }
+  .two-col > div + div { margin-top:22px; }
+  .stat-row { grid-template-columns:1fr !important; }
+  .modal { width:94vw !important; max-height:88vh; }
+  .topbar { flex-wrap:wrap; gap:10px; }
+  .grant-explore-inner { flex-direction:column; }
+  .grant-explore-right { flex-direction:row; flex-wrap:wrap; }
+}
+
+@media (max-width: 900px) {
+  #msg-layout { grid-template-columns: 1fr !important; height:auto !important; }
+  #msg-threads { max-height:30vh; border-right:none !important; border-bottom:1px solid var(--border); }
+}
 </style>
 </head>
-<body><!-- SIDEBAR -->
+<body>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div><!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo"><div class="logo">coart<span class="logo-dot"></span></div></div>
   <div class="sidebar-org">
@@ -216,6 +240,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   <nav class="sidebar-nav">
     <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants">14</span></div>
     <div class="nav-item" onclick="showPage('discover', this)"><span class="nav-icon">⌂</span> Discover Founders</div>
+    <div class="nav-item" onclick="showPage('messages', this)"><span class="nav-icon">✉</span> Messages <span id="msg-badge" style="display:none;background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:'DM Mono',monospace;margin-left:6px;"></span></div>
     <div class="nav-item" onclick="showPage('backed', this)"><span class="nav-icon">◈</span> Backed Projects</div>
     <div class="nav-item" onclick="showPage('postgrant', this)"><span class="nav-icon">＋</span> Post A Grant</div>
     <div class="nav-item" onclick="showPage('orgprofile', this)"><span class="nav-icon">◉</span> Organisation Profile</div>
@@ -231,7 +256,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 <!-- MAIN -->
 <div class="main">
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:14px;"><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">Our Grants & Applicants</div></div>
+    <div style="display:flex;align-items:center;gap:14px;"><button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">Our Grants & Applicants</div></div>
     <div class="topbar-right">
       <div style="position:relative;">
         <button class="btn btn-out" onclick="toggleNotifs()" title="Notifications" style="position:relative;">&#128276;<span id="notif-badge" style="display:none;position:absolute;top:-7px;right:-7px;background:var(--orange);color:#fff;font-size:9px;line-height:1;padding:3px 6px;border-radius:9px;font-family:'DM Mono',monospace;"></span></button>
@@ -258,7 +283,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="search-bar">
       <div class="search-box">
         <span class="search-icon">⌕</span>
-        <input class="search-input" id="discover-search" placeholder="Search founders, projects, causes…" oninput="renderDiscover()"/>
+        <input class="search-input" id="discover-search" oninput="renderDiscover()"/>
       </div>
       <div class="filter-bar" id="discover-filters">
         <div class="pill on" data-filter="all">All</div>
@@ -277,6 +302,25 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   </div>
 
   <!-- ═══ PAGE: BACKED PROJECTS ═══ -->
+
+  <!-- ═══ PAGE: MESSAGES ═══ -->
+  <div class="page" id="page-messages">
+    <div class="content">
+    <div class="section-head" style="margin-bottom:16px"><span class="lbl">Messages</span></div>
+    <div id="msg-layout" style="display:grid;grid-template-columns:280px 1fr;border:1px solid var(--border);background:var(--card);height:68vh;">
+      <div id="msg-threads" style="border-right:1px solid var(--border);overflow-y:auto;"></div>
+      <div style="display:flex;flex-direction:column;min-width:0;">
+        <div id="msg-head" style="padding:14px 18px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px;">Select a conversation</div>
+        <div id="msg-body" style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;"></div>
+        <div id="msg-inputrow" style="display:none;padding:12px;border-top:1px solid var(--border);gap:8px;">
+          <input class="form-input" id="msg-input" style="flex:1;margin:0;" onkeydown="if(event.key==='Enter')sendThreadMessage()" aria-label="Message"/>
+          <button class="btn btn-or" onclick="sendThreadMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+    </div>
+  </div>
+
   <div class="page" id="page-backed">
     <div class="content">
       <div class="section-head" style="margin-bottom:20px"><span class="lbl">Projects We've Backed</span></div>
@@ -341,7 +385,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Grant Name <span class="pg-req">*</span></div>
-              <input class="pg-input" id="pg-name" type="text" placeholder="e.g. Community Impact Grant 2026" required/>
+              <input class="pg-input" id="pg-name" type="text" required/>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -359,7 +403,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
               </div>
               <div class="pg-field">
                 <div class="pg-label">Value Per Recipient <span class="pg-req">*</span></div>
-                <input class="pg-input" id="pg-value" type="text" placeholder="e.g. Up to S$5,000 or describe if non-monetary" required/>
+                <input class="pg-input" id="pg-value" type="text" required/>
               </div>
             </div>
 
@@ -463,7 +507,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Anything you are NOT looking to fund?</div>
-              <input class="pg-input" id="pg-exclusions" type="text" placeholder="e.g. Commercial for-profit businesses, projects outside Singapore..."/>
+              <input class="pg-input" id="pg-exclusions" type="text"/>
             </div>
 
           </div>
@@ -479,12 +523,12 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">Describe what you are offering <span class="pg-req">*</span></div>
-              <textarea class="pg-input" id="pg-offering" rows="3" placeholder="Founders will read this on your grant listing. Be specific about what support looks like — funding, mentorship, network access, etc." required style="min-height:80px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-offering" rows="3" required style="min-height:80px;resize:vertical;"></textarea>
             </div>
 
             <div class="pg-field">
               <div class="pg-label">What do you expect from funded founders?</div>
-              <textarea class="pg-input" id="pg-expectations" rows="2" placeholder="e.g. Monthly progress updates, participation in community events, public acknowledgement..." style="min-height:64px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-expectations" rows="2" style="min-height:64px;resize:vertical;"></textarea>
             </div>
 
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
@@ -521,7 +565,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
             <div class="pg-field">
               <div class="pg-label">What should founders submit? <span class="pg-req">*</span></div>
-              <textarea class="pg-input" id="pg-instructions" rows="2" placeholder="e.g. A completed coart application form answering 4 questions about their project, problem, target audience, and funding use." required style="min-height:64px;resize:vertical;"></textarea>
+              <textarea class="pg-input" id="pg-instructions" rows="2" required style="min-height:64px;resize:vertical;"></textarea>
             </div>
 
             <div class="pg-field">
@@ -542,7 +586,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
                 <option>In-person</option>
               </select>
               <div class="pg-label" style="margin-bottom:6px;">What should founders prepare?</div>
-              <input class="pg-input" id="pg-pitch-prep" type="text" placeholder="e.g. A 5-minute pitch covering problem, solution, team, and ask"/>
+              <input class="pg-input" id="pg-pitch-prep" type="text"/>
             </div>
 
             <div class="pg-field">
@@ -615,7 +659,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         </div>
         <div style="margin-bottom:14px;">
           <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.07em;color:var(--muted);margin-bottom:6px;">Short Note (optional)</div>
-          <textarea id="invite-note" rows="4" style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:10px 14px;font-family:'Figtree',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;" placeholder="Hi — I came across your work and think you'd be a great fit for this grant..."></textarea>
+          <textarea id="invite-note" rows="4" style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:10px 14px;font-family:'Figtree',sans-serif;font-size:13px;color:var(--text);outline:none;resize:vertical;"></textarea>
         </div>
       </div>
       <div id="invite-sent" style="display:none;text-align:center;padding:18px 8px;">
@@ -655,7 +699,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         </div>
         <div class="pg-field"><div class="pg-label">Location</div><input class="pg-input" id="oe-location"/></div>
         <div class="pg-field"><div class="pg-label">Description</div><textarea class="pg-input" id="oe-description" rows="3" style="min-height:72px;resize:vertical;"></textarea></div>
-        <div class="pg-field"><div class="pg-label">Focus areas (comma separated)</div><input class="pg-input" id="oe-focus" placeholder="Arts, Community"/></div>
+        <div class="pg-field"><div class="pg-label">Focus areas (comma separated)</div><input class="pg-input" id="oe-focus"/></div>
         <div class="pg-field"><div class="pg-label">Point of contact — name</div><input class="pg-input" id="oe-cname"/></div>
         <div class="pg-field"><div class="pg-label">Point of contact — email</div><input class="pg-input" id="oe-cemail" type="email"/></div>
         <div class="pg-field"><div class="pg-label">Point of contact — phone</div><input class="pg-input" id="oe-cphone"/></div>
@@ -766,7 +810,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
       </div>
       <div style="margin-bottom:12px;">
         <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:5px;">Message to founder (optional)</div>
-        <textarea id="contact-msg" placeholder="Tell them why you&#39;re interested in their project..." style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:10px 12px;font-family:'Figtree',sans-serif;font-size:12px;color:var(--text);resize:none;outline:none;min-height:72px;line-height:1.5;"></textarea>
+        <textarea id="contact-msg" style="width:100%;background:var(--card);border:1px solid var(--border-strong);padding:10px 12px;font-family:'Figtree',sans-serif;font-size:12px;color:var(--text);resize:none;outline:none;min-height:72px;line-height:1.5;"></textarea>
       </div>
       <div style="display:flex;gap:8px;justify-content:flex-end;">
         <button class="btn btn-out btn-sm" onclick="toggleContact()">Cancel</button>
@@ -787,6 +831,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 
     <div class="modal-footer">
       <button class="btn btn-out btn-sm" onclick="closeModal()">Close</button>
+      <button class="btn btn-out btn-sm" id="modal-btn-message" style="display:none;" onclick="messageFromModal()">✉ Message</button>
       <button class="btn btn-out btn-sm" id="modal-btn-contact" onclick="toggleContact()">Request a Call</button>
       <button class="btn btn-sm" id="modal-btn-shortlist" onclick="shortlistFounder()">Shortlist</button>
       <button class="btn btn-or btn-sm" id="modal-btn-back" onclick="backFounder()">Back This Founder</button>
@@ -853,11 +898,12 @@ function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
-const pageIds = ['grants','discover','backed','orgprofile','postgrant'];
-const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', backed:'Backed Projects', orgprofile:'Organisation Profile', postgrant:'Post A Grant' };
+const pageIds = ['grants','discover','messages','backed','orgprofile','postgrant'];
+const pageTitles = { grants:'Our Grants & Applicants', discover:'Discover Founders', messages:'Messages', backed:'Backed Projects', orgprofile:'Organisation Profile', postgrant:'Post A Grant' };
 
 function showPage(id, el) {
   pageIds.forEach(p => document.getElementById('page-' + p).classList.toggle('on', p === id));
+  if (id === 'messages') loadThreads();
   document.querySelectorAll('.sidebar-nav .nav-item').forEach(n => n.classList.remove('on'));
   if (el) el.classList.add('on');
   document.getElementById('topbar-title').textContent = pageTitles[id] || '';
@@ -895,6 +941,7 @@ let DISCOVER_FILTER = 'all';
   renderOrg();
   loadAll();
   loadNotifs();
+  loadThreads(true);
 })();
 
 async function loadAll() {
@@ -1064,7 +1111,9 @@ function renderOurGrants() {
       '<div class="grant-amount">' + esc(g.amount_display || '') + '</div>' +
       '<div class="grant-meta">' + meta + '</div>' +
       '</div>' +
-      '<div class="grant-block-actions"><button class="btn btn-out btn-sm" onclick="closeGrant(\'' + g.id + '\')">Close Grant</button></div>' +
+      '<div class="grant-block-actions">' +
+      '<button class="btn btn-out btn-sm" onclick="openGrantEdit(\'' + g.id + '\')">✎ Edit</button> ' +
+      '<button class="btn btn-out btn-sm" onclick="closeGrant(\'' + g.id + '\')">Close Grant</button></div>' +
       '</div>' + table + '</div>';
   }).join('');
 }
@@ -1190,6 +1239,14 @@ function fillModalProfile(f) {
   document.body.style.overflow = 'hidden';
 }
 
+let MODAL_FOUNDER = null;
+
+function messageFromModal() {
+  if (!MODAL_FOUNDER) return;
+  closeModal();
+  startMessageWith(MODAL_FOUNDER.id, MODAL_FOUNDER.name);
+}
+
 async function openFounderProfile(founderId) {
   MODAL_APPLICATION = null;
   document.getElementById('modal-applied-box').style.display = 'none';
@@ -1201,6 +1258,8 @@ async function openFounderProfile(founderId) {
       api('/founders/' + founderId + '/projects'),
     ]);
     fillModalProfile(f);
+    MODAL_FOUNDER = { id: founderId, name: f.full_name || 'Founder' };
+    document.getElementById('modal-btn-message').style.display = 'inline-block';
     const projects = projRes.projects || [];
     document.getElementById('modal-project-box').style.display = projects.length ? 'block' : 'none';
     if (projects.length) {
@@ -1255,6 +1314,9 @@ async function openApplicantModal(applicationId, grantId) {
   };
   const answers = a.answers || [];
   const f = a.founder || {};
+  MODAL_FOUNDER = { id: f.id || '', name: f.full_name || 'Founder' };
+  document.getElementById('modal-btn-message').style.display = f.id ? 'inline-block' : 'none';
+  const messageBtnHtml = '<div style="margin-top:14px;"><button class="btn btn-or btn-sm" onclick="closeModal();startMessageWith(\'' + (f.id || '') + '\',\'' + esc(f.full_name || 'Founder').replace(/'/g, '&#39;') + '\')">✉ Message ' + esc((f.full_name || 'founder').split(' ')[0]) + '</button></div>';
   const contactHtml = (f.contact_email || f.contact_phone)
     ? '<div style="background:var(--orange-dim);border:1px solid var(--orange-border);padding:14px 18px;margin-top:14px;">' +
       '<div style="font-family:\'DM Mono\',monospace;font-size:10px;letter-spacing:.07em;color:var(--orange);margin-bottom:8px;">BACKED — FOUNDER CONTACT DETAILS</div>' +
@@ -1274,7 +1336,8 @@ async function openApplicantModal(applicationId, grantId) {
     section('Status', (STATUS_BADGES[a.status] || [null, a.status])[1] + (a.submitted_at ? ' · submitted ' + a.submitted_at.slice(0, 10) : '')) +
     (p.description ? section('About the project', p.description) : '') +
     answersHtml +
-    contactHtml;
+    contactHtml +
+    messageBtnHtml;
 }
 
 function shortlistFounder() {
@@ -1400,6 +1463,37 @@ function togglePitchDetails() {
     document.getElementById('pg-pitch-toggle').value === 'yes' ? 'block' : 'none';
 }
 
+let EDITING_GRANT_ID = null;
+
+function openGrantEdit(id) {
+  const g = MY_GRANTS.find(x => x.id === id);
+  if (!g) return;
+  EDITING_GRANT_ID = id;
+  const set = (fid, val) => { const el = document.getElementById(fid); if (el) el.value = val ?? ''; };
+  set('pg-name', g.title);
+  // reverse-map grant_type to the select's display values
+  const typeLabel = Object.keys(GRANT_TYPE_MAP).find(k => GRANT_TYPE_MAP[k] === g.grant_type);
+  if (typeLabel) set('pg-type', typeLabel);
+  set('pg-value', g.amount_display);
+  set('pg-opens', g.application_opens_at);
+  set('pg-closes', g.application_closes_at);
+  if (g.frequency) set('pg-frequency', g.frequency);
+  set('pg-stage', g.eligibility_stage);
+  set('pg-citizen', g.eligibility_citizenship);
+  set('pg-team', g.eligibility_team_solo);
+  set('pg-exclusions', g.eligibility_exclusions);
+  document.querySelectorAll('#focus-tags input').forEach(c => { c.checked = (g.focus_areas || []).includes(c.value); });
+  set('pg-offering', g.offering_description);
+  set('pg-expectations', g.expectations);
+  set('pg-instructions', g.application_instructions);
+  set('pg-decision', g.decision_timeline);
+  document.getElementById('pg-publish-btn').textContent = 'Save Changes →';
+  document.getElementById('pg-submit-row').style.display = '';
+  document.getElementById('pg-success').style.display = 'none';
+  showPage('postgrant', document.querySelector('[onclick*=postgrant]'));
+  window.scrollTo(0, 0);
+}
+
 async function submitGrant(e) {
   e.preventDefault();
   const v = id => document.getElementById(id).value;
@@ -1441,10 +1535,26 @@ async function submitGrant(e) {
   const btn = document.getElementById('pg-publish-btn');
   btn.disabled = true;
   try {
-    const grant = await api('/grants', { method: 'POST', body: JSON.stringify(body) });
-    grant.applications = [];
-    grant.organization = { id: ORG.id, name: ORG.name, type: ORG.type };
-    MY_GRANTS.unshift(grant);
+    let grant;
+    if (EDITING_GRANT_ID) {
+      const { questions, ...editable } = body; // questions aren't editable after publish
+      grant = await api('/grants/' + EDITING_GRANT_ID, { method: 'PATCH', body: JSON.stringify(editable) });
+      const idx = MY_GRANTS.findIndex(x => x.id === EDITING_GRANT_ID);
+      if (idx >= 0) {
+        grant.applications = MY_GRANTS[idx].applications;
+        grant.questions = MY_GRANTS[idx].questions;
+        grant.organization = MY_GRANTS[idx].organization;
+        MY_GRANTS[idx] = grant;
+      }
+      EDITING_GRANT_ID = null;
+      document.getElementById('pg-publish-btn').textContent = 'Publish Grant →';
+      showToast('✓ Grant updated.');
+    } else {
+      grant = await api('/grants', { method: 'POST', body: JSON.stringify(body) });
+      grant.applications = [];
+      grant.organization = { id: ORG.id, name: ORG.name, type: ORG.type };
+      MY_GRANTS.unshift(grant);
+    }
     document.getElementById('pg-submit-row').style.display = 'none';
     document.getElementById('pg-success').style.display = 'block';
     // Blank the form — a re-submit of stale values is how duplicates happen.
@@ -1462,9 +1572,104 @@ async function submitGrant(e) {
 }
 
 function resetPostGrant() {
+  EDITING_GRANT_ID = null;
+  document.getElementById('pg-publish-btn').textContent = 'Publish Grant →';
   document.getElementById('pg-submit-row').style.display = 'flex';
   document.getElementById('pg-success').style.display = 'none';
 }
+
+
+// ───── MESSAGES ─────
+let MSG_THREADS = [];
+let CURRENT_THREAD = null;
+
+async function loadThreads(silent) {
+  try {
+    const r = await api('/messages/threads');
+    MSG_THREADS = r.threads;
+    const unread = MSG_THREADS.reduce((s, t) => s + t.unread, 0);
+    const badge = document.getElementById('msg-badge');
+    if (badge) {
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'inline-block' : 'none';
+    }
+    if (!silent) renderThreadList();
+  } catch (e) { /* non-critical */ }
+}
+
+function renderThreadList() {
+  const el = document.getElementById('msg-threads');
+  if (!MSG_THREADS.length) {
+    el.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);line-height:1.6;">No conversations yet. Message a founder from Discover Founders or an applicant view — replies land here.</div>';
+    return;
+  }
+  el.innerHTML = MSG_THREADS.map(t =>
+    '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+    '<span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t.counterparty_name) + '</span>' +
+    (t.unread ? '<span style="background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:\'DM Mono\',monospace;flex-shrink:0;">' + t.unread + '</span>' : '') +
+    '</div>' +
+    '<div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;">' + esc(t.last_body) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function openThread(counterpartyId, name) {
+  CURRENT_THREAD = { id: counterpartyId, name };
+  document.getElementById('msg-head').textContent = name;
+  document.getElementById('msg-inputrow').style.display = 'flex';
+  renderThreadList();
+  try {
+    const r = await api('/messages/with/' + counterpartyId);
+    renderThreadMessages(r.messages);
+    loadThreads(true);
+  } catch (e) { showToast('Could not load conversation.'); }
+}
+
+function renderThreadMessages(messages) {
+  const el = document.getElementById('msg-body');
+  el.innerHTML = messages.map(m => {
+    const isMine = m.sender_role === 'backer';
+    return '<div style="max-width:75%;padding:10px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;' +
+      (isMine
+        ? 'align-self:flex-end;background:var(--orange);color:#fff;border-radius:12px 12px 3px 12px;'
+        : 'align-self:flex-start;background:var(--surface);color:var(--text);border-radius:12px 12px 12px 3px;') + '">' +
+      esc(m.body) +
+      '<div style="font-size:9px;opacity:.7;margin-top:5px;font-family:\'DM Mono\',monospace;">' + esc((m.created_at || '').slice(0, 16).replace('T', ' ')) + '</div>' +
+      '</div>';
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendThreadMessage() {
+  if (!CURRENT_THREAD) return;
+  const input = document.getElementById('msg-input');
+  const body = input.value.trim();
+  if (!body) return;
+  input.value = '';
+  try {
+    await api('/messages/to/' + CURRENT_THREAD.id, { method: 'POST', body: JSON.stringify({ body }) });
+    const r = await api('/messages/with/' + CURRENT_THREAD.id);
+    renderThreadMessages(r.messages);
+    loadThreads(true);
+  } catch (e) {
+    input.value = body;
+    showToast('Could not send — ' + e.message.split(':').pop());
+  }
+}
+
+function startMessageWith(counterpartyId, name) {
+  showPage('messages', document.querySelector('[onclick*="\'messages\'"]'));
+  openThread(counterpartyId, name);
+}
+
+setInterval(() => {
+  const pg = document.getElementById('page-messages');
+  if (pg && pg.classList.contains('on')) {
+    if (CURRENT_THREAD) api('/messages/with/' + CURRENT_THREAD.id).then(r => renderThreadMessages(r.messages)).catch(() => {});
+    loadThreads(true);
+  }
+}, 15000);
 
 // ───── NOTIFICATIONS ─────
 let NOTIFS = [];
@@ -1531,6 +1736,18 @@ function showToast(msg) {
   window.__toastTimer = setTimeout(() => { t.style.display = 'none'; }, 2400);
 }
 
+
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const bd = document.getElementById('sidebar-backdrop');
+  const open = !sb.classList.contains('open');
+  sb.classList.toggle('open', open);
+  bd.classList.toggle('on', open);
+}
+// Close the drawer when a nav item is tapped (mobile)
+document.querySelectorAll('.sidebar .nav-item').forEach(n => n.addEventListener('click', () => {
+  if (window.innerWidth <= 900) toggleSidebar();
+}));
 </script>
 </body>
 </html>

@@ -18,6 +18,7 @@ import { organizationsRoutes } from './routes/organizations.js';
 import { aiRoutes } from './routes/ai.js';
 import { authRoutes } from './routes/auth.js';
 import { notificationsRoutes } from './routes/notifications.js';
+import { messagesRoutes } from './routes/messages.js';
 
 export async function build() {
   const app = Fastify({
@@ -67,6 +68,7 @@ export async function build() {
   await app.register(organizationsRoutes, { prefix: '/api/v1/organizations' });
   await app.register(aiRoutes, { prefix: '/api/v1/ai' });
   await app.register(notificationsRoutes, { prefix: '/api/v1/notifications' });
+  await app.register(messagesRoutes, { prefix: '/api/v1/messages' });
 
   return app;
 }

@@ -111,11 +111,24 @@ export async function grantsRoutes(app: FastifyInstance) {
     return grant;
   });
 
-  // PATCH /api/v1/grants/:id — backer closes (or reopens) their own grant
+  // PATCH /api/v1/grants/:id — backer edits or closes their own grant
   app.patch('/:id', { preHandler: [requireUser, requireBacker] }, async (req, reply) => {
     const { id } = req.params as { id: string };
-    const { status } = (req.body ?? {}) as { status?: string };
-    if (!status || !['active', 'closed'].includes(status)) {
+    const body = (req.body ?? {}) as Record<string, unknown>;
+    const ALLOWED = [
+      'status', 'title', 'grant_type', 'amount_display', 'value_description',
+      'difficulty', 'focus_areas', 'application_opens_at', 'application_closes_at',
+      'is_rolling', 'frequency', 'eligibility_age_min', 'eligibility_age_max',
+      'eligibility_citizenship', 'eligibility_stage', 'eligibility_exclusions',
+      'offering_description', 'expectations', 'application_instructions',
+      'has_pitch_round', 'pitch_format', 'decision_timeline',
+    ];
+    const update: Record<string, unknown> = {};
+    for (const k of ALLOWED) if (k in body) update[k] = body[k];
+    if (Object.keys(update).length === 0) {
+      return reply.code(400).send({ error: 'No editable fields provided' });
+    }
+    if ('status' in update && !['active', 'closed'].includes(update.status as string)) {
       return reply.code(400).send({ error: "status must be 'active' or 'closed'" });
     }
     const { data: member } = await admin
@@ -128,7 +141,7 @@ export async function grantsRoutes(app: FastifyInstance) {
     if (!grant || grant.organization_id !== member.organization_id) {
       return reply.code(403).send({ error: 'Not your grant' });
     }
-    const { data, error } = await admin.from('grants').update({ status }).eq('id', id).select('*').single();
+    const { data, error } = await admin.from('grants').update(update).eq('id', id).select('*').single();
     if (error) return reply.code(500).send({ error: error.message });
     return data;
   });

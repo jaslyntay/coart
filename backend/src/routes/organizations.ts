@@ -157,6 +157,16 @@ export async function organizationsRoutes(app: FastifyInstance) {
         .eq('id', member.organization_id)
         .single();
       const isInvite = (parsed.data.message ?? '').startsWith('Invitation');
+
+      // Also open a message thread so the founder can reply in-app.
+      await admin.from('messages').insert({
+        organization_id: member.organization_id,
+        founder_id: founderId,
+        sender_role: 'backer',
+        body: parsed.data.message ||
+          ('Contact request' + (parsed.data.preferred_time ? ' — preferred time: ' + parsed.data.preferred_time : '') +
+           (parsed.data.format ? ' (' + parsed.data.format + ')' : '')),
+      });
       await notify(
         founderId,
         isInvite ? 'grant_invite' : 'contact_request',

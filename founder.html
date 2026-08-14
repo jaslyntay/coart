@@ -208,9 +208,33 @@ textarea.form-input { min-height:80px; }
 .profile-field:last-child { margin-bottom:0; }
 .profile-field-label { font-family:'DM Mono',monospace; font-size:9px; color:var(--hint); letter-spacing:.07em; margin-bottom:4px; }
 .profile-field-value { font-size:14px; color:var(--text); line-height:1.5; }
+
+/* ── Mobile: collapsible sidebar ── */
+.menu-btn { display:none; background:none; border:1px solid var(--border-strong); color:var(--text); font-size:16px; padding:6px 12px; cursor:pointer; }
+.sidebar-backdrop { display:none; position:fixed; inset:0; background:rgba(11,37,69,.35); z-index:250; }
+@media (max-width: 900px) {
+  .sidebar { position:fixed; top:0; left:0; bottom:0; z-index:300; transform:translateX(-105%); transition:transform .25s ease; width:min(80vw, 300px); box-shadow:8px 0 30px rgba(11,37,69,.15); overflow-y:auto; }
+  .sidebar.open { transform:translateX(0); }
+  .sidebar-backdrop.on { display:block; }
+  .main { margin-left:0; }
+  .menu-btn { display:inline-flex; }
+  .two-col { display:block; }
+  .two-col > div + div { margin-top:22px; }
+  .stat-row { grid-template-columns:1fr !important; }
+  .modal { width:94vw !important; max-height:88vh; }
+  .topbar { flex-wrap:wrap; gap:10px; }
+  .grant-explore-inner { flex-direction:column; }
+  .grant-explore-right { flex-direction:row; flex-wrap:wrap; }
+}
+
+@media (max-width: 900px) {
+  #msg-layout { grid-template-columns: 1fr !important; height:auto !important; }
+  #msg-threads { max-height:30vh; border-right:none !important; border-bottom:1px solid var(--border); }
+}
 </style>
 </head>
 <body>
+<div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div>
 
 <!-- SIDEBAR -->
 <div class="sidebar">
@@ -226,6 +250,7 @@ textarea.form-input { min-height:80px; }
     <div class="nav-item on" onclick="showPage('projects', this)"><span class="nav-icon">◈</span> My Projects</div>
     <div class="nav-item" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Explore Grants</div>
     <div class="nav-item" onclick="showPage('dashboard', this)"><span class="nav-icon">⌂</span> Dashboard</div>
+    <div class="nav-item" onclick="showPage('messages', this)"><span class="nav-icon">✉</span> Messages <span id="msg-badge" style="display:none;background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:'DM Mono',monospace;margin-left:6px;"></span></div>
     <div class="nav-item" onclick="showPage('profile', this)"><span class="nav-icon">◉</span> Profile</div>
   </nav>
   <div class="sidebar-bottom">
@@ -256,29 +281,63 @@ textarea.form-input { min-height:80px; }
       <div class="form-section" id="ob-founder-fields" style="display:none;">
         <div class="form-row">
           <div class="form-label"><span>Full name</span></div>
-          <input class="form-input" id="ob-name" placeholder="Your full name"/>
+          <input class="form-input" id="ob-name"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Age</span></div>
-          <input class="form-input" id="ob-age" type="number" min="13" max="99" placeholder="e.g. 22"/>
+          <input class="form-input" id="ob-age" type="number" min="13" max="99"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>University (optional)</span></div>
-          <input class="form-input" id="ob-uni" placeholder="e.g. NUS"/>
+          <input class="form-input" id="ob-uni"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Contact email — shared only when a backer backs you</span></div>
-          <input class="form-input" id="ob-cemail" type="email" placeholder="you@email.com"/>
+          <input class="form-input" id="ob-cemail" type="email"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Contact number — shared only when a backer backs you</span></div>
-          <input class="form-input" id="ob-cphone" placeholder="+65 9123 4567"/>
+          <input class="form-input" id="ob-cphone"/>
         </div>
+        <div class="form-section-title" style="margin-top:18px;">Your profile — all optional, editable later</div>
+        <div class="form-row">
+          <div class="form-label"><span>Field of study (optional)</span></div>
+          <input class="form-input" id="ob-fos"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Location (optional)</span></div>
+          <input class="form-input" id="ob-location"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>LinkedIn URL (optional)</span></div>
+          <input class="form-input" id="ob-linkedin"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Short bio — who you are &amp; what you care about (optional)</span></div>
+          <textarea class="form-input" id="ob-bio"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Focus areas, comma separated (optional)</span></div>
+          <input class="form-input" id="ob-focus"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Community / audience you serve (optional)</span></div>
+          <input class="form-input" id="ob-community"/>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Why are you the right person to lead this work? (optional)</span></div>
+          <textarea class="form-input" id="ob-credibility"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Typical budget range you work with, S$ (optional)</span></div>
+          <input class="form-input" id="ob-budget"/>
+        </div>
+        <p style="font-size:11px;color:var(--hint);margin-top:4px;">You can add a profile photo afterwards from Profile → Basic Info.</p>
       </div>
       <div class="form-section" id="ob-backer-fields" style="display:none;">
         <div class="form-row">
           <div class="form-label"><span>Organisation name</span></div>
-          <input class="form-input" id="ob-org-name" placeholder="e.g. Tiong Bahru Youth Network"/>
+          <input class="form-input" id="ob-org-name"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Organisation type</span></div>
@@ -293,20 +352,30 @@ textarea.form-input { min-height:80px; }
         </div>
         <div class="form-row">
           <div class="form-label"><span>Location (optional)</span></div>
-          <input class="form-input" id="ob-org-location" placeholder="e.g. Singapore"/>
+          <input class="form-input" id="ob-org-location"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Point of contact — name</span></div>
-          <input class="form-input" id="ob-oc-name" placeholder="Who founders will speak to"/>
+          <input class="form-input" id="ob-oc-name"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Point of contact — email (shared only with founders you back)</span></div>
-          <input class="form-input" id="ob-oc-email" type="email" placeholder="contact@org.com"/>
+          <input class="form-input" id="ob-oc-email" type="email"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Point of contact — phone (shared only with founders you back)</span></div>
-          <input class="form-input" id="ob-oc-phone" placeholder="+65 9123 4567"/>
+          <input class="form-input" id="ob-oc-phone"/>
         </div>
+        <div class="form-section-title" style="margin-top:18px;">Organisation profile — all optional, editable later</div>
+        <div class="form-row">
+          <div class="form-label"><span>What does your organisation do? (optional)</span></div>
+          <textarea class="form-input" id="ob-org-desc"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-label"><span>Focus areas, comma separated (optional)</span></div>
+          <input class="form-input" id="ob-org-focus"/>
+        </div>
+        <p style="font-size:11px;color:var(--hint);margin-top:4px;">You can add a logo afterwards from Organisation Profile → Edit.</p>
       </div>
       <div id="ob-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
     </div>
@@ -324,7 +393,7 @@ textarea.form-input { min-height:80px; }
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div style="display:flex;align-items:center;gap:14px;"><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">My Projects</div></div>
+    <div style="display:flex;align-items:center;gap:14px;"><button class="menu-btn" onclick="toggleSidebar()" aria-label="Menu">☰</button><a href="index.html" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.06em;text-decoration:none;">← Home</a><div class="topbar-title" id="topbar-title">My Projects</div></div>
     <div class="topbar-right">
       <div style="position:relative;">
         <button class="btn btn-out" onclick="toggleNotifs()" title="Notifications" style="position:relative;">&#128276;<span id="notif-badge" style="display:none;position:absolute;top:-7px;right:-7px;background:var(--orange);color:#fff;font-size:9px;line-height:1;padding:3px 6px;border-radius:9px;font-family:'DM Mono',monospace;"></span></button>
@@ -360,6 +429,23 @@ textarea.form-input { min-height:80px; }
     </div>
   </div>
 
+
+  <!-- ═══ PAGE: MESSAGES ═══ -->
+  <div class="page" id="page-messages">
+    <div class="section-head" style="margin-bottom:16px"><span class="lbl">Messages</span></div>
+    <div id="msg-layout" style="display:grid;grid-template-columns:280px 1fr;border:1px solid var(--border);background:var(--card);height:68vh;">
+      <div id="msg-threads" style="border-right:1px solid var(--border);overflow-y:auto;"></div>
+      <div style="display:flex;flex-direction:column;min-width:0;">
+        <div id="msg-head" style="padding:14px 18px;border-bottom:1px solid var(--border);font-weight:600;font-size:14px;">Select a conversation</div>
+        <div id="msg-body" style="flex:1;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:10px;"></div>
+        <div id="msg-inputrow" style="display:none;padding:12px;border-top:1px solid var(--border);gap:8px;">
+          <input class="form-input" id="msg-input" style="flex:1;margin:0;" onkeydown="if(event.key==='Enter')sendThreadMessage()" aria-label="Message"/>
+          <button class="btn btn-or" onclick="sendThreadMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ═══ PAGE: MY PROJECTS ═══ -->
   <div class="page on" id="page-projects">
     <div class="section-head" style="margin-bottom:20px">
@@ -375,7 +461,9 @@ textarea.form-input { min-height:80px; }
       <span class="lbl">Explore Grants</span>
       <span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--hint);letter-spacing:.06em;" id="grants-count"></span>
     </div>
+    <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--hint);letter-spacing:.05em;margin-bottom:6px;">Search grants by name or organisation</div>
 
+    <input class="form-input" id="grants-search" style="margin-bottom:12px;max-width:420px;" aria-label="Search grants" oninput="GRANT_SEARCH=this.value.toLowerCase();renderGrants()"/>
     <div class="filter-bar" id="grants-filters">
       <div class="pill on" data-filter="all">All</div>
       <div class="pill" data-filter="type:government">Government</div>
@@ -385,6 +473,8 @@ textarea.form-input { min-height:80px; }
       <div class="pill" data-filter="focus:Environment">Environment</div>
       <div class="pill" data-filter="difficulty:easy">Easy</div>
       <div class="pill" data-filter="open">Open Now</div>
+      <div class="pill" data-filter="oncoart">⚡ Apply on coart</div>
+      <div class="pill" data-filter="external">↗ External</div>
       <div class="pill" data-filter="saved">★ Saved</div>
     </div>
 
@@ -442,7 +532,7 @@ textarea.form-input { min-height:80px; }
         <div class="form-row"><div class="form-label"><span>University</span></div><input class="form-input" id="bi-uni"/></div>
         <div class="form-row"><div class="form-label"><span>Field of study</span></div><input class="form-input" id="bi-fos"/></div>
         <div class="form-row"><div class="form-label"><span>Location</span></div><input class="form-input" id="bi-location"/></div>
-        <div class="form-row"><div class="form-label"><span>LinkedIn URL (optional)</span></div><input class="form-input" id="bi-linkedin" placeholder="https://linkedin.com/in/..."/></div>
+        <div class="form-row"><div class="form-label"><span>LinkedIn URL (optional)</span></div><input class="form-input" id="bi-linkedin"/></div>
         <div class="form-row"><div class="form-label"><span>Contact email — shared only when backed</span></div><input class="form-input" id="bi-cemail" type="email"/></div>
         <div class="form-row"><div class="form-label"><span>Contact number — shared only when backed</span></div><input class="form-input" id="bi-cphone"/></div>
         <div class="form-row">
@@ -488,15 +578,15 @@ textarea.form-input { min-height:80px; }
         <div class="form-section-title">About You</div>
         <div class="form-row">
           <div class="form-label"><span>Short Bio — who you are & what you care about</span></div>
-          <textarea class="form-input" id="ga-bio" placeholder="e.g. Final-year Arts & Sustainability student at NUS, building community-led creative spaces..."></textarea>
+          <textarea class="form-input" id="ga-bio"></textarea>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Focus Areas (comma separated)</span></div>
-          <input class="form-input" id="ga-focus" placeholder="Arts, Sustainability, Community"/>
+          <input class="form-input" id="ga-focus"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Community / Audience you serve</span></div>
-          <input class="form-input" id="ga-community" placeholder="e.g. Youth in Tiong Bahru, local artisans..."/>
+          <input class="form-input" id="ga-community"/>
         </div>
       </div>
 
@@ -504,11 +594,11 @@ textarea.form-input { min-height:80px; }
         <div class="form-section-title">Your Approach</div>
         <div class="form-row">
           <div class="form-label"><span>Why are you the right person to lead this work?</span></div>
-          <textarea class="form-input" id="ga-credibility" placeholder="Background, past projects, partnerships, lived experience..."></textarea>
+          <textarea class="form-input" id="ga-credibility"></textarea>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Typical budget range you work with (S$)</span></div>
-          <input class="form-input" id="ga-budget" placeholder="e.g. 5,000 – 25,000"/>
+          <input class="form-input" id="ga-budget"/>
         </div>
       </div>
     </div>
@@ -545,11 +635,11 @@ textarea.form-input { min-height:80px; }
         <div class="form-section-title">Project Details</div>
         <div class="form-row">
           <div class="form-label"><span>Project Name</span></div>
-          <input class="form-input" id="np-name" placeholder="e.g. Unwoventhread"/>
+          <input class="form-input" id="np-name"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Short Tagline (1 sentence)</span></div>
-          <input class="form-input" id="np-tagline" placeholder="A community thrift and upcycling market rooted in Tiong Bahru."/>
+          <input class="form-input" id="np-tagline"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Category</span></div>
@@ -565,11 +655,11 @@ textarea.form-input { min-height:80px; }
         </div>
         <div class="form-row">
           <div class="form-label"><span>What does this project do? (impact)</span></div>
-          <textarea class="form-input" id="np-impact" placeholder="Describe the project and who it helps..."></textarea>
+          <textarea class="form-input" id="np-impact"></textarea>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Estimated budget (S$)</span></div>
-          <input class="form-input" id="np-budget" placeholder="e.g. 8,000"/>
+          <input class="form-input" id="np-budget"/>
         </div>
       </div>
     </div>
@@ -700,7 +790,7 @@ textarea.form-input { min-height:80px; }
             <span>Describe your project and its impact</span>
             <span class="ai-autofill" onclick="autofillField('impact')">✦ AI Draft</span>
           </div>
-          <textarea class="form-input" id="field-impact" placeholder="Tell the grant committee what your project does and who it helps…"></textarea>
+          <textarea class="form-input" id="field-impact"></textarea>
           <div class="ai-suggestion" id="suggest-impact">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
             <div class="ai-suggestion-text" id="sugtext-impact"></div>
@@ -716,7 +806,7 @@ textarea.form-input { min-height:80px; }
             <span>How will you use the grant funding?</span>
             <span class="ai-autofill" onclick="autofillField('funding')">✦ AI Draft</span>
           </div>
-          <textarea class="form-input" id="field-funding" placeholder="Break down how the grant money would be used…"></textarea>
+          <textarea class="form-input" id="field-funding"></textarea>
           <div class="ai-suggestion" id="suggest-funding">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
             <div class="ai-suggestion-text" id="sugtext-funding"></div>
@@ -732,7 +822,7 @@ textarea.form-input { min-height:80px; }
             <span>What makes you the right person to lead this?</span>
             <span class="ai-autofill" onclick="autofillField('founder')">✦ AI Draft</span>
           </div>
-          <textarea class="form-input" id="field-founder" placeholder="Share your background and why you're uniquely placed to deliver this project…"></textarea>
+          <textarea class="form-input" id="field-founder"></textarea>
           <div class="ai-suggestion" id="suggest-founder">
             <div class="ai-suggestion-label">✦ AI Draft — Review & Edit Before Using</div>
             <div class="ai-suggestion-text" id="sugtext-founder"></div>
@@ -751,6 +841,7 @@ textarea.form-input { min-height:80px; }
       <div class="btn-row">
         <button class="btn btn-out" onclick="saveApplicationDraft()">Save Draft</button>
         <button class="btn btn-out" onclick="copyCurrentAnswers()">⧉ Copy Answers</button>
+        <a class="btn btn-out" id="modal-portal-btn" href="#" target="_blank" rel="noopener" style="display:none;">Open Grant Portal ↗</a>
         <button class="btn btn-or" id="modal-submit-btn" onclick="submitApplication()">Submit Application</button>
       </div>
     </div>
@@ -823,11 +914,12 @@ async function switchRole() {
   } catch (e) { showToast('Could not reset — ' + e.message); }
 }
 
-const pages = ['projects','grants','dashboard','profile'];
+const pages = ['projects','grants','dashboard','messages','profile'];
 const titles = {
   projects: 'My Projects',
   grants: 'Explore Grants',
   dashboard: 'Good Morning.',
+  messages: 'Messages',
   profile: 'My Profile'
 };
 
@@ -843,6 +935,7 @@ function showPage(id, el) {
   if (el) el.classList.add('on');
   document.getElementById('topbar-title').textContent = titles[id] || '';
   window.scrollTo(0, 0);
+  if (id === 'messages') loadThreads();
 }
 
 // ───── STATE (all server-backed; nothing hard-coded) ─────
@@ -852,6 +945,7 @@ let ALL_GRANTS = [];      // active grants (with organization)
 let MY_APPS = [];         // applications rows
 let SAVED_IDS = new Set(); // saved grant ids
 let GRANT_FILTER = 'all';
+let GRANT_SEARCH = '';
 let APP_BY_GRANT = {};    // latest application per grant id
 
 // ───── GENERAL APPLICATION ─────
@@ -1034,11 +1128,14 @@ function grantCard(g, i) {
   const org = g.organization || {};
   const refLine = [g.reference_code, org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', g.difficulty ? g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1) : '', grantDeadlineText(g)]
     .filter(Boolean).join(' · ');
-  const tags = (g.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('') +
-    (g.questions_hint ? '' : '') +
+  const platformTag = g.is_external
+    ? '<span class="tag" style="background:#B45309;color:#fff;border-color:#B45309;font-weight:600;">↗ EXTERNAL — draft here, submit on their portal</span>'
+    : '<span class="tag" style="background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600;">⚡ APPLY DIRECTLY ON COART</span>';
+  const tags = platformTag +
+    (g.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('') +
     (org.name ? '<span class="tag">' + esc(org.name) + '</span>' : '');
   const externalLink = g.external_portal_url
-    ? '<a class="btn btn-out btn-sm" href="' + esc(g.external_portal_url) + '" target="_blank" rel="noopener">View Source →</a>'
+    ? '<a class="btn btn-out btn-sm" href="' + esc(g.external_portal_url) + '" target="_blank" rel="noopener">Open Grant Portal ↗</a>'
     : '';
   const myApp = APP_BY_GRANT[g.id];
   let primaryBtn;
@@ -1077,6 +1174,8 @@ function grantCard(g, i) {
 function grantMatchesFilter(g, f) {
   if (f === 'all') return true;
   if (f === 'saved') return SAVED_IDS.has(g.id);
+  if (f === 'oncoart') return !g.is_external;
+  if (f === 'external') return g.is_external;
   if (f === 'open') {
     if (g.is_rolling) return true;
     return g.application_closes_at ? g.application_closes_at >= new Date().toISOString().slice(0, 10) : false;
@@ -1089,7 +1188,11 @@ function grantMatchesFilter(g, f) {
 }
 
 function renderGrants() {
-  const list = ALL_GRANTS.filter(g => grantMatchesFilter(g, GRANT_FILTER));
+  const list = ALL_GRANTS.filter(g => grantMatchesFilter(g, GRANT_FILTER))
+    .filter(g => !GRANT_SEARCH ||
+      (g.title || '').toLowerCase().includes(GRANT_SEARCH) ||
+      ((g.organization && g.organization.name) || '').toLowerCase().includes(GRANT_SEARCH) ||
+      (g.focus_areas || []).some(f => f.toLowerCase().includes(GRANT_SEARCH)));
   document.getElementById('grants-count').textContent =
     list.length + ' grant' + (list.length === 1 ? '' : 's') + (GRANT_FILTER === 'all' ? ' available' : ' match this filter');
   document.getElementById('grants-list').innerHTML = list.length
@@ -1173,6 +1276,7 @@ async function loadAll() {
   try {
     hydrateFromFounder(await api('/founders/me'));
     loadAll();
+    loadThreads(true);
   } catch (e) {
     // profiles row says founder but founders row missing — finish onboarding
     openOnboarding();
@@ -1224,6 +1328,20 @@ async function submitOnboarding() {
         method: 'POST',
         body: JSON.stringify({ role: 'founder', founder: { full_name: name, age, contact_email: cemail, contact_phone: cphone, ...(uni ? { university: uni } : {}) } }),
       });
+      // Optional profile fields — saved in a follow-up update
+      const opt = {};
+      const val = id => document.getElementById(id).value.trim();
+      if (val('ob-fos')) opt.field_of_study = val('ob-fos');
+      if (val('ob-location')) opt.location = val('ob-location');
+      if (val('ob-linkedin')) opt.linkedin_url = val('ob-linkedin');
+      if (val('ob-bio')) opt.bio = val('ob-bio');
+      if (val('ob-focus')) opt.focus_areas = val('ob-focus').split(',').map(s => s.trim()).filter(Boolean);
+      if (val('ob-community')) opt.community = val('ob-community');
+      if (val('ob-credibility')) opt.past_experience = val('ob-credibility');
+      if (val('ob-budget')) opt.typical_budget = val('ob-budget');
+      if (Object.keys(opt).length) {
+        try { await api('/founders/me', { method: 'PATCH', body: JSON.stringify(opt) }); } catch (e) {}
+      }
       const row = await api('/founders/me');
       document.getElementById('onboard-overlay').classList.remove('on');
       document.body.style.overflow = '';
@@ -1246,6 +1364,13 @@ async function submitOnboarding() {
         method: 'POST',
         body: JSON.stringify({ role: 'backer', organization: { name: orgName, type: orgType, contact_name: ocName, contact_email: ocEmail, contact_phone: ocPhone, ...(orgLoc ? { location: orgLoc } : {}) } }),
       });
+      const orgOpt = {};
+      const oval = id => document.getElementById(id).value.trim();
+      if (oval('ob-org-desc')) orgOpt.description = oval('ob-org-desc');
+      if (oval('ob-org-focus')) orgOpt.focus_areas = oval('ob-org-focus').split(',').map(s => s.trim()).filter(Boolean);
+      if (Object.keys(orgOpt).length) {
+        try { await api('/organizations/me', { method: 'PATCH', body: JSON.stringify(orgOpt) }); } catch (e) {}
+      }
       window.location.replace('backer.html');
     }
   } catch (e) {
@@ -1550,8 +1675,9 @@ async function openMyApplication(appId) {
       'Q: ' + (labels[ans.question_key] || FALLBACK[ans.question_key] || ans.question_key) +
       '\nA: ' + ans.value
     ).join('\n\n');
-  document.getElementById('ad-footer-note').textContent =
-    a.status === 'backed' ? 'The backer received your contact details too — expect to hear from them.' : '';
+  document.getElementById('ad-footer-note').innerHTML =
+    (a.status === 'backed' ? 'The backer received your contact details too — expect to hear from them. ' : '') +
+    (org && org.id ? '<a href="#" onclick="closeAppDetail();startMessageWith(\'' + org.id + '\',\'' + esc(org.name || 'Organisation').replace(/'/g, '&#39;') + '\');return false;" style="color:var(--orange);">✉ Message ' + esc(org.name || 'the organisation') + '</a>' : '');
   document.getElementById('appdetail-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
@@ -1657,6 +1783,103 @@ function resizeImage(file) {
   });
 }
 
+
+// ───── MESSAGES ─────
+let MSG_THREADS = [];
+let CURRENT_THREAD = null;
+let MSG_POLL = null;
+
+async function loadThreads(silent) {
+  try {
+    const r = await api('/messages/threads');
+    MSG_THREADS = r.threads;
+    const unread = MSG_THREADS.reduce((s, t) => s + t.unread, 0);
+    const badge = document.getElementById('msg-badge');
+    if (badge) {
+      badge.textContent = unread;
+      badge.style.display = unread > 0 ? 'inline-block' : 'none';
+    }
+    if (!silent) renderThreadList();
+  } catch (e) { /* non-critical */ }
+}
+
+function renderThreadList() {
+  const el = document.getElementById('msg-threads');
+  if (!MSG_THREADS.length) {
+    el.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);line-height:1.6;">No conversations yet. When a backer contacts you — or you apply to a grant and message the organisation — the conversation lives here.</div>';
+    return;
+  }
+  el.innerHTML = MSG_THREADS.map(t =>
+    '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+    '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+    '<span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t.counterparty_name) + '</span>' +
+    (t.unread ? '<span style="background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:\'DM Mono\',monospace;flex-shrink:0;">' + t.unread + '</span>' : '') +
+    '</div>' +
+    '<div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;">' + esc(t.last_body) + '</div>' +
+    '</div>'
+  ).join('');
+}
+
+async function openThread(counterpartyId, name) {
+  CURRENT_THREAD = { id: counterpartyId, name };
+  document.getElementById('msg-head').textContent = name;
+  document.getElementById('msg-inputrow').style.display = 'flex';
+  renderThreadList();
+  try {
+    const r = await api('/messages/with/' + counterpartyId);
+    renderThreadMessages(r.messages);
+    loadThreads(true); // refresh unread badge
+  } catch (e) { showToast('Could not load conversation.'); }
+}
+
+function renderThreadMessages(messages) {
+  const el = document.getElementById('msg-body');
+  const mine = 'founder';
+  el.innerHTML = messages.map(m => {
+    const isMine = m.sender_role === mine;
+    return '<div style="max-width:75%;padding:10px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;' +
+      (isMine
+        ? 'align-self:flex-end;background:var(--orange);color:#fff;border-radius:12px 12px 3px 12px;'
+        : 'align-self:flex-start;background:var(--surface);color:var(--text);border-radius:12px 12px 12px 3px;') + '">' +
+      esc(m.body) +
+      '<div style="font-size:9px;opacity:.7;margin-top:5px;font-family:\'DM Mono\',monospace;">' + esc((m.created_at || '').slice(0, 16).replace('T', ' ')) + '</div>' +
+      '</div>';
+  }).join('');
+  el.scrollTop = el.scrollHeight;
+}
+
+async function sendThreadMessage() {
+  if (!CURRENT_THREAD) return;
+  const input = document.getElementById('msg-input');
+  const body = input.value.trim();
+  if (!body) return;
+  input.value = '';
+  try {
+    await api('/messages/to/' + CURRENT_THREAD.id, { method: 'POST', body: JSON.stringify({ body }) });
+    const r = await api('/messages/with/' + CURRENT_THREAD.id);
+    renderThreadMessages(r.messages);
+    loadThreads(true);
+  } catch (e) {
+    input.value = body;
+    showToast('Could not send — ' + e.message.split(':').pop());
+  }
+}
+
+// Jump straight into a conversation from elsewhere in the app
+function startMessageWith(counterpartyId, name) {
+  showPage('messages', document.querySelector('[onclick*="\'messages\'"]'));
+  openThread(counterpartyId, name);
+}
+
+// Poll while the messages page is visible
+setInterval(() => {
+  const pg = document.getElementById('page-messages');
+  if (pg && pg.classList.contains('on')) {
+    if (CURRENT_THREAD) api('/messages/with/' + CURRENT_THREAD.id).then(r => renderThreadMessages(r.messages)).catch(() => {});
+    loadThreads(true);
+  }
+}, 15000);
+
 // ───── APPLY-WITH-AI FLOW ─────
 // applyWithAI(grantId) → pick project → POST /applications (draft) →
 // modal with the grant's real questions → per-field AI drafts via
@@ -1746,15 +1969,18 @@ function openModal(grant, project) {
   const neaNote = document.getElementById('modal-nea-note');
   const questions = grant.questions || [];
 
+  const noteText = grant.is_external
+    ? 'This grant lives on ' + ((grant.organization && grant.organization.name) || 'the grantor') + '\'s own portal. Draft your answers here with AI help, then: 1) ⧉ Copy Answers, 2) Open Grant Portal ↗ and paste them in, 3) come back and hit "I\'ve Submitted". ' + (grant.application_instructions || '')
+    : (grant.application_instructions || '');
+  if (noteText) {
+    neaNote.style.display = 'block';
+    neaNote.querySelector('.nea-note-text').textContent = noteText;
+  } else {
+    neaNote.style.display = 'none';
+  }
   if (questions.length) {
     defaultSection.style.display = 'none';
     formSection.style.display = 'block';
-    if (grant.application_instructions) {
-      neaNote.style.display = 'block';
-      neaNote.querySelector('.nea-note-text').textContent = grant.application_instructions;
-    } else {
-      neaNote.style.display = 'none';
-    }
     let html = '<div class="form-section-title">Application Questions</div>';
     questions.forEach(function(q) {
       const key = q.question_key;
@@ -1762,7 +1988,7 @@ function openModal(grant, project) {
       html += '<div class="form-row">';
       html += '<div class="form-label"><span>' + esc(q.label) + '</span>';
       html += '<span class="ai-autofill" data-fid="' + esc(key) + '" onclick="draftCustomField(this.getAttribute(\'data-fid\'))">&#10022; AI Draft</span></div>';
-      html += '<textarea class="form-input" id="q-' + esc(key) + '" placeholder="' + esc(q.placeholder || '') + '" rows="3">' + existing + '</textarea>';
+      html += '<textarea class="form-input" id="q-' + esc(key) + '" rows="3">' + existing + '</textarea>';
       html += '<div class="ai-suggestion" id="suggest-q-' + esc(key) + '">';
       html += '<div class="ai-suggestion-label">&#10022; AI Draft — Review and Edit Before Using</div>';
       html += '<div class="ai-suggestion-text" id="drafttext-' + esc(key) + '"></div>';
@@ -1771,7 +1997,7 @@ function openModal(grant, project) {
       html += '<button class="ai-dismiss" data-fid="' + esc(key) + '" onclick="dismissCustomSuggest(this.getAttribute(\'data-fid\'))">Dismiss</button>';
       html += '</div>';
       html += '<div style="display:flex;gap:8px;margin-top:10px;">';
-      html += '<input class="form-input" id="revise-' + esc(key) + '" placeholder="Tell the AI what to add or change — numbers, names, details…" style="flex:1;margin:0;" onkeydown="if(event.key===\'Enter\')reviseCustomField(\'' + esc(key) + '\')"/>';
+      html += '<input class="form-input" id="revise-' + esc(key) + '" style="flex:1;margin:0;" onkeydown="if(event.key===\'Enter\')reviseCustomField(\'' + esc(key) + '\')"/>';
       html += '<button class="ai-use" data-fid="' + esc(key) + '" onclick="reviseCustomField(this.getAttribute(\'data-fid\'))">↻ Revise</button>';
       html += '</div></div></div>';
     });
@@ -1779,8 +2005,23 @@ function openModal(grant, project) {
   } else {
     defaultSection.style.display = 'block';
     formSection.style.display = 'none';
-    neaNote.style.display = 'none';
     prefillDefaultFields(project);
+  }
+
+  // External grants: draft on coart, submit on the grant's own portal.
+  const portalBtn = document.getElementById('modal-portal-btn');
+  const submitBtn = document.getElementById('modal-submit-btn');
+  if (grant.is_external) {
+    if (grant.external_portal_url) {
+      portalBtn.href = grant.external_portal_url;
+      portalBtn.style.display = 'inline-flex';
+    } else {
+      portalBtn.style.display = 'none';
+    }
+    submitBtn.textContent = "✓ I've Submitted on Their Portal";
+  } else {
+    portalBtn.style.display = 'none';
+    submitBtn.textContent = 'Submit Application';
   }
 
   document.getElementById('modal-overlay').classList.add('on');
@@ -1973,7 +2214,7 @@ async function submitApplication() {
         method: 'POST',
         body: JSON.stringify({ method: 'manual_copy' }),
       });
-      showToast('✓ Recorded — submit the answers on the grant\'s own portal too.');
+      showToast('✓ Marked as submitted — nice work!');
     } else {
       await api('/applications/' + CURRENT_APPLICATION.id + '/submit', { method: 'POST' });
       showToast('✓ Application submitted!');
@@ -1990,6 +2231,18 @@ async function submitApplication() {
   }
 }
 
+
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const bd = document.getElementById('sidebar-backdrop');
+  const open = !sb.classList.contains('open');
+  sb.classList.toggle('open', open);
+  bd.classList.toggle('on', open);
+}
+// Close the drawer when a nav item is tapped (mobile)
+document.querySelectorAll('.sidebar .nav-item').forEach(n => n.addEventListener('click', () => {
+  if (window.innerWidth <= 900) toggleSidebar();
+}));
 </script>
 </body>
 </html>

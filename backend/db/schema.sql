@@ -523,3 +523,18 @@ drop policy if exists "notifications: read own" on notifications;
 create policy "notifications: read own" on notifications for select using (auth.uid() = user_id);
 drop policy if exists "notifications: update own" on notifications;
 create policy "notifications: update own" on notifications for update using (auth.uid() = user_id);
+
+
+-- 2026-08-06: direct messages founder <-> backer org (backend-only access)
+create table if not exists messages (
+  id              uuid primary key default uuid_generate_v4(),
+  organization_id uuid not null references organizations(id) on delete cascade,
+  founder_id      uuid not null references founders(id) on delete cascade,
+  sender_role     user_role not null,
+  body            text not null,
+  read            boolean not null default false,
+  created_at      timestamptz not null default now()
+);
+create index if not exists messages_thread on messages(organization_id, founder_id, created_at);
+alter table messages enable row level security;
+revoke all on messages from anon, authenticated;

@@ -160,6 +160,15 @@ Resend, DNS at Porkbun under Shivani's account). Needs RESEND_API_KEY,
 RESEND_FROM_EMAIL, and SITE_URL env vars (in backend/.env locally and in
 Vercel for production). Addresses ending in .test are skipped (fixtures).
 
+## Messages
+
+Founder ↔ backer-org chat: `messages` table (backend-only access, RLS +
+revoked grants), routes in backend/src/routes/messages.ts, Messages page
+on both dashboards with unread badges. Rules: backers may message any
+founder; founders may reply to existing threads or message orgs they've
+applied to. Contact requests/invites auto-open a thread. Every message
+notifies (in-app + email).
+
 ## AI drafting
 
 `POST /ai/draft-field {application_id, question_key}` → Claude (model in
