@@ -1,0 +1,680 @@
+[
+  {
+    "org_name": "raiSE (Singapore Centre for Social Enterprise)",
+    "org_type": "community",
+    "org_url": "https://www.raise.sg",
+    "title": "VentureForGood (VFG) Grant",
+    "reference_code": "RAISE-VFG-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$300,000",
+    "difficulty": "selective",
+    "focus_areas": [
+      "Social Enterprise",
+      "Community"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Open throughout the year; evaluation cycle takes roughly 13-24 weeks from submission to Grant Committee pitch",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "No citizenship requirement stated, but the social enterprise must be (or intend to be) registered in Singapore under the Companies Act or Co-operative Societies Act and must be a registered raiSE Social Enterprise member at the point of pitching",
+    "eligibility_note": "Now targets growth-stage social enterprises (registered entities with a validated model). Very early or unregistered founders should look at raiSE's EnergiSE Grant (up to S$50,000 for impact start-ups) or join raiSE membership first. Registered raiSE membership is mandatory before pitching.",
+    "offering_description": "raiSE's flagship funding scheme for Singapore social enterprises, providing up to S$300,000 to scale a revenue-generating business that addresses a social gap, evaluated by a Grant Committee after a pitch.",
+    "application_instructions": "Email your pitch deck and management accounts to vfg@raise.sg (no portal). Include ACRA profile, up to 2 years of management accounts, 2-year financial projections, and founding-team resumes. Shortlisted members go through first meeting, final evaluation, then pitch to the Evaluation Committee.",
+    "external_portal_url": "https://www.raise.sg/ventureforgood-grant/",
+    "questions": [
+      {
+        "question_key": "social_gap",
+        "label": "Social gap identified: clear articulation of social needs and goals (evidence-based preferred)",
+        "ai_draft_hint": "Name the specific unmet social need in Singapore with data or evidence, and state the goal your venture exists to achieve."
+      },
+      {
+        "question_key": "proposed_solution",
+        "label": "Proposed solution: how the solution can address the problem above",
+        "ai_draft_hint": "Describe the product or service and draw a direct causal line from what it does to how it closes the social gap."
+      },
+      {
+        "question_key": "target_beneficiaries",
+        "label": "Target beneficiary group/community: an in-depth understanding of their needs",
+        "ai_draft_hint": "Show first-hand insight into who the beneficiaries are, their lived situation, and what they actually need \u2014 not just demographics."
+      },
+      {
+        "question_key": "business_model",
+        "label": "Business model: USP (unique selling proposition); market size, target customer segment, current market landscape, key partners (current and planned)",
+        "ai_draft_hint": "Explain how the venture makes money, what makes it different from alternatives, and the realistic size of its market with named partners."
+      },
+      {
+        "question_key": "financial_projections",
+        "label": "Financial projections (2 years): key revenue streams, capital and operating expenditure, requested funding quantum, and breakdown",
+        "ai_draft_hint": "Give a credible 2-year P&L outline, state exactly how much you are requesting, and itemise what the grant will pay for."
+      },
+      {
+        "question_key": "founding_team",
+        "label": "Founding team: experience in relevant industries and working with target beneficiaries; motivations \u2014 why do you want to address this need?",
+        "ai_draft_hint": "Pair each founder's relevant track record with a genuine personal reason for tackling this problem."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "DBS Foundation",
+    "org_type": "foundation",
+    "org_url": "https://www.dbs.com/foundation/grants.html",
+    "title": "DBS Foundation Grant (Social Enterprise / SME track)",
+    "reference_code": "DBSF-GRANT-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$250,000",
+    "difficulty": "selective",
+    "focus_areas": [
+      "Social Enterprise",
+      "Food",
+      "Education",
+      "Community"
+    ],
+    "is_rolling": false,
+    "application_closes_at": null,
+    "frequency": "Annual cycle (2026 window closed 13 Jul; next cycle expected ~Q2 2027)",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "No personal citizenship requirement; business must be a registered for-profit legal entity in Singapore, Hong Kong, India, Indonesia or Taiwan",
+    "eligibility_note": "For-profit entities only \u2014 individuals, sole proprietorships, non-profits and charities are ineligible. Requires ~2 years of track record delivering measurable social impact in essential needs or financial inclusion. 2026 window closed; catalogued for the next cycle.",
+    "offering_description": "DBS Foundation's annual grant of up to SGD 250,000 (no equity taken) for social enterprises and impact SMEs to scale their business and social impact, with milestone-based disbursement.",
+    "application_instructions": "Single online application form per entity (no save function \u2014 prepare answers offline using the Word template on the grants page, then paste into the online form). Shortlisted applicants submit a pitch deck, financials and recommendation letters, then finalists pitch to a judging panel.",
+    "external_portal_url": "https://www.dbs.com/foundation/grants.html",
+    "questions": [
+      {
+        "question_key": "elevator_pitch",
+        "label": "Elevator pitch of your business \u2014 Purpose: why did you start this business and what social problem are you trying to solve? Unique value proposition: what is your solution and how is it meaningfully different? Business model: revenue drivers, target customer segment, cost structure, sales channels (max 2,500 characters)",
+        "ai_draft_hint": "Cover all three sub-parts in order \u2014 origin/problem, differentiated solution, and how the business actually makes money \u2014 within 2,500 characters."
+      },
+      {
+        "question_key": "theory_of_change",
+        "label": "What is your theory of change? Explain the solution (\"We do X (Activities) to deliver Y (Outputs), which enables beneficiaries to achieve Z (Outcomes)\"), the long-term outcomes/impact you intend to create, and how you track and measure impact (max 2,000 characters)",
+        "ai_draft_hint": "Use the X-activities to Y-outputs to Z-outcomes chain explicitly and name concrete impact metrics and how they are collected."
+      },
+      {
+        "question_key": "core_team",
+        "label": "Who are your core team members? Describe the relevant industry, business and impact-related experience and skill sets of the management team and advisors, plus company headcount (max 1,500 characters)",
+        "ai_draft_hint": "List each key person with their most relevant credential for this venture; include advisors and total headcount."
+      },
+      {
+        "question_key": "business_plans",
+        "label": "Describe your business plans and priorities for the coming 2 years (max 1,500 characters)",
+        "ai_draft_hint": "State 2-3 concrete growth priorities for the next 24 months with rough timelines, tied to both revenue and impact."
+      },
+      {
+        "question_key": "grant_utilisation",
+        "label": "How will the grant be used to scale your business and impact? Provide a detailed breakdown, state how your target segment will benefit, and how you plan to scale after the grant is utilised (max 2,000 characters)",
+        "ai_draft_hint": "Itemise the budget by use, connect each line to a beneficiary-facing outcome, and explain post-grant sustainability."
+      },
+      {
+        "question_key": "reach_estimate",
+        "label": "Estimated number of individuals you plan to directly reach with the grant, plus total individuals impacted to date",
+        "ai_draft_hint": "Give a single defensible number derived from your delivery capacity under the grant plan, consistent with your impact-to-date figure."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "Ministry of Sustainability and the Environment",
+    "org_type": "government",
+    "org_url": "https://www.mse.gov.sg/take-action/sgecofund/",
+    "title": "SG Eco Fund \u2014 Sprout Category",
+    "reference_code": "MSE-SGEF-SPROUT-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$30,000",
+    "difficulty": "moderate",
+    "focus_areas": [
+      "Environment",
+      "Community"
+    ],
+    "is_rolling": false,
+    "application_closes_at": "2026-08-31",
+    "frequency": "Three Sprout windows per year (deadlines 30 Apr, 31 Aug, 31 Dec)",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Individuals: Singapore Citizen or PR, 18+, residing in Singapore. Teams: all 18+ residing in Singapore, at least one Citizen/PR.",
+    "eligibility_note": "Open to individuals and informal teams \u2014 no company registration needed for Sprout. Project must advance environmental sustainability in Singapore, engage the community, and have specific numerical targets (projects without measurable targets are not considered).",
+    "offering_description": "The national fund for ground-up environmental sustainability projects, funding individuals, informal teams and organisations to run community-engaging green projects.",
+    "application_instructions": "Apply via the government grants portal (apply.gov.sg \u2014 search 'SG Eco Fund') with Singpass. Submit a proposal deck of max 15 slides using the official template by the window deadline; shortlisted applicants may pitch for 10 minutes.",
+    "external_portal_url": "https://www.mse.gov.sg/take-action/sgecofund/apply/",
+    "questions": [
+      {
+        "question_key": "project_description",
+        "label": "What is the objective of your project? What environmental problem does it address and what solution will you implement?",
+        "ai_draft_hint": "Name one concrete environmental problem in Singapore and the specific intervention you will run against it."
+      },
+      {
+        "question_key": "audience_community",
+        "label": "Who is your target audience and where will this take place? How will it involve and/or benefit the community?",
+        "ai_draft_hint": "Specify the neighbourhood/venue and how residents actively participate rather than just observe."
+      },
+      {
+        "question_key": "implementation_plan",
+        "label": "Implementation plan: project duration, each activity/phase with estimated dates, and persons involved and their roles",
+        "ai_draft_hint": "Break the project into dated phases and assign each activity to a named team member, partner or vendor."
+      },
+      {
+        "question_key": "environmental_target",
+        "label": "Key project outcomes \u2014 environmental target (e.g. reduce food waste by xx kg) and how you will measure it",
+        "ai_draft_hint": "Commit to a single numerical environmental metric and a practical measurement method; projects without a clear numerical target are not considered."
+      },
+      {
+        "question_key": "engagement_targets",
+        "label": "Key project outcomes \u2014 community engagement targets (e.g. xx workshops, xx volunteers) and how you will measure them",
+        "ai_draft_hint": "Set countable engagement outputs (sessions run, attendees) with a stated counting method like attendance lists."
+      },
+      {
+        "question_key": "ensuring_success",
+        "label": "Ensuring success: external support/approvals needed and secured? Key challenges and mitigations? How is the project sustained or scaled beyond the funding period?",
+        "ai_draft_hint": "Address approvals/permits status, one or two realistic risks with mitigations, and a post-grant continuation plan."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "The Majurity Trust",
+    "org_type": "foundation",
+    "org_url": "https://www.majurity.sg",
+    "title": "SG Strong Fund",
+    "reference_code": "TMT-SGSTRONG-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to 90% of project cost, capped at S$7,000",
+    "difficulty": "easy",
+    "focus_areas": [
+      "Community",
+      "Youth"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Rolling \u2014 enquiry answered within ~2 days, outcome within ~1 month",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "At least 18 years old and residing in Singapore",
+    "eligibility_note": "Specifically for ground-up, volunteer-led, unregistered teams whose initiative benefits local vulnerable communities. Funding covers project costs and limited stipends (max 20%). 50% disbursed upfront.",
+    "offering_description": "A philanthropic fund financing informal, volunteer-led ground-up projects serving vulnerable communities in Singapore, with a lightweight enquiry-first application process.",
+    "application_instructions": "Submit a grant enquiry via the form at majurity.sg/sgstrong; the grants team responds within ~2 days and arranges a short call, after which eligible applicants receive the full application form.",
+    "external_portal_url": "https://www.majurity.sg/sgstrong",
+    "questions": [
+      {
+        "question_key": "team_name",
+        "label": "Organisation/team name",
+        "ai_draft_hint": "Give the informal group's working name as used in the community."
+      },
+      {
+        "question_key": "team_overview",
+        "label": "Brief overview of your organisation/team",
+        "ai_draft_hint": "In 2-3 sentences, say who the volunteers are, how long the group has been active, and its mission for vulnerable communities."
+      },
+      {
+        "question_key": "project_overview",
+        "label": "Brief overview of your proposed project",
+        "ai_draft_hint": "Summarise the project, the vulnerable community it benefits, rough cost, and timeline \u2014 enough to gauge fit before the exploratory call."
+      }
+    ],
+    "questions_confidence": "medium"
+  },
+  {
+    "org_name": "National Parks Board",
+    "org_type": "government",
+    "org_url": "https://gardeningsg.nparks.gov.sg/get-involved/secuf/",
+    "title": "Social Enterprise Community Urban Farm (SECUF) Grant",
+    "reference_code": "NPARKS-SECUF-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$50,000 per enterprise (programming); up to S$500,000 per site (infrastructure)",
+    "difficulty": "selective",
+    "focus_areas": [
+      "Food",
+      "Environment",
+      "Community",
+      "Social Enterprise"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Rolling, first-come-first-served, until 31 March 2028 or funds exhausted",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Singapore-registered social enterprises that are raiSE members",
+    "eligibility_note": "Must be a raiSE Social Enterprise member (or have concrete plans to become one within 12 months). Programming grant requires minimum 120 unique participants; infrastructure grant requires a tendered site and 5-year commitment. Best suited to founders who have registered a social enterprise.",
+    "offering_description": "NParks co-funds social enterprises to set up and run community urban farms and deliver gardening programmes for seniors, persons with special needs and low-income families \u2014 the grant behind City Sprouts' community farms.",
+    "application_instructions": "Stage 1: submit the interest form (go.gov.sg/secuf-interestform) for eligibility assessment, then the full proposal with target communities, programme schedule, cost breakdown and outreach plan. Reimbursement after project completion.",
+    "external_portal_url": "https://gardeningsg.nparks.gov.sg/get-involved/secuf/",
+    "questions": [
+      {
+        "question_key": "se_name",
+        "label": "Name of Social Enterprise (ACRA-registered business name)",
+        "ai_draft_hint": "Use the exact ACRA-registered entity name."
+      },
+      {
+        "question_key": "raise_membership",
+        "label": "Is your Social Enterprise a member of raiSE \u2014 or are there plans within the next 12 months to become one?",
+        "ai_draft_hint": "raiSE membership is a hard eligibility requirement; if not yet a member, state a concrete timeline."
+      },
+      {
+        "question_key": "org_and_plans",
+        "label": "Tell us more about your organisation and your plans in relation to the SECUF Grant",
+        "ai_draft_hint": "Cover the intended farm/programme concept, target communities (seniors, persons with special needs, low-income families), expected participant numbers, and whether you seek programming or infrastructure support."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "National Youth Council",
+    "org_type": "government",
+    "org_url": "https://www.nyc.gov.sg/",
+    "title": "Young ChangeMakers (YCM) Grant",
+    "reference_code": "NYC-YCM-2026",
+    "grant_type": "mixed",
+    "amount_display": "Up to S$5,000",
+    "difficulty": "easy",
+    "focus_areas": [
+      "Community",
+      "Youth",
+      "Arts",
+      "Heritage",
+      "Environment"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Year-round; decisions at the monthly YCM Open Mic (first Saturday of each month)",
+    "eligibility_age_min": 15,
+    "eligibility_age_max": 35,
+    "eligibility_citizenship": "Singapore Citizen or PR youths aged 15-35, residing locally; teams majority SC/PR",
+    "eligibility_note": "For individuals or informal youth groups \u2014 projects under a registered company are not fundable. Complete within 6 months. Standard cap S$3,000; up to S$5,000 for exceeding merit; themed tracks (Heritage, Sport, City in Nature) go up to S$7,000-8,000. Under-21 team leads need an endorsement letter.",
+    "offering_description": "Seed funding of up to 100% of supported costs for youth-initiated community projects, decided by a panel of Youth Curators, plus assigned mentors and networking with other youth teams.",
+    "application_instructions": "Apply via the OurSG Grants Portal (Singpass) at least 8 weeks before the 1st Saturday of your implementation month. Shortlisted teams pitch at the monthly YCM Open Mic; results within a week of pitching.",
+    "external_portal_url": "https://oursggrants.gov.sg/grants/nycycm/instruction",
+    "questions": [
+      {
+        "question_key": "team_background",
+        "label": "Share how your project team came together \u2014 your team's backgrounds, experiences, and what motivated you to embark on this project",
+        "ai_draft_hint": "Tell a short origin story linking each member's lived experience or skills to the community problem, ending with the shared motivation."
+      },
+      {
+        "question_key": "project_timeline",
+        "label": "Provide a detailed timeline of your project, including all activities (publicity, pre-event workshops, dry-runs; for arts projects, production and show dates)",
+        "ai_draft_hint": "Present a month-by-month plan covering publicity, prep, delivery and wrap-up within the 6-month project window."
+      },
+      {
+        "question_key": "publicity_plans",
+        "label": "Describe your project's publicity plans",
+        "ai_draft_hint": "Name specific channels, content formats, timing and reach targets, matched to where the target audience actually is."
+      },
+      {
+        "question_key": "partners",
+        "label": "List the partners you have reached out to or intend to reach out to (partner, nature of partnership \u2014 funding/in-kind/publicity/audience access \u2014 and status)",
+        "ai_draft_hint": "List each partner with what they contribute and an honest status (confirmed / pending / will reach out)."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "National Youth Council",
+    "org_type": "government",
+    "org_url": "https://www.nyc.gov.sg/",
+    "title": "Youth Action Grant (YAG)",
+    "reference_code": "NYC-YAG-2026",
+    "grant_type": "mixed",
+    "amount_display": "Up to S$70,000",
+    "difficulty": "selective",
+    "focus_areas": [
+      "Community",
+      "Youth",
+      "Social Enterprise",
+      "Environment"
+    ],
+    "is_rolling": false,
+    "application_closes_at": "2026-08-31",
+    "frequency": "Two application cycles per year; shortlisted teams pitch at Impact, IRL with public participatory budgeting",
+    "eligibility_age_min": 15,
+    "eligibility_age_max": 35,
+    "eligibility_citizenship": "Singapore Citizen or PR youths aged 15-35",
+    "eligibility_note": "Open to informal ground-up groups (min 2 people) and youth-led organisations incorporated up to 5 years. For projects ready to scale for sustained impact \u2014 not one-off events. Minimum project budget S$10,000; funded elements complete within 2 years. Successor to the Youth Action Challenge.",
+    "offering_description": "Up to S$70,000 (100% of supported costs) to scale youth-led community projects with sustained, measurable impact \u2014 plus project guidance, capability-building workshops and a changemaker community.",
+    "application_instructions": "Apply via the OurSG Grants Portal during a window with a proposal deck answering the YAG supplementary questions, budget, and team particulars; shortlisted teams pitch at Impact, IRL.",
+    "external_portal_url": "https://go.gov.sg/nyc-yag-osg",
+    "questions": [
+      {
+        "question_key": "problem_gap",
+        "label": "What problem(s)/gap(s) are you trying to address? Why is it important? How do you plan to address each gap, and how does your project complement or improve on existing solutions?",
+        "ai_draft_hint": "Structure per gap: the gap, its impact (with evidence), your intervention, and how it differs from existing solutions."
+      },
+      {
+        "question_key": "team_background",
+        "label": "Share how your project team came together \u2014 backgrounds, experiences, and motivations",
+        "ai_draft_hint": "Emphasise track record and complementary skills \u2014 YAG assesses readiness to scale, not just passion."
+      },
+      {
+        "question_key": "implementation_timeline",
+        "label": "Provide a detailed timeline of your project including all activities (publicity, workshops, dry-runs)",
+        "ai_draft_hint": "Give a dated activity plan across the full (up to 2-year) funded period, including publicity and preparation milestones."
+      },
+      {
+        "question_key": "logic_model",
+        "label": "Logic model: set out your programme's Inputs, Activities, Outputs, Outcomes and Impact",
+        "ai_draft_hint": "Draft a five-part logic model where each output flows from activities and each outcome is a measurable change in participants."
+      },
+      {
+        "question_key": "kpi_deliverables",
+        "label": "KPIs & deliverables: mid-point milestone and end-point deliverables by target month \u2014 what you're doing, how much (output numbers), and what difference it makes (outcome percentages)",
+        "ai_draft_hint": "Give specific # outputs and % outcome targets at a mid-point and end-point month; avoid vague targets."
+      },
+      {
+        "question_key": "risks_mitigation",
+        "label": "Potential risks or challenges: each risk, its impact on the project, and specific actionable mitigations",
+        "ai_draft_hint": "Pick 3-4 genuine risks (recruitment, partner fallout, budget overrun) and pair each with a concrete mitigation."
+      },
+      {
+        "question_key": "sustainability",
+        "label": "(For grant requests of S$30,000+) Follow-up plan for the project to continue, plus learning points from similar past projects",
+        "ai_draft_hint": "Show how the project keeps running after the grant \u2014 revenue, partners, volunteer pipeline \u2014 and cite lessons from comparable past work."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "National Youth Council",
+    "org_type": "government",
+    "org_url": "https://www.nyc.gov.sg/",
+    "title": "NYC Microgrant",
+    "reference_code": "NYC-MICRO-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$1,000",
+    "difficulty": "easy",
+    "focus_areas": [
+      "Community",
+      "Youth"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Year-round, fully online, no pitch required",
+    "eligibility_age_min": 15,
+    "eligibility_age_max": 35,
+    "eligibility_citizenship": "Singapore-based youths aged 15-35 (Singpass required)",
+    "eligibility_note": "New in 2026 under the SG Youth Plan. Covers 100% of supported costs. Designed for first-time changemakers taking an idea to first action \u2014 the easiest entry point into grant funding.",
+    "offering_description": "A micro seed grant of up to S$1,000 with a simplified, no-pitch application to help youths take the first step from idea to action on a community project.",
+    "application_instructions": "Register interest via NYC's online form (Singpass); NYC's Partnership Lab team follows up on next steps. Simplified applications also accepted at Impact, IRL events.",
+    "external_portal_url": "https://www.youthplan.gov.sg/contribute/youth-led-projects/",
+    "questions": [],
+    "questions_confidence": "none"
+  },
+  {
+    "org_name": "National Heritage Board",
+    "org_type": "government",
+    "org_url": "https://www.nhb.gov.sg",
+    "title": "YCM \u2014 Youth Heritage Kickstarter Fund",
+    "reference_code": "NHB-YHKF-2026",
+    "grant_type": "mixed",
+    "amount_display": "Up to S$7,000",
+    "difficulty": "moderate",
+    "focus_areas": [
+      "Heritage",
+      "Arts",
+      "Community",
+      "Youth"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Year-round; decisions at the monthly YCM Open Mic",
+    "eligibility_age_min": 15,
+    "eligibility_age_max": 35,
+    "eligibility_citizenship": "Singapore Citizen or PR youths aged 15-35, residing locally; teams majority SC/PR",
+    "eligibility_note": "Projects must be relevant to Singapore's heritage/history, engage the community, and complete within 6 months. Formats include mini exhibitions, guided tours, workshops, screenings, murals and temporary outdoor artwork. Projects lacking heritage elements may still be considered for the base YCM grant.",
+    "offering_description": "Enhanced YCM track co-presented by NHB and NYC: seed funding of up to S$7,000 plus curator mentorship for youth-led projects that promote appreciation of Singapore's heritage.",
+    "application_instructions": "Apply via the YCM grant card on the OurSG Grants Portal, selecting 'Culture & Heritage' as the category, at least 8 weeks before your implementation month; shortlisted teams pitch at the monthly Open Mic.",
+    "external_portal_url": "https://www.nhb.gov.sg/what-we-do/our-work/community-engagement/grants/grants/young-changemakers-youth-heritage-kickstarter-fund",
+    "questions": [
+      {
+        "question_key": "team_background",
+        "label": "Share how your project team came together \u2014 backgrounds, experiences, and motivations",
+        "ai_draft_hint": "Connect the team's personal connection to the heritage subject (neighbourhood, tradition, craft) with the skills to deliver it."
+      },
+      {
+        "question_key": "heritage_track_fit",
+        "label": "Explain how your project qualifies for the Youth Heritage Kickstarter Fund: promoting appreciation and understanding of Singapore's heritage",
+        "ai_draft_hint": "Name the specific Singapore heritage/history the project engages and how the audience will appreciate it better afterwards."
+      },
+      {
+        "question_key": "project_timeline",
+        "label": "Provide a detailed timeline including all activities (publicity, workshops, dry-runs; production and show dates for arts formats)",
+        "ai_draft_hint": "Lay out a dated plan fitting the 6-month completion requirement, including research, production and public engagement phases."
+      },
+      {
+        "question_key": "publicity_plans",
+        "label": "Describe your project's publicity plans",
+        "ai_draft_hint": "Specify channels and outreach numbers; publicity materials must credit NHB/NYC and be sent for review before release."
+      },
+      {
+        "question_key": "partners",
+        "label": "List partners you have reached out to or intend to (partner, nature of partnership, status)",
+        "ai_draft_hint": "Name site owners, community groups, museums or grassroots partners with realistic confirmation status."
+      }
+    ],
+    "questions_confidence": "high"
+  },
+  {
+    "org_name": "Ministry of Culture, Community and Youth",
+    "org_type": "government",
+    "org_url": "https://www.sgpo.gov.sg/sgpf/",
+    "title": "SG Partnerships Fund (Seed)",
+    "reference_code": "MCCY-SGPF-SEED-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$5,000 (Seed); larger tiers up to S$1M",
+    "difficulty": "easy",
+    "focus_areas": [
+      "Community",
+      "Youth",
+      "Education",
+      "Environment"
+    ],
+    "is_rolling": true,
+    "application_closes_at": null,
+    "frequency": "Seed tier: year-round; decisions in ~4 weeks; up to 50% disbursed upfront",
+    "eligibility_age_min": null,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Singapore Citizen or PR residing in Singapore (individuals/ground-up groups via Singpass), or Singapore-registered organisations",
+    "eligibility_note": "New S$50m fund launched at Budget 2026 \u2014 MCCY's flagship community ground-up grant. No age band, so youth founders qualify. Not-for-profit projects only; one active funded project at a time; declare all other funding sources.",
+    "offering_description": "Year-round seed funding of up to S$5,000 (100% of eligible costs) for individuals and ground-up groups piloting new community projects, with a simplified 15-minute application and ~4-week decision.",
+    "application_instructions": "Apply anytime via the SGPF (Seed) card on the OurSG Grants Portal using Singpass, with a project proposal and the SGPF Seed budget template.",
+    "external_portal_url": "https://oursggrants.gov.sg/grants/mccysgpfsopn/instruction",
+    "questions": [
+      {
+        "question_key": "project_proposal",
+        "label": "Describe your project: what it is, why the community needs it, and what will happen",
+        "ai_draft_hint": "A concise proposal written for a 15-minute application form \u2014 what, why, and how."
+      },
+      {
+        "question_key": "project_objective",
+        "label": "Objective: does your project aim to benefit the community and do good, without making a profit?",
+        "ai_draft_hint": "State the community benefit plainly and make explicit that the project is not-for-profit \u2014 commercial projects are ineligible."
+      },
+      {
+        "question_key": "who_it_helps",
+        "label": "Who it helps: does your project involve, engage, or benefit other people in Singapore?",
+        "ai_draft_hint": "Identify the specific community segment and estimate how many people will be involved or reached."
+      },
+      {
+        "question_key": "how_it_happens",
+        "label": "How it will happen: clear steps, roles, a realistic budget, and achievable goals",
+        "ai_draft_hint": "Sequence the steps with owners and dates; keep budget lines within supportable categories (venue, catering, marketing, equipment, professional fees, insurance)."
+      },
+      {
+        "question_key": "other_funding_declaration",
+        "label": "Declare all other funds and/or grants you have applied for or received for this project",
+        "ai_draft_hint": "List every other funding source honestly \u2014 the grant offsets the project deficit, so other income reduces the eligible amount."
+      }
+    ],
+    "questions_confidence": "medium"
+  },
+  {
+    "org_name": "National Arts Council",
+    "org_type": "government",
+    "org_url": "https://www.nac.gov.sg",
+    "title": "Presentation and Participation Grant",
+    "reference_code": "NAC-PNP-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$100,000 per financial year (up to 70% of project costs)",
+    "difficulty": "moderate",
+    "focus_areas": [
+      "Arts",
+      "Community"
+    ],
+    "is_rolling": false,
+    "application_closes_at": "2026-12-15",
+    "frequency": "Three cycles a year (mid-April, mid-August, mid-December deadlines)",
+    "eligibility_age_min": null,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Singapore Citizens or PRs; informal collectives with majority SC/PR members; registered organisations",
+    "eligibility_note": "Open to individuals AND informal collectives \u2014 collectives nominate one member to take legal/financial responsibility. Project must not have started before applying, must have a clear arts component, and be intended for public consumption. Priority to self-employed arts practitioners.",
+    "offering_description": "NAC's main project grant for emerging artists and collectives: co-funds performances, exhibitions, music EPs/albums, festivals and co-creative projects with the public, in physical and/or digital formats.",
+    "application_instructions": "Submit via the OurSG Grants Portal by 23:59 SGT on the cycle deadline, with the proposal and budget templates from the portal, CVs, work samples for first-time applicants, and complete scripts for theatre/literary projects.",
+    "external_portal_url": "https://www.nac.gov.sg/support/funding-and-schemes/presentation-and-participation-grant/overview",
+    "questions": [
+      {
+        "question_key": "artistic_concept",
+        "label": "Is the concept well thought through and planned? Is the project original, innovative and creative?",
+        "ai_draft_hint": "Lead with the single artistic idea, then show concrete planning detail and what makes the treatment fresh compared to similar local work."
+      },
+      {
+        "question_key": "singapore_work",
+        "label": "Does the project encourage and promote new Singapore work?",
+        "ai_draft_hint": "Name the new Singapore-created works, Singaporean artists and local content the project premieres or develops."
+      },
+      {
+        "question_key": "public_engagement",
+        "label": "Does the project engage your target audience/community and reach new audiences, including those who don't normally engage in the arts?",
+        "ai_draft_hint": "Define audience segments with numbers and the mechanisms (free programmes, community venues, co-creation) that pull in non-arts audiences \u2014 this criterion carries the most weight."
+      },
+      {
+        "question_key": "execution_capacity",
+        "label": "Do you have a clear plan to execute the project (resources, partners) and the necessary experience (artistic, production, project management, marketing)?",
+        "ai_draft_hint": "Map each execution function to a named team member or partner; young collectives should lean on mentors, past productions and confirmed venue partners."
+      },
+      {
+        "question_key": "financial_management",
+        "label": "Do you have sufficient knowledge and skills to manage the project's finances and administration?",
+        "ai_draft_hint": "Point to a realistic itemised budget and who tracks spending \u2014 inflated budgets cast doubt on the whole proposal."
+      }
+    ],
+    "questions_confidence": "medium"
+  },
+  {
+    "org_name": "National Arts Council",
+    "org_type": "government",
+    "org_url": "https://www.nac.gov.sg",
+    "title": "Creation Grant",
+    "reference_code": "NAC-CG-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$50,000",
+    "difficulty": "selective",
+    "focus_areas": [
+      "Arts"
+    ],
+    "is_rolling": false,
+    "application_closes_at": null,
+    "frequency": "Annual single cycle (2026 closed; next expected ~May 2027)",
+    "eligibility_age_min": null,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Singapore Citizens or PRs; for collaborations the lead applicant must be SC/PR",
+    "eligibility_note": "For artists with a track record \u2014 60% of assessment is artistic merit, so it suits emerging-to-mid-career artists more than first-timers. Supports up to 18 months of creation ending in a script/score/recording/exhibition/prototype plus a mini-showcase.",
+    "offering_description": "Funds the research-and-development phase of an original new work \u2014 collaborator fees, residencies, workshops, experimentation and a mini-showcase to producers and presenters.",
+    "application_instructions": "Submit via the OurSG Grants Portal during the annual window with the proposal and budget templates, CV, and supporting documents on past works.",
+    "external_portal_url": "https://www.nac.gov.sg/support/funding-and-schemes/creation-grant/how-and-when-to-apply",
+    "questions": [
+      {
+        "question_key": "idea_strength",
+        "label": "How strong and innovative is the project? Does it push artistic boundaries, and how relevant are the ideas in the wider social context?",
+        "ai_draft_hint": "Articulate the artistic risk being taken and connect the work's themes to a current conversation in Singapore society."
+      },
+      {
+        "question_key": "practice_impact",
+        "label": "How does the project develop your artistic practice? Is it potentially scalable for different platforms and audiences?",
+        "ai_draft_hint": "Frame the project as the next deliberate step in your artistic trajectory and sketch future platforms (tour, digital, adaptation)."
+      },
+      {
+        "question_key": "scene_contribution",
+        "label": "How does the project contribute to the art form's development and the arts scene? Does it address a critical gap in the arts ecosystem?",
+        "ai_draft_hint": "Name the specific gap (form, language, community, capability) in Singapore's arts ecosystem this work fills, with evidence."
+      },
+      {
+        "question_key": "track_record",
+        "label": "Your track record of artistic achievement and production, including critical recognition in Singapore or internationally",
+        "ai_draft_hint": "List strongest completed works, presentations, awards, reviews or selections chronologically \u2014 concrete recognition beats adjectives."
+      },
+      {
+        "question_key": "execution_plan",
+        "label": "Is the proposal well-planned with the resources needed to create the work on time and within budget? Is the work at a stage where you can realistically execute and launch it publicly?",
+        "ai_draft_hint": "Show a phased timeline with milestones, named collaborators, and evidence the work is already past pure concept stage."
+      },
+      {
+        "question_key": "launch_plan",
+        "label": "Who are you trying to reach with the eventual work, and what is your plan to market it and engage target audiences?",
+        "ai_draft_hint": "Describe the target audience for the finished work and the pathway to public launch \u2014 presenters, publishers or platforms already in conversation."
+      }
+    ],
+    "questions_confidence": "medium"
+  },
+  {
+    "org_name": "National Heritage Board",
+    "org_type": "government",
+    "org_url": "https://www.nhb.gov.sg",
+    "title": "Heritage Grants \u2014 Minor Project Grant",
+    "reference_code": "NHB-HGS-MINOR-2026",
+    "grant_type": "cash",
+    "amount_display": "Up to S$50,000 (up to 80% of qualifying costs)",
+    "difficulty": "moderate",
+    "focus_areas": [
+      "Heritage",
+      "Community",
+      "Education"
+    ],
+    "is_rolling": false,
+    "application_closes_at": "2026-09-15",
+    "frequency": "Twice a year (windows 4 Mar-15 Apr and 4 Aug-15 Sep); free Heritage Grants Clinics help applicants prepare",
+    "eligibility_age_min": 18,
+    "eligibility_age_max": null,
+    "eligibility_citizenship": "Singapore Citizen or PR aged 18+, residing in Singapore; non-profits, interest groups, schools; informal groups via a nominated individual",
+    "eligibility_note": "Explicitly designed for first-timers with little heritage project experience. Informal groups qualify by nominating an individual to take legal/financial responsibility. Funding raised from 50% to 80% of costs from April 2026. Reserve at least 8 weeks for NHB content vetting before launch.",
+    "offering_description": "Co-funds community-initiated heritage projects \u2014 trails, exhibitions, publications, documentaries, heritage spaces \u2014 that promote learning about Singapore's history and shared heritage.",
+    "application_instructions": "Apply via the OurSG Grants Portal (NHB Minor Project Grant) by 23:59 on the closing date, with a project proposal (max 2,000 words), budget form, and team CVs.",
+    "external_portal_url": "https://www.nhb.gov.sg/what-we-do/our-work/community-engagement/grants/grants/minor-and-major-project-grants",
+    "questions": [
+      {
+        "question_key": "central_idea",
+        "label": "What kind of project do you have in mind? Explain the central idea, the scale, and the components involved.",
+        "ai_draft_hint": "State the heritage topic, output format (trail, exhibition, film, publication) and scale in the first two sentences, then break down each component."
+      },
+      {
+        "question_key": "objectives_alignment",
+        "label": "What do you plan to achieve? How does your project address the grant's objectives, and does it address gaps in the heritage ecosystem?",
+        "ai_draft_hint": "Tie objectives to the scheme's aims (learning Singapore's history, neighbourhood heritage, connecting communities) and name a specific under-documented topic."
+      },
+      {
+        "question_key": "heritage_promotion",
+        "label": "How will your project promote understanding, learning and discovery of Singapore's heritage and identity?",
+        "ai_draft_hint": "Describe the learning experience from the participant's point of view and how historical content will be researched and verified."
+      },
+      {
+        "question_key": "success_measures",
+        "label": "What will success look like, and how will you measure the outcomes?",
+        "ai_draft_hint": "Give 2-3 measurable targets (attendance, downloads, survey results) plus one qualitative outcome."
+      },
+      {
+        "question_key": "schedule_milestones",
+        "label": "Detailed project schedule with key milestones and dates \u2014 and any potential derailers your team needs to cater for",
+        "ai_draft_hint": "Build a month-by-month timeline and explicitly reserve 8+ weeks for NHB content vetting before launch, plus contingency for permits."
+      },
+      {
+        "question_key": "team_roles",
+        "label": "Who forms the project team and what are their roles? Which vendors will you appoint and for what services?",
+        "ai_draft_hint": "Assign each person a named role with relevant experience; keep vendors clearly separate from the project team."
+      },
+      {
+        "question_key": "outreach_publicity",
+        "label": "Who are your target audiences, how many people do you hope to reach, how will you publicise the project, and what will audiences gain?",
+        "ai_draft_hint": "Be specific about segments, give a numeric reach target, and name concrete channels \u2014 outreach is a large share of the assessment."
+      }
+    ],
+    "questions_confidence": "high"
+  }
+]

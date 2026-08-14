@@ -635,7 +635,10 @@ textarea.form-input { min-height:80px; }
     <div class="modal-body" id="ad-body"></div>
     <div class="modal-footer">
       <div class="modal-footer-note" id="ad-footer-note"></div>
-      <div class="btn-row"><button class="btn btn-out" onclick="closeAppDetail()">Close</button></div>
+      <div class="btn-row">
+        <button class="btn btn-out" onclick="closeAppDetail()">Close</button>
+        <button class="btn btn-or" onclick="copyAppAnswers()">⧉ Copy All Answers</button>
+      </div>
     </div>
   </div>
 </div>
@@ -747,6 +750,7 @@ textarea.form-input { min-height:80px; }
       <div class="modal-footer-note">All AI-drafted content is editable. You submit, you sign off.</div>
       <div class="btn-row">
         <button class="btn btn-out" onclick="saveApplicationDraft()">Save Draft</button>
+        <button class="btn btn-out" onclick="copyCurrentAnswers()">⧉ Copy Answers</button>
         <button class="btn btn-or" id="modal-submit-btn" onclick="submitApplication()">Submit Application</button>
       </div>
     </div>
@@ -1539,11 +1543,43 @@ async function openMyApplication(appId) {
       '</div>';
   }
   document.getElementById('ad-body').innerHTML = html;
+  // Plain-text version for pasting into the grant's real portal
+  window.__adCopyText =
+    (g.title || 'Grant') + ' — application answers (drafted on coart)\n\n' +
+    (a.answers || []).map(ans =>
+      'Q: ' + (labels[ans.question_key] || FALLBACK[ans.question_key] || ans.question_key) +
+      '\nA: ' + ans.value
+    ).join('\n\n');
   document.getElementById('ad-footer-note').textContent =
     a.status === 'backed' ? 'The backer received your contact details too — expect to hear from them.' : '';
   document.getElementById('appdetail-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
+async function copyAppAnswers() {
+  try {
+    await navigator.clipboard.writeText(window.__adCopyText || '');
+    showToast('✓ Answers copied — paste them into the grant\'s own portal.');
+  } catch (e) { showToast('Could not copy — select and copy manually.'); }
+}
+
+async function copyCurrentAnswers() {
+  const answers = collectAnswers();
+  if (!answers.length) { showToast('Nothing to copy yet — fill in an answer first.'); return; }
+  const labels = {};
+  ((CURRENT_GRANT && CURRENT_GRANT.questions) || []).forEach(q => { labels[q.question_key] = q.label; });
+  const FALLBACK = {
+    impact: 'Describe your project and its impact',
+    funding: 'How will you use this grant?',
+    founder: 'What makes you the right person to lead this?',
+  };
+  const text = ((CURRENT_GRANT && CURRENT_GRANT.title) || 'Grant') + ' — application answers (drafted on coart)\n\n' +
+    answers.map(a => 'Q: ' + (labels[a.question_key] || FALLBACK[a.question_key] || a.question_key) + '\nA: ' + a.value).join('\n\n');
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('✓ Answers copied — paste them into the grant\'s own portal.');
+  } catch (e) { showToast('Could not copy — select and copy manually.'); }
+}
+
 function closeAppDetail() {
   document.getElementById('appdetail-overlay').classList.remove('on');
   document.body.style.overflow = '';
