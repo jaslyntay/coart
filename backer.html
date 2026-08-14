@@ -678,7 +678,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
 </div>
 
 <!-- ═══ ORG EDIT MODAL ═══ -->
-<div class="modal-overlay" id="orgedit-overlay" onclick="if(event.target===this){closeOrgEdit()}">
+<div class="modal-overlay" id="orgedit-overlay" onclick="if(clickedOutside(event)){closeOrgEdit()}">
   <div class="modal" style="width:520px;">
     <div class="modal-header">
       <div>
@@ -896,6 +896,16 @@ async function switchRole() {
 
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+
+// Track where the mouse press STARTED — a text-selection drag that ends on
+// the overlay must not count as an "outside click" (it would close modals
+// while users select/copy text in form fields).
+window.__mdTarget = null;
+document.addEventListener('mousedown', (e) => { window.__mdTarget = e.target; }, true);
+function clickedOutside(e) {
+  return e.target === e.currentTarget && window.__mdTarget === e.currentTarget;
 }
 
 const pageIds = ['grants','discover','messages','backed','orgprofile','postgrant'];
@@ -1352,7 +1362,7 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+  if (e.target === document.getElementById('modal-overlay') && window.__mdTarget === e.target) closeModal();
 }
 
 // ───── CONTACT REQUEST ─────
@@ -1401,7 +1411,7 @@ function openInvite(founderId, name) {
 }
 function closeInvite() { document.getElementById('invite-overlay').classList.remove('on'); }
 function closeInviteOutside(e) {
-  if (e.target === document.getElementById('invite-overlay')) closeInvite();
+  if (e.target === document.getElementById('invite-overlay') && window.__mdTarget === e.target) closeInvite();
 }
 
 async function sendInvite() {

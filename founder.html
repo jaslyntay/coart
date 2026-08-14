@@ -516,7 +516,7 @@ textarea.form-input { min-height:80px; }
 </div><!-- /main -->
 
 <!-- ═══ BASIC INFO EDIT MODAL ═══ -->
-<div class="modal-overlay" id="basicinfo-overlay" onclick="if(event.target===this){closeBasicInfo()}">
+<div class="modal-overlay" id="basicinfo-overlay" onclick="if(clickedOutside(event)){closeBasicInfo()}">
   <div class="modal" style="width:520px;">
     <div class="modal-header">
       <div>
@@ -713,7 +713,7 @@ textarea.form-input { min-height:80px; }
 </div>
 
 <!-- ═══ MY APPLICATION DETAIL MODAL ═══ -->
-<div class="modal-overlay" id="appdetail-overlay" onclick="if(event.target===this){closeAppDetail()}">
+<div class="modal-overlay" id="appdetail-overlay" onclick="if(clickedOutside(event)){closeAppDetail()}">
   <div class="modal">
     <div class="modal-header">
       <div>
@@ -912,6 +912,16 @@ async function switchRole() {
     localStorage.removeItem('coart_general_application');
     window.location.reload();
   } catch (e) { showToast('Could not reset — ' + e.message); }
+}
+
+
+// Track where the mouse press STARTED — a text-selection drag that ends on
+// the overlay must not count as an "outside click" (it would close modals
+// while users select/copy text in form fields).
+window.__mdTarget = null;
+document.addEventListener('mousedown', (e) => { window.__mdTarget = e.target; }, true);
+function clickedOutside(e) {
+  return e.target === e.currentTarget && window.__mdTarget === e.currentTarget;
 }
 
 const pages = ['projects','grants','dashboard','messages','profile'];
@@ -1457,7 +1467,7 @@ function closeGenApp() {
   document.body.style.overflow = '';
 }
 function closeGenAppOutside(e) {
-  if (e.target === document.getElementById('genapp-overlay')) closeGenApp();
+  if (e.target === document.getElementById('genapp-overlay') && window.__mdTarget === e.target) closeGenApp();
 }
 async function saveGenApp() {
   const ga = {
@@ -1541,7 +1551,7 @@ function closeNewProj() {
   document.body.style.overflow = '';
 }
 function closeNewProjOutside(e) {
-  if (e.target === document.getElementById('newproj-overlay')) closeNewProj();
+  if (e.target === document.getElementById('newproj-overlay') && window.__mdTarget === e.target) closeNewProj();
 }
 
 let SAVING_PROJECT = false;
@@ -1930,7 +1940,7 @@ function closeProjectPicker() {
   document.body.style.overflow = '';
 }
 function closePPOutside(e) {
-  if (e.target === document.getElementById('pp-overlay')) closeProjectPicker();
+  if (e.target === document.getElementById('pp-overlay') && window.__mdTarget === e.target) closeProjectPicker();
 }
 
 async function confirmProjectPicker() {
@@ -2118,7 +2128,7 @@ function closeModal() {
   document.body.style.overflow = '';
 }
 function closeModalOutside(e) {
-  if (e.target === document.getElementById('modal-overlay')) closeModal();
+  if (e.target === document.getElementById('modal-overlay') && window.__mdTarget === e.target) closeModal();
 }
 
 // Generic-form AI helpers (suggestions composed from the user's own data)
