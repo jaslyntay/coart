@@ -84,11 +84,12 @@ export async function applicationsRoutes(app: FastifyInstance) {
   });
 
   // GET /api/v1/applications/:id — with answers
+  // Uses the admin client (the user-JWT role has no grant on contact_*
+  // columns, which this query joins) with explicit access control below.
   app.get('/:id', { preHandler: requireUser }, async (req, reply) => {
     const { id } = req.params as { id: string };
-    const sb = userClient(req.user!.jwt);
 
-    const { data: appli, error } = await sb
+    const { data: appli, error } = await admin
       .from('applications')
       .select(
         '*, project:projects(*), grant:grants(*, questions:grant_questions(*), organization:organizations(id, name, type, logo_url, contact_name, contact_email, contact_phone))',
@@ -98,7 +99,19 @@ export async function applicationsRoutes(app: FastifyInstance) {
     if (error) return reply.code(500).send({ error: error.message });
     if (!appli) return reply.code(404).send({ error: 'Application not found' });
 
-    const { data: answers } = await sb
+    // Access: the founder who owns it, or a member of the grant's org.
+    let allowed = appli.founder_id === req.user!.id;
+    if (!allowed && req.user!.role === 'backer') {
+      const { data: member } = await admin
+        .from('backer_members')
+        .select('organization_id')
+        .eq('user_id', req.user!.id)
+        .maybeSingle();
+      allowed = !!member && member.organization_id === (appli as any).grant?.organization_id;
+    }
+    if (!allowed) return reply.code(403).send({ error: 'Not your application' });
+
+    const { data: answers } = await admin
       .from('application_answers')
       .select('*')
       .eq('application_id', id);

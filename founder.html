@@ -231,6 +231,17 @@ textarea.form-input { min-height:80px; }
   #msg-layout { grid-template-columns: 1fr !important; height:auto !important; }
   #msg-threads { max-height:30vh; border-right:none !important; border-bottom:1px solid var(--border); }
 }
+
+/* ── Tag input (type-ahead multi-select) ── */
+.tagwrap { position:relative; }
+.tagbox { display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--border-strong); background:var(--card); cursor:text; }
+.tagchip { display:inline-flex; align-items:center; gap:6px; background:var(--orange); color:#fff; font-size:12px; padding:4px 10px; border-radius:12px; }
+.tagchip span { cursor:pointer; font-weight:700; opacity:.85; }
+.tagchip span:hover { opacity:1; }
+.taginput { flex:1; min-width:150px; border:none; outline:none; background:transparent; font-size:13px; font-family:inherit; color:var(--text); padding:4px; }
+.tagdd { display:none; position:absolute; left:0; right:0; top:100%; z-index:60; background:var(--card); border:1px solid var(--border-strong); max-height:200px; overflow-y:auto; box-shadow:0 10px 26px rgba(11,37,69,.16); }
+.tagopt { padding:9px 14px; font-size:13px; cursor:pointer; }
+.tagopt:hover { background:var(--surface); }
 </style>
 </head>
 <body>
@@ -339,15 +350,11 @@ textarea.form-input { min-height:80px; }
         </div>
         <div class="form-row">
           <div class="form-label"><span>Focus areas (optional — pick any that fit)</span></div>
-          <div id="ob-focus-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Arts"/>Arts</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Environment"/>Environment</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Community"/>Community</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Education"/>Education</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Food"/>Food</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Heritage"/>Heritage</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Social Enterprise"/>Social Enterprise</label></div>
-          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below (comma separated)</div>
-          <input class="form-input" id="ob-focus-other" style="margin-top:4px;"/>
+          <div id="ob-focus-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('ob-focus-input').focus()"><input class="taginput" id="ob-focus-input" aria-label="Focus areas"/></div><div class="tagdd" id="ob-focus-dd"></div></div><div style="font-size:10px;color:var(--hint);margin-top:5px;font-family:'DM Mono',monospace;">Type to search · Enter adds it (even your own) · click × to remove</div></div>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Community / audience you serve (optional — pick any)</span></div>
-          <div id="ob-community-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Students"/>Students</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Seniors"/>Seniors</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Low-income families"/>Low-income families</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Persons with disabilities"/>Persons with disabilities</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Migrant workers"/>Migrant workers</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Local artisans & craftspeople"/>Local artisans & craftspeople</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="General public"/>General public</label></div>
-          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below</div>
-          <input class="form-input" id="ob-community-other" style="margin-top:4px;"/>
+          <div id="ob-community-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('ob-community-input').focus()"><input class="taginput" id="ob-community-input" aria-label="Community or audience"/></div><div class="tagdd" id="ob-community-dd"></div></div><div style="font-size:10px;color:var(--hint);margin-top:5px;font-family:'DM Mono',monospace;">Type to search · Enter adds it (even your own) · click × to remove</div></div>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Why are you the right person to lead this work? (optional)</span></div>
@@ -631,15 +638,11 @@ textarea.form-input { min-height:80px; }
         </div>
         <div class="form-row">
           <div class="form-label"><span>Focus Areas (pick any that fit)</span></div>
-          <div id="ga-focus-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Arts"/>Arts</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Environment"/>Environment</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Community"/>Community</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Education"/>Education</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Food"/>Food</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Heritage"/>Heritage</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Social Enterprise"/>Social Enterprise</label></div>
-          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below (comma separated)</div>
-          <input class="form-input" id="ga-focus-other" style="margin-top:4px;"/>
+          <div id="ga-focus-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('ga-focus-input').focus()"><input class="taginput" id="ga-focus-input" aria-label="Focus areas"/></div><div class="tagdd" id="ga-focus-dd"></div></div><div style="font-size:10px;color:var(--hint);margin-top:5px;font-family:'DM Mono',monospace;">Type to search · Enter adds it (even your own) · click × to remove</div></div>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Community / Audience you serve (pick any)</span></div>
-          <div id="ga-community-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Students"/>Students</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Seniors"/>Seniors</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Low-income families"/>Low-income families</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Persons with disabilities"/>Persons with disabilities</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Migrant workers"/>Migrant workers</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Local artisans & craftspeople"/>Local artisans & craftspeople</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="General public"/>General public</label></div>
-          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below</div>
-          <input class="form-input" id="ga-community-other" style="margin-top:4px;"/>
+          <div id="ga-community-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('ga-community-input').focus()"><input class="taginput" id="ga-community-input" aria-label="Community or audience"/></div><div class="tagdd" id="ga-community-dd"></div></div><div style="font-size:10px;color:var(--hint);margin-top:5px;font-family:'DM Mono',monospace;">Type to search · Enter adds it (even your own) · click × to remove</div></div>
         </div>
       </div>
 
@@ -1025,6 +1028,15 @@ function initAvatarPicker(key, existingUrl) {
     st.ox = Math.min(0, Math.max(240 - w, st.ox));
     st.oy = Math.min(0, Math.max(240 - h, st.oy));
     ctx.drawImage(st.img, st.ox, st.oy, w, h);
+    // rule-of-thirds grid for professional framing
+    ctx.strokeStyle = 'rgba(255,255,255,.65)';
+    ctx.lineWidth = 1;
+    [80, 160].forEach(p => {
+      ctx.beginPath(); ctx.moveTo(p, 0); ctx.lineTo(p, 240); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(0, p); ctx.lineTo(240, p); ctx.stroke();
+    });
+    ctx.strokeStyle = 'rgba(11,37,69,.28)';
+    ctx.strokeRect(0.5, 0.5, 239, 239);
   };
   st.draw = draw;
   file.onchange = () => {
@@ -1080,6 +1092,76 @@ function collectChecks(groupId, otherId) {
   if (other) vals.push(...other.split(',').map(s => s.trim()).filter(Boolean));
   return vals.join(', ');
 }
+// ───── TAG INPUT: type-ahead multi-select with chips + custom entries ─────
+const TAG_INPUTS = {};
+function tagMarkup(key, label) {
+  return '<div class="tagwrap"><div class="tagbox" onclick="document.getElementById(\'' + key + '-input\').focus()">' +
+    '<input class="taginput" id="' + key + '-input" aria-label="' + esc(label) + '"/></div>' +
+    '<div class="tagdd" id="' + key + '-dd"></div></div>' +
+    '<div style="font-size:10px;color:var(--hint);margin-top:5px;font-family:\'DM Mono\',monospace;">Type to search · Enter adds it (even your own) · click × to remove</div>';
+}
+function initTagInput(key, options) {
+  const box = document.querySelector('#' + key + '-tags .tagbox') || document.getElementById(key + '-tags');
+  const input = document.getElementById(key + '-input');
+  const dd = document.getElementById(key + '-dd');
+  if (!input) return;
+  const st = TAG_INPUTS[key] = { selected: (TAG_INPUTS[key] && TAG_INPUTS[key].selected) || [], options };
+  const render = () => {
+    input.parentElement.querySelectorAll('.tagchip').forEach(n => n.remove());
+    st.selected.forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'tagchip';
+      chip.innerHTML = esc(v) + ' <span>×</span>';
+      chip.querySelector('span').onclick = (e) => { e.stopPropagation(); st.selected = st.selected.filter(x => x !== v); render(); };
+      input.parentElement.insertBefore(chip, input);
+    });
+  };
+  const renderDD = () => {
+    const q = input.value.trim().toLowerCase();
+    const opts = st.options.filter(o => !st.selected.includes(o) && (!q || o.toLowerCase().includes(q)));
+    const custom = q && !st.options.some(o => o.toLowerCase() === q) && !st.selected.some(o => o.toLowerCase() === q);
+    if (!opts.length && !custom) { dd.style.display = 'none'; return; }
+    dd.innerHTML = opts.map(o => '<div class="tagopt" data-v="' + esc(o) + '">' + esc(o) + '</div>').join('') +
+      (custom ? '<div class="tagopt" data-v="' + esc(input.value.trim()) + '" style="color:var(--orange);">＋ Add "' + esc(input.value.trim()) + '"</div>' : '');
+    dd.style.display = 'block';
+    dd.querySelectorAll('.tagopt').forEach(el => {
+      el.onmousedown = (e) => { e.preventDefault(); add(el.getAttribute('data-v')); };
+    });
+  };
+  const add = (v) => {
+    if (v && !st.selected.includes(v)) st.selected.push(v);
+    input.value = '';
+    render(); renderDD(); input.focus();
+  };
+  st.render = render;
+  input.oninput = renderDD;
+  input.onfocus = renderDD;
+  input.onblur = () => setTimeout(() => { dd.style.display = 'none'; }, 160);
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (q) {
+        const match = st.options.find(o => o.toLowerCase() === q.toLowerCase());
+        add(match || q);
+      }
+    } else if (e.key === 'Backspace' && !input.value && st.selected.length) {
+      st.selected.pop(); render(); renderDD();
+    }
+  };
+  render();
+}
+function getTagValues(key) { return ((TAG_INPUTS[key] || {}).selected || []).join(', '); }
+function setTagValues(key, str) {
+  const st = TAG_INPUTS[key];
+  if (!st) return;
+  st.selected = (str || '').split(',').map(s => s.trim()).filter(Boolean);
+  st.render();
+}
+
+const FOCUS_OPTIONS = ['Arts', 'Environment', 'Community', 'Education', 'Food', 'Heritage', 'Youth', 'Social Enterprise'];
+const AUDIENCE_OPTIONS = ['Youth', 'Students', 'Seniors', 'Low-income families', 'Persons with disabilities', 'Migrant workers', 'Local artisans & craftspeople', 'General public'];
+
 function applyChecks(groupId, otherId, commaString) {
   const wanted = (commaString || '').split(',').map(s => s.trim()).filter(Boolean);
   const known = [];
@@ -1471,6 +1553,8 @@ function openOnboarding() {
   document.querySelector('.profile-name').textContent = 'New here';
   initAvatarPicker('ob-pfp');
   initAvatarPicker('ob-logo');
+  initTagInput('ob-focus', FOCUS_OPTIONS);
+  initTagInput('ob-community', AUDIENCE_OPTIONS);
   // Prefill contact email from the login email
   sbAuth.auth.getSession().then(({ data }) => {
     const email = data.session?.user?.email || '';
@@ -1518,9 +1602,9 @@ async function submitOnboarding() {
       if (val('ob-location')) opt.location = val('ob-location');
       if (val('ob-linkedin')) opt.linkedin_url = val('ob-linkedin');
       if (val('ob-bio')) opt.bio = val('ob-bio');
-      const obFocus = collectChecks('ob-focus-group', 'ob-focus-other');
+      const obFocus = getTagValues('ob-focus');
       if (obFocus) opt.focus_areas = obFocus.split(',').map(s => s.trim()).filter(Boolean);
-      const obCommunity = collectChecks('ob-community-group', 'ob-community-other');
+      const obCommunity = getTagValues('ob-community');
       if (obCommunity) opt.community = obCommunity;
       if (val('ob-credibility')) opt.past_experience = val('ob-credibility');
       if (val('ob-budget')) opt.typical_budget = val('ob-budget');
@@ -1633,8 +1717,10 @@ async function saveBasicInfo() {
 function openGenApp() {
   const ga = getGenApp();
   document.getElementById('ga-bio').value = (ga && ga.bio) || '';
-  applyChecks('ga-focus-group', 'ga-focus-other', ga && ga.focus);
-  applyChecks('ga-community-group', 'ga-community-other', ga && ga.community);
+  initTagInput('ga-focus', FOCUS_OPTIONS);
+  initTagInput('ga-community', AUDIENCE_OPTIONS);
+  setTagValues('ga-focus', ga && ga.focus);
+  setTagValues('ga-community', ga && ga.community);
   document.getElementById('ga-credibility').value = (ga && ga.credibility) || '';
   document.getElementById('ga-budget').value = (ga && ga.budget) || '';
   document.getElementById('genapp-overlay').classList.add('on');
@@ -1650,8 +1736,8 @@ function closeGenAppOutside(e) {
 async function saveGenApp() {
   const ga = {
     bio: document.getElementById('ga-bio').value.trim(),
-    focus: collectChecks('ga-focus-group', 'ga-focus-other'),
-    community: collectChecks('ga-community-group', 'ga-community-other'),
+    focus: getTagValues('ga-focus'),
+    community: getTagValues('ga-community'),
     credibility: document.getElementById('ga-credibility').value.trim(),
     budget: document.getElementById('ga-budget').value.trim()
   };
