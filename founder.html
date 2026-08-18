@@ -250,7 +250,7 @@ textarea.form-input { min-height:80px; }
 <!-- SIDEBAR -->
 <div class="sidebar">
   <div class="sidebar-logo">
-    <div class="logo">coart<span class="logo-dot"></span></div>
+    <div class="logo" style="cursor:pointer;" onclick="showPage('projects', document.querySelector('[onclick*=projects]'))">coart<span class="logo-dot"></span></div>
   </div>
   <div class="sidebar-profile">
     <div class="profile-avi">·</div>
@@ -414,8 +414,8 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="ob-org-desc"></textarea>
         </div>
         <div class="form-row">
-          <div class="form-label"><span>Focus areas, comma separated (optional)</span></div>
-          <input class="form-input" id="ob-org-focus"/>
+          <div class="form-label"><span>Focus areas (optional — type to search, Enter to add)</span></div>
+          <div id="ob-org-focus-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('ob-org-focus-input').focus()"><input class="taginput" id="ob-org-focus-input" aria-label="Organisation focus areas"/></div><div class="tagdd" id="ob-org-focus-dd"></div></div></div>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Organisation logo (optional)</span></div>
@@ -785,6 +785,24 @@ textarea.form-input { min-height:80px; }
         <button class="btn btn-out" onclick="closeAppDetail()">Close</button>
         <button class="btn btn-or" onclick="copyAppAnswers()">⧉ Copy All Answers</button>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ORGANISATION PROFILE MODAL (for founders) ═══ -->
+<div class="modal-overlay" id="orgview-overlay" onclick="if(clickedOutside(event)){closeOrgView()}">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title" id="ov-name">Organisation</div>
+        <div class="modal-sub" id="ov-sub"></div>
+      </div>
+      <button class="modal-close" onclick="closeOrgView()">✕</button>
+    </div>
+    <div class="modal-body" id="ov-body"></div>
+    <div class="modal-footer">
+      <div class="modal-footer-note"></div>
+      <div class="btn-row"><button class="btn btn-out" onclick="closeOrgView()">Close</button></div>
     </div>
   </div>
 </div>
@@ -1451,7 +1469,8 @@ function grantMatchesFilter(g, f) {
 }
 
 function renderGrants() {
-  const list = ALL_GRANTS.filter(g => grantMatchesFilter(g, GRANT_FILTER))
+  const list = ALL_GRANTS.slice().sort((a, b) => Number(grantCycleClosed(a)) - Number(grantCycleClosed(b)))
+    .filter(g => grantMatchesFilter(g, GRANT_FILTER))
     .filter(g => !GRANT_SEARCH ||
       (g.title || '').toLowerCase().includes(GRANT_SEARCH) ||
       ((g.organization && g.organization.name) || '').toLowerCase().includes(GRANT_SEARCH) ||
@@ -1555,6 +1574,7 @@ function openOnboarding() {
   initAvatarPicker('ob-logo');
   initTagInput('ob-focus', FOCUS_OPTIONS);
   initTagInput('ob-community', AUDIENCE_OPTIONS);
+  initTagInput('ob-org-focus', FOCUS_OPTIONS);
   // Prefill contact email from the login email
   sbAuth.auth.getSession().then(({ data }) => {
     const email = data.session?.user?.email || '';
@@ -1640,7 +1660,8 @@ async function submitOnboarding() {
       const orgOpt = {};
       const oval = id => document.getElementById(id).value.trim();
       if (oval('ob-org-desc')) orgOpt.description = oval('ob-org-desc');
-      if (oval('ob-org-focus')) orgOpt.focus_areas = oval('ob-org-focus').split(',').map(s => s.trim()).filter(Boolean);
+      const orgFocus = getTagValues('ob-org-focus');
+      if (orgFocus) orgOpt.focus_areas = orgFocus.split(',').map(s => s.trim()).filter(Boolean);
       if (Object.keys(orgOpt).length) {
         try { await api('/organizations/me', { method: 'PATCH', body: JSON.stringify(orgOpt) }); } catch (e) {}
       }
@@ -1999,6 +2020,40 @@ async function continueDraft(appId) {
   });
 }
 
+// ───── ORGANISATION PROFILE (founder view: org info + its grants) ─────
+async function openOrgProfile(orgId) {
+  let org;
+  try { org = await api('/organizations/' + orgId); }
+  catch (e) { showToast('Could not load organisation.'); return; }
+  document.getElementById('ov-name').textContent = org.name || 'Organisation';
+  document.getElementById('ov-sub').textContent =
+    [org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', org.location].filter(Boolean).join(' · ');
+  const theirGrants = ALL_GRANTS.filter(g => g.organization && g.organization.id === orgId);
+  const sect = (label, value) =>
+    '<div class="profile-field"><div class="profile-field-label">' + esc(label) +
+    '</div><div class="profile-field-value" style="white-space:pre-wrap;">' + esc(value || '—') + '</div></div>';
+  let html = '';
+  if (org.description) html += sect('About', org.description);
+  if ((org.focus_areas || []).length) html += sect('Focus areas', org.focus_areas.join(', '));
+  if (org.external_url) html += '<div class="profile-field"><div class="profile-field-label">Website</div><div class="profile-field-value"><a href="' + esc(org.external_url) + '" target="_blank" rel="noopener" style="color:var(--orange);">' + esc(org.external_url) + ' ↗</a></div></div>';
+  html += '<div class="profile-field"><div class="profile-field-label">Their grants on coart</div><div class="profile-field-value">' +
+    (theirGrants.length
+      ? theirGrants.map(g =>
+          '<div style="margin-bottom:10px;">' + esc(g.title) + (g.amount_display ? ' — ' + esc(fmtAmount(g.amount_display)) : '') +
+          (grantCycleClosed(g)
+            ? ' <span style="color:var(--hint);">(cycle closed)</span>'
+            : ' <a href="#" onclick="closeOrgView();showPage(\'grants\', document.querySelector(\'[onclick*=grants]\'));GRANT_SEARCH=\'' + esc(g.title.toLowerCase()).replace(/'/g, '&#39;') + '\';document.getElementById(\'grants-search\').value=GRANT_SEARCH;renderGrants();return false;" style="color:var(--orange);">view →</a>') +
+          '</div>').join('')
+      : 'No active grants right now.') + '</div></div>';
+  document.getElementById('ov-body').innerHTML = html;
+  document.getElementById('orgview-overlay').classList.add('on');
+  document.body.style.overflow = 'hidden';
+}
+function closeOrgView() {
+  document.getElementById('orgview-overlay').classList.remove('on');
+  document.body.style.overflow = '';
+}
+
 // ───── NOTIFICATIONS ─────
 let NOTIFS = [];
 async function loadNotifs() {
@@ -2096,7 +2151,9 @@ function renderThreadList() {
 
 async function openThread(counterpartyId, name) {
   CURRENT_THREAD = { id: counterpartyId, name };
-  document.getElementById('msg-head').textContent = name;
+  document.getElementById('msg-head').innerHTML =
+    '<a href="#" onclick="openOrgProfile(\'' + counterpartyId + '\');return false;" style="color:var(--text);text-decoration:none;">' + esc(name) +
+    ' <span style="color:var(--orange);font-size:11px;font-family:\'DM Mono\',monospace;">view organisation ↗</span></a>';
   document.getElementById('msg-inputrow').style.display = 'flex';
   renderThreadList();
   try {

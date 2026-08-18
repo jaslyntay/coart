@@ -226,12 +226,24 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
   #msg-layout { grid-template-columns: 1fr !important; height:auto !important; }
   #msg-threads { max-height:30vh; border-right:none !important; border-bottom:1px solid var(--border); }
 }
+
+/* ── Tag input (type-ahead multi-select) ── */
+.tagwrap { position:relative; }
+.tagbox { display:flex; flex-wrap:wrap; gap:6px; padding:8px; border:1px solid var(--border-strong); background:var(--card); cursor:text; }
+.tagchip { display:inline-flex; align-items:center; gap:6px; background:var(--orange); color:#fff; font-size:12px; padding:4px 10px; border-radius:12px; }
+.tagchip span { cursor:pointer; font-weight:700; opacity:.85; }
+.tagchip span:hover { opacity:1; }
+.taginput { flex:1; min-width:150px; border:none; outline:none; background:transparent; font-size:13px; font-family:inherit; color:var(--text); padding:4px; }
+.tagdd { display:none; position:absolute; left:0; right:0; top:100%; z-index:60; background:var(--card); border:1px solid var(--border-strong); max-height:200px; overflow-y:auto; box-shadow:0 10px 26px rgba(11,37,69,.16); }
+.tagopt { padding:9px 14px; font-size:13px; cursor:pointer; }
+.tagopt:hover { background:var(--surface); }
+.qrow { display:flex; gap:8px; align-items:center; margin-bottom:8px; }
 </style>
 </head>
 <body>
 <div class="sidebar-backdrop" id="sidebar-backdrop" onclick="toggleSidebar()"></div><!-- SIDEBAR -->
 <div class="sidebar">
-  <div class="sidebar-logo"><div class="logo">coart<span class="logo-dot"></span></div></div>
+  <div class="sidebar-logo"><div class="logo" style="cursor:pointer;" onclick="showPage('grants', document.querySelector('[onclick*=grants]'))">coart<span class="logo-dot"></span></div></div>
   <div class="sidebar-org">
     <div class="org-badge">Backer Organisation</div>
     <div class="org-name" id="sb-org-name">Loading…</div>
@@ -410,12 +422,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
             <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;">
               <div class="pg-field">
                 <div class="pg-label">Number of Recipients</div>
-                <select class="pg-input">
-                  <option>1</option>
-                  <option selected>2–5</option>
-                  <option>5–10</option>
-                  <option>10+</option>
-                </select>
+                <input class="pg-input" id="pg-recipients" type="number" min="1" step="1"/>
               </div>
               <div class="pg-field">
                 <div class="pg-label">Application Opens <span class="pg-req">*</span></div>
@@ -491,18 +498,14 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
             </div>
 
             <div class="pg-field">
-              <div class="pg-label">Focus Areas (select all that apply)</div>
-              <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;" id="focus-tags">
-                <label class="pg-checkbox"><input type="checkbox" value="Arts"> Arts</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Environment"> Environment</label>
-                <label class="pg-checkbox" ><input type="checkbox" value="Community" checked> Community</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Education"> Education</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Food"> Food</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Heritage"> Heritage</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Tech"> Tech</label>
-                <label class="pg-checkbox"><input type="checkbox" value="Health"> Health</label>
-                <label class="pg-checkbox"><input type="checkbox" value="All Categories" checked> All Categories</label>
-              </div>
+              <div class="pg-label">Focus Areas (type to search, Enter to add)</div>
+              <div id="pg-focus-tags"><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('pg-focus-input').focus()"><input class="taginput" id="pg-focus-input" aria-label="Focus areas"/></div><div class="tagdd" id="pg-focus-dd"></div></div></div>
+            </div>
+
+            <div class="pg-field">
+              <div class="pg-label">Application Questions — what founders must answer (edit, remove, or add your own)</div>
+              <div id="pg-questions"></div>
+              <button type="button" class="btn btn-out btn-sm" onclick="addQuestionRow('')">＋ Add a question</button>
             </div>
 
             <div class="pg-field">
@@ -893,6 +896,49 @@ async function switchRole() {
     window.location.href = 'founder.html'; // onboarding lives there
   } catch (e) { showToast('Could not reset — ' + e.message); }
 }
+
+
+// ───── TAG INPUT: type-ahead multi-select with chips + custom entries ─────
+const TAG_INPUTS = {};
+function initTagInput(key, options) {
+  const input = document.getElementById(key + '-input');
+  const dd = document.getElementById(key + '-dd');
+  if (!input) return;
+  const st = TAG_INPUTS[key] = { selected: (TAG_INPUTS[key] && TAG_INPUTS[key].selected) || [], options };
+  const render = () => {
+    input.parentElement.querySelectorAll('.tagchip').forEach(n => n.remove());
+    st.selected.forEach(v => {
+      const chip = document.createElement('span');
+      chip.className = 'tagchip';
+      chip.innerHTML = esc(v) + ' <span>×</span>';
+      chip.querySelector('span').onclick = (e) => { e.stopPropagation(); st.selected = st.selected.filter(x => x !== v); render(); };
+      input.parentElement.insertBefore(chip, input);
+    });
+  };
+  const renderDD = () => {
+    const q = input.value.trim().toLowerCase();
+    const opts = st.options.filter(o => !st.selected.includes(o) && (!q || o.toLowerCase().includes(q)));
+    const custom = q && !st.options.some(o => o.toLowerCase() === q) && !st.selected.some(o => o.toLowerCase() === q);
+    if (!opts.length && !custom) { dd.style.display = 'none'; return; }
+    dd.innerHTML = opts.map(o => '<div class="tagopt" data-v="' + esc(o) + '">' + esc(o) + '</div>').join('') +
+      (custom ? '<div class="tagopt" data-v="' + esc(input.value.trim()) + '" style="color:var(--orange);">＋ Add "' + esc(input.value.trim()) + '"</div>' : '');
+    dd.style.display = 'block';
+    dd.querySelectorAll('.tagopt').forEach(el => { el.onmousedown = (e) => { e.preventDefault(); add(el.getAttribute('data-v')); }; });
+  };
+  const add = (v) => { if (v && !st.selected.includes(v)) st.selected.push(v); input.value = ''; render(); renderDD(); input.focus(); };
+  st.render = render;
+  input.oninput = renderDD;
+  input.onfocus = renderDD;
+  input.onblur = () => setTimeout(() => { dd.style.display = 'none'; }, 160);
+  input.onkeydown = (e) => {
+    if (e.key === 'Enter') { e.preventDefault(); const q = input.value.trim(); if (q) { const match = st.options.find(o => o.toLowerCase() === q.toLowerCase()); add(match || q); } }
+    else if (e.key === 'Backspace' && !input.value && st.selected.length) { st.selected.pop(); render(); renderDD(); }
+  };
+  render();
+}
+function getTagValues(key) { return ((TAG_INPUTS[key] || {}).selected || []); }
+function setTagValues(key, arr) { const st = TAG_INPUTS[key]; if (!st) return; st.selected = Array.isArray(arr) ? arr.slice() : String(arr || '').split(',').map(s => s.trim()).filter(Boolean); st.render(); }
+const GRANT_FOCUS_OPTIONS = ['Arts', 'Environment', 'Community', 'Education', 'Food', 'Heritage', 'Tech', 'Health', 'Youth', 'Social Enterprise'];
 
 function fmtAmount(a) {
   if (a == null || a === '') return '';
@@ -1483,6 +1529,36 @@ function togglePitchDetails() {
 
 let EDITING_GRANT_ID = null;
 
+// ───── QUESTION BUILDER (Google-form style) ─────
+const DEFAULT_QUESTIONS = [
+  'Describe your project and its impact',
+  'How will you use this grant?',
+  'What makes you the right person to lead this?',
+];
+function addQuestionRow(label) {
+  const wrap = document.getElementById('pg-questions');
+  const row = document.createElement('div');
+  row.className = 'qrow';
+  row.innerHTML = '<input class="pg-input qlabel" type="text" style="flex:1;" aria-label="Question text"/>' +
+    '<button type="button" class="btn btn-out btn-sm" style="flex-shrink:0;">×</button>';
+  row.querySelector('input').value = label;
+  row.querySelector('button').onclick = () => row.remove();
+  wrap.appendChild(row);
+}
+function resetQuestionRows(labels) {
+  const wrap = document.getElementById('pg-questions');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  (labels && labels.length ? labels : DEFAULT_QUESTIONS).forEach(l => addQuestionRow(l));
+}
+function collectQuestionRows() {
+  return [...document.querySelectorAll('#pg-questions .qlabel')]
+    .map(i => i.value.trim())
+    .filter(Boolean)
+    .map((label, i) => ({ question_key: 'q' + (i + 1), label, field_type: 'long_text', required: true, order_index: i }));
+}
+document.addEventListener('DOMContentLoaded', () => resetQuestionRows());
+
 function openGrantEdit(id) {
   const g = MY_GRANTS.find(x => x.id === id);
   if (!g) return;
@@ -1500,11 +1576,13 @@ function openGrantEdit(id) {
   set('pg-citizen', g.eligibility_citizenship);
   set('pg-team', g.eligibility_team_solo);
   set('pg-exclusions', g.eligibility_exclusions);
-  document.querySelectorAll('#focus-tags input').forEach(c => { c.checked = (g.focus_areas || []).includes(c.value); });
+  setTagValues('pg-focus', g.focus_areas || []);
   set('pg-offering', g.offering_description);
   set('pg-expectations', g.expectations);
   set('pg-instructions', g.application_instructions);
   set('pg-decision', g.decision_timeline);
+  resetQuestionRows((g.questions || []).map(q => q.label));
+  document.querySelectorAll('#pg-questions input, #pg-questions button').forEach(el => { el.disabled = true; });
   document.getElementById('pg-publish-btn').textContent = 'Save Changes →';
   document.getElementById('pg-submit-row').style.display = '';
   document.getElementById('pg-success').style.display = 'none';
@@ -1515,14 +1593,14 @@ function openGrantEdit(id) {
 async function submitGrant(e) {
   e.preventDefault();
   const v = id => document.getElementById(id).value;
-  const focus = [...document.querySelectorAll('#focus-tags input:checked')]
-    .map(c => c.value).filter(x => x !== 'All Categories');
+  const focus = getTagValues('pg-focus');
   const [ageMin, ageMax] = AGE_MAP[v('pg-age')] || [15, 25];
   const hasPitch = v('pg-pitch-toggle') === 'yes';
   const body = {
     title: v('pg-name').trim(),
     grant_type: GRANT_TYPE_MAP[v('pg-type')] || 'cash',
     amount_display: v('pg-value').trim(),
+    ...(v('pg-recipients') ? { value_description: v('pg-recipients') + ' recipient(s) planned' } : {}),
     application_opens_at: v('pg-opens') || undefined,
     application_closes_at: v('pg-closes') || undefined,
     is_rolling: v('pg-frequency') === 'Rolling / ongoing',
@@ -1543,13 +1621,13 @@ async function submitGrant(e) {
     ...(hasPitch ? { pitch_format: v('pg-pitch-format'), pitch_prep: v('pg-pitch-prep').trim() || undefined } : {}),
     decision_timeline: v('pg-decision'),
     notification_method: v('pg-notify'),
-    // Standard coart application questions — founders answer these with AI help.
-    questions: [
-      { question_key: 'impact', label: 'Describe your project and its impact', field_type: 'long_text', required: true, order_index: 0 },
-      { question_key: 'funding', label: 'How will you use this grant?', field_type: 'long_text', required: true, order_index: 1 },
-      { question_key: 'founder', label: 'What makes you the right person to lead this?', field_type: 'long_text', required: true, order_index: 2 },
-    ],
+    // Questions from the builder — founders answer these with AI help.
+    questions: collectQuestionRows(),
   };
+  if (!EDITING_GRANT_ID && body.questions.length === 0) {
+    showToast('Add at least one application question.');
+    return;
+  }
   const btn = document.getElementById('pg-publish-btn');
   btn.disabled = true;
   try {
@@ -1591,6 +1669,8 @@ async function submitGrant(e) {
 
 function resetPostGrant() {
   EDITING_GRANT_ID = null;
+  resetQuestionRows();
+  document.querySelectorAll('#pg-questions input, #pg-questions button').forEach(el => { el.disabled = false; });
   document.getElementById('pg-publish-btn').textContent = 'Publish Grant →';
   document.getElementById('pg-submit-row').style.display = 'flex';
   document.getElementById('pg-success').style.display = 'none';
@@ -1634,7 +1714,9 @@ function renderThreadList() {
 
 async function openThread(counterpartyId, name) {
   CURRENT_THREAD = { id: counterpartyId, name };
-  document.getElementById('msg-head').textContent = name;
+  document.getElementById('msg-head').innerHTML =
+    '<a href="#" onclick="openFounderProfile(\'' + counterpartyId + '\');return false;" style="color:var(--text);text-decoration:none;">' + esc(name) +
+    ' <span style="color:var(--orange);font-size:11px;font-family:\'DM Mono\',monospace;">view profile ↗</span></a>';
   document.getElementById('msg-inputrow').style.display = 'flex';
   renderThreadList();
   try {
