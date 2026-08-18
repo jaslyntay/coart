@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Coart — Founder Dashboard</title>
+<title>coart — Founder Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -793,9 +793,12 @@ textarea.form-input { min-height:80px; }
 <div class="modal-overlay" id="orgview-overlay" onclick="if(clickedOutside(event)){closeOrgView()}">
   <div class="modal">
     <div class="modal-header">
-      <div>
-        <div class="modal-title" id="ov-name">Organisation</div>
-        <div class="modal-sub" id="ov-sub"></div>
+      <div style="display:flex;gap:14px;align-items:center;">
+        <div id="ov-avi" style="width:52px;height:52px;border-radius:10px;background:var(--surface);border:1px solid var(--border);background-size:cover;background-position:center;display:none;flex-shrink:0;"></div>
+        <div>
+          <div class="modal-title" id="ov-name">Organisation</div>
+          <div class="modal-sub" id="ov-sub"></div>
+        </div>
       </div>
       <button class="modal-close" onclick="closeOrgView()">✕</button>
     </div>
@@ -1947,6 +1950,11 @@ async function openMyApplication(appId) {
   html += sect('Status', (APP_STATUS_LABELS[a.status] || a.status) + when);
   html += sect('Project', a.project ? a.project.title : '—');
   (a.answers || []).forEach(ans => {
+    const q = (g.questions || []).find(x => x.question_key === ans.question_key);
+    if (q && q.field_type === 'file') {
+      html += mediaAnswerSection(labels[ans.question_key] || ans.question_key, ans.value, q.help_text);
+      return;
+    }
     html += sect(labels[ans.question_key] || FALLBACK[ans.question_key] || ans.question_key,
       ans.value + (ans.ai_drafted ? '\n\n✦ drafted with AI assistance' : ''));
   });
@@ -2018,6 +2026,10 @@ async function continueDraft(appId) {
     const el = document.getElementById('q-' + ans.question_key) || document.getElementById('field-' + ans.question_key);
     if (el) { el.value = ans.value; if (ans.ai_drafted) el.classList.add('ai-filled'); }
   });
+  // Show previews for media answers that were already uploaded
+  (((a.grant || {}).questions) || []).forEach(q => {
+    if (q.field_type === 'file') renderMediaPreview(q.question_key);
+  });
 }
 
 // ───── ORGANISATION PROFILE (founder view: org info + its grants) ─────
@@ -2028,6 +2040,13 @@ async function openOrgProfile(orgId) {
   document.getElementById('ov-name').textContent = org.name || 'Organisation';
   document.getElementById('ov-sub').textContent =
     [org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', org.location].filter(Boolean).join(' · ');
+  const ovAvi = document.getElementById('ov-avi');
+  if (org.logo_url) {
+    ovAvi.style.backgroundImage = 'url(' + org.logo_url + ')';
+    ovAvi.style.display = 'block';
+  } else {
+    ovAvi.style.display = 'none';
+  }
   const theirGrants = ALL_GRANTS.filter(g => g.organization && g.organization.id === orgId);
   const sect = (label, value) =>
     '<div class="profile-field"><div class="profile-field-label">' + esc(label) +
@@ -2138,15 +2157,20 @@ function renderThreadList() {
     el.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);line-height:1.6;">No conversations yet. When a backer contacts you — or you apply to a grant and message the organisation — the conversation lives here.</div>';
     return;
   }
-  el.innerHTML = MSG_THREADS.map(t =>
-    '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+  el.innerHTML = MSG_THREADS.map(t => {
+    const avi = t.counterparty_photo
+      ? '<div style="width:34px;height:34px;border-radius:50%;background-image:url(' + esc(t.counterparty_photo) + ');background-size:cover;background-position:center;flex-shrink:0;"></div>'
+      : '<div style="width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;">' + esc((t.counterparty_name || '?').trim().charAt(0).toUpperCase()) + '</div>';
+    return '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:center;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+    avi +
+    '<div style="flex:1;min-width:0;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
     '<span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t.counterparty_name) + '</span>' +
     (t.unread ? '<span style="background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:\'DM Mono\',monospace;flex-shrink:0;">' + t.unread + '</span>' : '') +
     '</div>' +
     '<div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;">' + esc(t.last_body) + '</div>' +
-    '</div>'
-  ).join('');
+    '</div></div>';
+  }).join('');
 }
 
 async function openThread(counterpartyId, name) {
@@ -2185,12 +2209,21 @@ async function sendThreadMessage() {
   const body = input.value.trim();
   if (!body) return;
   input.value = '';
+  // Optimistic: show the bubble instantly; the server round-trip and the
+  // recipient's notification happen behind it.
+  const el = document.getElementById('msg-body');
+  const bubble = document.createElement('div');
+  bubble.style.cssText = 'max-width:75%;padding:10px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;align-self:flex-end;background:var(--orange);color:#fff;border-radius:12px 12px 3px 12px;opacity:.7;';
+  bubble.textContent = body;
+  el.appendChild(bubble);
+  el.scrollTop = el.scrollHeight;
   try {
     await api('/messages/to/' + CURRENT_THREAD.id, { method: 'POST', body: JSON.stringify({ body }) });
-    const r = await api('/messages/with/' + CURRENT_THREAD.id);
-    renderThreadMessages(r.messages);
+    bubble.style.opacity = '1';
+    api('/messages/with/' + CURRENT_THREAD.id).then(r => renderThreadMessages(r.messages)).catch(() => {});
     loadThreads(true);
   } catch (e) {
+    bubble.remove();
     input.value = body;
     showToast('Could not send — ' + e.message.split(':').pop());
   }
@@ -2315,6 +2348,23 @@ function openModal(grant, project) {
     let html = '<div class="form-section-title">Application Questions</div>';
     questions.forEach(function(q) {
       const key = q.question_key;
+      // Media questions (video/image): upload straight to storage — the
+      // answer value is the file's URL, kept in a hidden input so the
+      // normal save/submit path picks it up unchanged.
+      if (q.field_type === 'file') {
+        const kind = q.help_text === 'video' ? 'video' : 'image';
+        html += '<div class="form-row">';
+        html += '<div class="form-label"><span>' + esc(q.label) + ' · ' + (kind === 'video' ? '🎥 video answer (1–2 min)' : '🖼 image answer') + '</span></div>';
+        html += '<input type="hidden" id="q-' + esc(key) + '"/>';
+        html += '<input type="file" id="media-file-' + esc(key) + '" accept="' + (kind === 'video' ? 'video/mp4,video/quicktime,video/webm' : 'image/jpeg,image/png,image/webp') + '" onchange="uploadAnswerMedia(\'' + esc(key) + '\',\'' + kind + '\')" style="font-size:11px;font-family:\'DM Mono\',monospace;display:block;"/>';
+        if (kind === 'video') {
+          html += '<div style="display:flex;gap:8px;margin-top:8px;align-items:center;flex-wrap:wrap;"><span style="font-size:10px;color:var(--hint);font-family:\'DM Mono\',monospace;flex-shrink:0;">or paste a video link (YouTube / Drive):</span><input class="form-input" style="flex:1;min-width:180px;margin:0;" id="media-link-' + esc(key) + '" onchange="setAnswerMediaLink(\'' + esc(key) + '\')"/></div>';
+        }
+        html += '<div id="media-status-' + esc(key) + '" style="font-size:10px;color:var(--muted);margin-top:6px;font-family:\'DM Mono\',monospace;"></div>';
+        html += '<div id="media-preview-' + esc(key) + '" style="margin-top:8px;"></div>';
+        html += '</div>';
+        return;
+      }
       const existing = '';
       html += '<div class="form-row">';
       html += '<div class="form-label"><span>' + esc(q.label) + '</span>';
@@ -2393,6 +2443,7 @@ function prefillDefaultFields(project) {
 async function draftCustomField(key) {
   const sug = document.getElementById('suggest-q-' + key);
   const text = document.getElementById('drafttext-' + key);
+  if (!sug || !text) return; // media questions have no AI draft
   sug.classList.add('on');
   if (text.textContent) return; // already drafted
   text.textContent = '✦ Drafting with AI…';
@@ -2441,7 +2492,82 @@ function useCustomField(key) {
   document.getElementById('suggest-q-' + key).classList.remove('on');
 }
 function dismissCustomSuggest(key) {
-  document.getElementById('suggest-q-' + key).classList.remove('on');
+  const el = document.getElementById('suggest-q-' + key);
+  if (el) el.classList.remove('on');
+}
+
+// ── Media answers (video/image questions) ──
+// Files upload directly to Supabase Storage via a one-time signed URL —
+// they're too big to pass through the API. The stored answer is the URL.
+async function uploadAnswerMedia(key, kind) {
+  const fileInput = document.getElementById('media-file-' + key);
+  const status = document.getElementById('media-status-' + key);
+  const file = fileInput.files && fileInput.files[0];
+  if (!file) return;
+  const MAX = kind === 'video' ? 50 * 1024 * 1024 : 8 * 1024 * 1024;
+  if (file.size > MAX) {
+    status.textContent = kind === 'video'
+      ? 'Too large — keep it under 50MB (720p, 1–2 min works), or paste a link instead.'
+      : 'Too large — keep images under 8MB.';
+    fileInput.value = '';
+    return;
+  }
+  status.textContent = 'Uploading ' + Math.round(file.size / 1024 / 1024) + 'MB… keep this window open';
+  try {
+    const sig = await api('/applications/' + CURRENT_APPLICATION.id + '/answer-upload', {
+      method: 'POST',
+      body: JSON.stringify({ question_key: key, content_type: file.type }),
+    });
+    const { error } = await sbAuth.storage.from('avatars')
+      .uploadToSignedUrl(sig.path, sig.token, file, { contentType: file.type });
+    if (error) throw new Error(error.message);
+    document.getElementById('q-' + key).value = sig.public_url;
+    status.textContent = '✓ Uploaded — it will be saved with your application';
+    renderMediaPreview(key);
+  } catch (e) {
+    status.textContent = 'Upload failed — ' + e.message;
+  }
+}
+function setAnswerMediaLink(key) {
+  const link = document.getElementById('media-link-' + key).value.trim();
+  const status = document.getElementById('media-status-' + key);
+  if (!link) return;
+  if (!/^https?:\/\//i.test(link)) { status.textContent = 'That doesn\'t look like a link — it should start with https://'; return; }
+  document.getElementById('q-' + key).value = link;
+  status.textContent = '✓ Link saved as your answer';
+  renderMediaPreview(key);
+}
+function renderMediaPreview(key) {
+  const pv = document.getElementById('media-preview-' + key);
+  if (!pv) return;
+  const url = (document.getElementById('q-' + key) || {}).value || '';
+  if (!url) { pv.innerHTML = ''; return; }
+  const q = ((CURRENT_GRANT && CURRENT_GRANT.questions) || []).find(x => x.question_key === key);
+  const kind = q && q.help_text === 'video' ? 'video' : 'image';
+  const isUpload = url.indexOf('/storage/v1/object/public/') !== -1;
+  if (kind === 'video' && isUpload) {
+    pv.innerHTML = '<video controls preload="metadata" src="' + esc(url) + '" style="max-width:100%;max-height:220px;background:#000;border-radius:6px;"></video>';
+  } else if (kind === 'image' && isUpload) {
+    pv.innerHTML = '<img src="' + esc(url) + '" alt="Your uploaded answer" style="max-width:100%;max-height:220px;border:1px solid var(--border);border-radius:6px;"/>';
+  } else {
+    pv.innerHTML = '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="color:var(--orange);font-size:12px;word-break:break-all;">' + esc(url) + ' ↗</a>';
+  }
+}
+// Renders a submitted media answer in read-only views (application detail).
+function mediaAnswerSection(label, url, kindHint) {
+  const head = '<div class="profile-field"><div class="profile-field-label">' + esc(label) + '</div>';
+  if (!url) return head + '<div class="profile-field-value">No file submitted.</div></div>';
+  const kind = kindHint === 'video' ? 'video' : 'image';
+  const isUpload = url.indexOf('/storage/v1/object/public/') !== -1;
+  let body;
+  if (kind === 'video' && isUpload) {
+    body = '<video controls preload="metadata" src="' + esc(url) + '" style="max-width:100%;max-height:260px;background:#000;border-radius:6px;"></video>';
+  } else if (kind === 'image' && isUpload) {
+    body = '<img src="' + esc(url) + '" alt="' + esc(label) + '" style="max-width:100%;max-height:260px;border:1px solid var(--border);border-radius:6px;"/>';
+  } else {
+    body = '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="color:var(--orange);font-size:13px;word-break:break-all;">' + esc(url) + ' ↗</a>';
+  }
+  return head + '<div class="profile-field-value">' + body + '</div></div>';
 }
 
 function closeModal() {
@@ -2467,7 +2593,7 @@ function dismissSuggest(field) {
 }
 function autofillAll() {
   if (document.getElementById('modal-custom-fields').style.display !== 'none') {
-    (CURRENT_GRANT.questions || []).forEach(q => draftCustomField(q.question_key));
+    (CURRENT_GRANT.questions || []).forEach(q => { if (q.field_type !== 'file') draftCustomField(q.question_key); });
     return;
   }
   ['impact','funding','founder'].forEach(f => { autofillField(f); setTimeout(() => useField(f), 300); });
@@ -2477,6 +2603,11 @@ function clearAll() {
     (CURRENT_GRANT.questions || []).forEach(q => {
       const el = document.getElementById('q-' + q.question_key);
       if (el) { el.value = ''; el.classList.remove('ai-filled'); }
+      if (q.field_type === 'file') {
+        renderMediaPreview(q.question_key);
+        const ms = document.getElementById('media-status-' + q.question_key);
+        if (ms) ms.textContent = '';
+      }
       dismissCustomSuggest(q.question_key);
     });
     return;

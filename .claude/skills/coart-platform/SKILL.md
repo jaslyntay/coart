@@ -67,6 +67,10 @@ typical_budget, contact_email/contact_phone, profile_photo_url) and
 `organizations` + `backer_members` (backer side, contact_* + logo_url).
 `projects` (founder's projects, status draft/active/archived).
 `grants` (+ `grant_questions`) — both curated/seeded and backer-posted.
+Media questions (video/image answers) use `field_type='file'` with
+`help_text='video'|'image'`; the answer value is a URL. Files upload
+browser → Supabase Storage (bucket `avatars`, 50MB cap, images + MP4/MOV/
+WebM) via a signed URL from `POST /applications/:id/answer-upload`.
 `applications` (+ `application_answers`) — founder × project × grant,
 status: draft → submitted → in_review/shortlisted → backed/rejected.
 `notifications` — in-app notifications per user.
@@ -119,6 +123,10 @@ Gotchas:
 
 ## Deploying
 
+Functions run in **Singapore (`sin1`)** — set via `vercel.json` `"regions"`.
+This colocates the API with Supabase (also Singapore); moving it back to
+the default `iad1` makes every request seconds slower. Don't remove it.
+
 `git push origin main` → Vercel builds and deploys everything. Verify with:
 - `https://coart.vercel.app/api/healthz` → `{"ok":true,"env":"production"}`
 - Deploy status without dashboard access:
@@ -167,7 +175,9 @@ revoked grants), routes in backend/src/routes/messages.ts, Messages page
 on both dashboards with unread badges. Rules: backers may message any
 founder; founders may reply to existing threads or message orgs they've
 applied to. Contact requests/invites auto-open a thread. Every message
-notifies (in-app + email).
+notifies (in-app + email) — sent AFTER the response via `inBackground()`
+(notify.ts, wraps `waitUntil` from @vercel/functions) so chat stays fast.
+The send UI is optimistic: the bubble renders before the server confirms.
 
 ## AI drafting
 

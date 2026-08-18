@@ -217,7 +217,7 @@ export async function grantsRoutes(app: FastifyInstance) {
           .order('submitted_at', { ascending: false }),
         admin
           .from('grant_questions')
-          .select('question_key, label, order_index')
+          .select('question_key, label, field_type, help_text, order_index')
           .eq('grant_id', id)
           .order('order_index', { ascending: true }),
       ]);

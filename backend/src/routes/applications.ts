@@ -17,6 +17,19 @@ import {
   updateApplicationStatusSchema,
 } from '../schemas/index.js';
 import { notify, notifyOrgMembers } from '../notify.js';
+import { IMAGE_BUCKET } from '../storage.js';
+
+// Answer media (video/image questions). Files are too big for the JSON
+// body path (Vercel caps request bodies ~4.5MB), so the browser uploads
+// straight to Supabase Storage with a one-time signed URL issued here.
+const ANSWER_MEDIA_TYPES: Record<string, string> = {
+  'video/mp4': 'mp4',
+  'video/quicktime': 'mov',
+  'video/webm': 'webm',
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+};
 
 // Fire the "new application" notification to the grant's org after a
 // founder submits (internal or external path).
@@ -125,6 +138,35 @@ export async function applicationsRoutes(app: FastifyInstance) {
     }
 
     return { ...appli, answers: answers ?? [] };
+  });
+
+  // POST /api/v1/applications/:id/answer-upload — signed URL for a
+  // video/image answer. The client uploads the file directly to storage,
+  // then saves the returned public_url as the answer value.
+  app.post('/:id/answer-upload', { preHandler: [requireUser, requireFounder] }, async (req, reply) => {
+    const { id } = req.params as { id: string };
+    const { content_type, question_key } = (req.body ?? {}) as {
+      content_type?: string;
+      question_key?: string;
+    };
+    const ext = content_type ? ANSWER_MEDIA_TYPES[content_type] : undefined;
+    if (!ext) {
+      return reply.code(400).send({ error: 'Unsupported file type — use an MP4/MOV/WebM video or a JPEG/PNG/WebP image.' });
+    }
+    const { data: appli } = await admin
+      .from('applications')
+      .select('id, founder_id')
+      .eq('id', id)
+      .maybeSingle();
+    if (!appli || appli.founder_id !== req.user!.id) {
+      return reply.code(403).send({ error: 'Not your application' });
+    }
+    const safeKey = (question_key || 'file').replace(/[^a-zA-Z0-9_-]/g, '');
+    const path = `answers/${id}/${safeKey}-${Date.now()}.${ext}`;
+    const { data, error } = await admin.storage.from(IMAGE_BUCKET).createSignedUploadUrl(path);
+    if (error) return reply.code(500).send({ error: error.message });
+    const { data: pub } = admin.storage.from(IMAGE_BUCKET).getPublicUrl(path);
+    return { path: data.path, token: data.token, public_url: pub.publicUrl };
   });
 
   // PATCH /api/v1/applications/:id/answers — upsert

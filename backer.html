@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>coart — Tiong Bahru Youth Network</title>
+<title>coart — Backer Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Figtree:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -347,6 +347,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
       <div class="profile-section">
         <div class="profile-section-head"><span class="profile-section-title">Organisation Info</span></div>
         <div class="profile-section-body">
+          <div class="profile-field"><div class="profile-field-label">Logo</div><div class="profile-avi" style="width:64px;height:64px;border-radius:12px;background:var(--surface);border:1px solid var(--border-strong);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--muted);font-size:22px;background-size:cover;background-position:center;"></div></div>
           <div class="profile-field"><div class="profile-field-label">Organisation Name</div><div class="profile-field-value" id="op-name">—</div></div>
           <div class="profile-field"><div class="profile-field-label">Type</div><div class="profile-field-value" id="op-type">—</div></div>
           <div class="profile-field"><div class="profile-field-label">Location</div><div class="profile-field-value" id="op-location">—</div></div>
@@ -702,7 +703,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
         </div>
         <div class="pg-field"><div class="pg-label">Location</div><input class="pg-input" id="oe-location"/></div>
         <div class="pg-field"><div class="pg-label">Description</div><textarea class="pg-input" id="oe-description" rows="3" style="min-height:72px;resize:vertical;"></textarea></div>
-        <div class="pg-field"><div class="pg-label">Focus areas (comma separated)</div><input class="pg-input" id="oe-focus"/></div>
+        <div class="pg-field"><div class="pg-label">Focus areas (type to search, Enter to add)</div><div class="tagwrap"><div class="tagbox" onclick="document.getElementById('oe-focus-input').focus()"><input class="taginput" id="oe-focus-input" aria-label="Focus areas"/></div><div class="tagdd" id="oe-focus-dd"></div></div></div>
         <div class="pg-field"><div class="pg-label">Point of contact — name</div><input class="pg-input" id="oe-cname"/></div>
         <div class="pg-field"><div class="pg-label">Point of contact — email</div><input class="pg-input" id="oe-cemail" type="email"/></div>
         <div class="pg-field"><div class="pg-label">Point of contact — phone</div><input class="pg-input" id="oe-cphone"/></div>
@@ -1041,11 +1042,14 @@ function renderOrg() {
   document.getElementById('op-cemail').textContent = ORG.contact_email || '—';
   document.getElementById('op-cphone').textContent = ORG.contact_phone || '—';
   const avi = document.querySelector('.profile-avi');
-  if (avi && ORG.logo_url) {
-    avi.textContent = '';
-    avi.style.backgroundImage = 'url(' + ORG.logo_url + ')';
-    avi.style.backgroundSize = 'cover';
-    avi.style.backgroundPosition = 'center';
+  if (avi) {
+    if (ORG.logo_url) {
+      avi.textContent = '';
+      avi.style.backgroundImage = 'url(' + ORG.logo_url + ')';
+    } else {
+      avi.style.backgroundImage = 'none';
+      avi.textContent = (ORG.name || '?').trim().charAt(0).toUpperCase();
+    }
   }
   document.getElementById('op-type').textContent = typeLabel || '—';
   document.getElementById('op-location').textContent = ORG.location || '—';
@@ -1066,7 +1070,7 @@ function openOrgEdit() {
   document.getElementById('oe-type').value = ORG.type || 'community';
   document.getElementById('oe-location').value = ORG.location || '';
   document.getElementById('oe-description').value = ORG.description || '';
-  document.getElementById('oe-focus').value = (ORG.focus_areas || []).join(', ');
+  setTagValues('oe-focus', ORG.focus_areas || []);
   document.getElementById('oe-status').textContent = '';
   document.getElementById('orgedit-overlay').classList.add('on');
 }
@@ -1097,7 +1101,7 @@ async function saveOrgEdit() {
         contact_email: document.getElementById('oe-cemail').value.trim(),
         contact_phone: document.getElementById('oe-cphone').value.trim(),
         description: document.getElementById('oe-description').value.trim(),
-        focus_areas: document.getElementById('oe-focus').value.split(',').map(s => s.trim()).filter(Boolean),
+        focus_areas: getTagValues('oe-focus'),
       }),
     });
     closeOrgEdit();
@@ -1292,7 +1296,16 @@ let MODAL_APPLICATION = null;
 
 function fillModalProfile(f) {
   MODAL_FOUNDER_ID = f.id;
-  document.getElementById('modal-avi').textContent = initials(f.full_name);
+  const mavi = document.getElementById('modal-avi');
+  if (f.profile_photo_url) {
+    mavi.textContent = '';
+    mavi.style.backgroundImage = 'url(' + f.profile_photo_url + ')';
+    mavi.style.backgroundSize = 'cover';
+    mavi.style.backgroundPosition = 'center';
+  } else {
+    mavi.style.backgroundImage = 'none';
+    mavi.textContent = initials(f.full_name);
+  }
   document.getElementById('modal-name').textContent = f.full_name || '';
   document.getElementById('modal-uni').textContent = [f.university, f.field_of_study].filter(Boolean).join(' · ');
   document.getElementById('modal-tags').innerHTML = (f.focus_areas || []).map(x => '<span class="tag tag-dk">' + esc(x) + '</span>').join('');
@@ -1347,6 +1360,23 @@ function section(label, text) {
     esc(text) + '</div></div>';
 }
 
+// A video/image answer: play/show uploads inline, link out for pasted links.
+function mediaAnswerSection(label, url, kindHint) {
+  const head = '<div style="margin-bottom:20px"><div style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:6px">' + esc(label) + '</div>';
+  if (!url) return head + '<div style="font-size:13px;color:var(--muted);">No file submitted.</div></div>';
+  const kind = kindHint === 'video' ? 'video' : 'image';
+  const isUpload = url.indexOf('/storage/v1/object/public/') !== -1;
+  let body;
+  if (kind === 'video' && isUpload) {
+    body = '<video controls preload="metadata" src="' + esc(url) + '" style="max-width:100%;max-height:280px;background:#000;border-radius:6px;"></video>';
+  } else if (kind === 'image' && isUpload) {
+    body = '<img src="' + esc(url) + '" alt="' + esc(label) + '" style="max-width:100%;max-height:280px;border:1px solid var(--border);border-radius:6px;"/>';
+  } else {
+    body = '<a href="' + esc(url) + '" target="_blank" rel="noopener" style="color:var(--orange);font-size:13px;word-break:break-all;">' + esc(url) + ' ↗</a>';
+  }
+  return head + body + '</div>';
+}
+
 async function openApplicantModal(applicationId, grantId) {
   const grant = MY_GRANTS.find(g => g.id === grantId);
   const a = grant ? (grant.applications || []).find(x => x.id === applicationId) : null;
@@ -1388,9 +1418,13 @@ async function openApplicantModal(applicationId, grantId) {
       section('Phone', f.contact_phone || '—') +
       '</div>'
     : '';
+  const qByKey = {};
+  (grant.questions || []).forEach(q => { qByKey[q.question_key] = q; });
   const answersHtml = answers.length
     ? answers.map(ans => {
         const label = labels[ans.question_key] || FALLBACK_LABELS[ans.question_key] || ans.question_key;
+        const q = qByKey[ans.question_key];
+        if (q && q.field_type === 'file') return mediaAnswerSection(label, ans.value, q.help_text);
         return section(label + (ans.ai_drafted ? ' · ✦ AI-assisted' : ''), ans.value || '—');
       }).join('')
     : section('Answers', 'No written answers yet — this application may still be a draft.');
@@ -1535,29 +1569,49 @@ const DEFAULT_QUESTIONS = [
   'How will you use this grant?',
   'What makes you the right person to lead this?',
 ];
-function addQuestionRow(label) {
+function addQuestionRow(label, answerKind) {
   const wrap = document.getElementById('pg-questions');
   const row = document.createElement('div');
   row.className = 'qrow';
   row.innerHTML = '<input class="pg-input qlabel" type="text" style="flex:1;" aria-label="Question text"/>' +
+    '<select class="pg-input qtype" style="flex-shrink:0;width:150px;" aria-label="Answer format">' +
+    '<option value="long_text">✍ Text answer</option>' +
+    '<option value="video">🎥 Video (1–2 min)</option>' +
+    '<option value="image">🖼 Image</option>' +
+    '</select>' +
     '<button type="button" class="btn btn-out btn-sm" style="flex-shrink:0;">×</button>';
   row.querySelector('input').value = label;
+  row.querySelector('.qtype').value = answerKind || 'long_text';
   row.querySelector('button').onclick = () => row.remove();
   wrap.appendChild(row);
 }
-function resetQuestionRows(labels) {
+function resetQuestionRows(questions) {
   const wrap = document.getElementById('pg-questions');
   if (!wrap) return;
   wrap.innerHTML = '';
-  (labels && labels.length ? labels : DEFAULT_QUESTIONS).forEach(l => addQuestionRow(l));
+  const qs = questions && questions.length ? questions : DEFAULT_QUESTIONS.map(l => ({ label: l }));
+  qs.forEach(q => addQuestionRow(q.label, q.field_type === 'file' ? (q.help_text || 'image') : 'long_text'));
 }
 function collectQuestionRows() {
-  return [...document.querySelectorAll('#pg-questions .qlabel')]
-    .map(i => i.value.trim())
-    .filter(Boolean)
-    .map((label, i) => ({ question_key: 'q' + (i + 1), label, field_type: 'long_text', required: true, order_index: i }));
+  return [...document.querySelectorAll('#pg-questions .qrow')]
+    .map(row => ({ label: row.querySelector('.qlabel').value.trim(), kind: row.querySelector('.qtype').value }))
+    .filter(r => r.label)
+    .map((r, i) => ({
+      question_key: 'q' + (i + 1),
+      label: r.label,
+      // Media answers ride on the 'file' field type; help_text carries
+      // which kind (video/image). Founders upload or paste a link.
+      field_type: r.kind === 'long_text' ? 'long_text' : 'file',
+      ...(r.kind === 'long_text' ? {} : { help_text: r.kind }),
+      required: true,
+      order_index: i,
+    }));
 }
-document.addEventListener('DOMContentLoaded', () => resetQuestionRows());
+document.addEventListener('DOMContentLoaded', () => {
+  resetQuestionRows();
+  initTagInput('pg-focus', GRANT_FOCUS_OPTIONS);
+  initTagInput('oe-focus', GRANT_FOCUS_OPTIONS);
+});
 
 function openGrantEdit(id) {
   const g = MY_GRANTS.find(x => x.id === id);
@@ -1581,8 +1635,8 @@ function openGrantEdit(id) {
   set('pg-expectations', g.expectations);
   set('pg-instructions', g.application_instructions);
   set('pg-decision', g.decision_timeline);
-  resetQuestionRows((g.questions || []).map(q => q.label));
-  document.querySelectorAll('#pg-questions input, #pg-questions button').forEach(el => { el.disabled = true; });
+  resetQuestionRows(g.questions || []);
+  document.querySelectorAll('#pg-questions input, #pg-questions select, #pg-questions button').forEach(el => { el.disabled = true; });
   document.getElementById('pg-publish-btn').textContent = 'Save Changes →';
   document.getElementById('pg-submit-row').style.display = '';
   document.getElementById('pg-success').style.display = 'none';
@@ -1701,15 +1755,20 @@ function renderThreadList() {
     el.innerHTML = '<div style="padding:18px;font-size:12px;color:var(--muted);line-height:1.6;">No conversations yet. Message a founder from Discover Founders or an applicant view — replies land here.</div>';
     return;
   }
-  el.innerHTML = MSG_THREADS.map(t =>
-    '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:14px 16px;border-bottom:1px solid var(--border);cursor:pointer;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+  el.innerHTML = MSG_THREADS.map(t => {
+    const avi = t.counterparty_photo
+      ? '<div style="width:34px;height:34px;border-radius:50%;background-image:url(' + esc(t.counterparty_photo) + ');background-size:cover;background-position:center;flex-shrink:0;"></div>'
+      : '<div style="width:34px;height:34px;border-radius:50%;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--muted);flex-shrink:0;">' + esc((t.counterparty_name || '?').trim().charAt(0).toUpperCase()) + '</div>';
+    return '<div onclick="openThread(\'' + t.counterparty_id + '\',\'' + esc(t.counterparty_name).replace(/'/g, '&#39;') + '\')" style="padding:12px 14px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;gap:10px;align-items:center;' + (CURRENT_THREAD && CURRENT_THREAD.id === t.counterparty_id ? 'background:var(--surface);' : '') + '">' +
+    avi +
+    '<div style="flex:1;min-width:0;">' +
     '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
     '<span style="font-weight:600;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + esc(t.counterparty_name) + '</span>' +
     (t.unread ? '<span style="background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:\'DM Mono\',monospace;flex-shrink:0;">' + t.unread + '</span>' : '') +
     '</div>' +
     '<div style="font-size:11.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:3px;">' + esc(t.last_body) + '</div>' +
-    '</div>'
-  ).join('');
+    '</div></div>';
+  }).join('');
 }
 
 async function openThread(counterpartyId, name) {
@@ -1747,12 +1806,21 @@ async function sendThreadMessage() {
   const body = input.value.trim();
   if (!body) return;
   input.value = '';
+  // Optimistic: show the bubble instantly; the server round-trip and the
+  // recipient's notification happen behind it.
+  const el = document.getElementById('msg-body');
+  const bubble = document.createElement('div');
+  bubble.style.cssText = 'max-width:75%;padding:10px 14px;font-size:13px;line-height:1.5;white-space:pre-wrap;word-break:break-word;align-self:flex-end;background:var(--orange);color:#fff;border-radius:12px 12px 3px 12px;opacity:.7;';
+  bubble.textContent = body;
+  el.appendChild(bubble);
+  el.scrollTop = el.scrollHeight;
   try {
     await api('/messages/to/' + CURRENT_THREAD.id, { method: 'POST', body: JSON.stringify({ body }) });
-    const r = await api('/messages/with/' + CURRENT_THREAD.id);
-    renderThreadMessages(r.messages);
+    bubble.style.opacity = '1';
+    api('/messages/with/' + CURRENT_THREAD.id).then(r => renderThreadMessages(r.messages)).catch(() => {});
     loadThreads(true);
   } catch (e) {
+    bubble.remove();
     input.value = body;
     showToast('Could not send — ' + e.message.split(':').pop());
   }

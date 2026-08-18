@@ -3,8 +3,20 @@
 // written first so email failures never lose the event, and both paths are
 // best-effort — they never fail the triggering request.
 
+import { waitUntil } from '@vercel/functions';
 import { admin } from './db.js';
 import { config } from './config.js';
+
+// Run work AFTER the response is sent. On Vercel, waitUntil keeps the
+// lambda alive until the promise settles; locally (no request context)
+// it no-ops and the long-lived dev server just lets the promise run.
+// Use for notifications on latency-sensitive endpoints (e.g. chat).
+export function inBackground(work: Promise<unknown>) {
+  const guarded = work.catch((e) =>
+    console.error('background task failed:', (e as Error).message),
+  );
+  waitUntil(guarded);
+}
 
 function escapeHtml(s: string): string {
   return s.replace(/[&<>"']/g, (c) =>

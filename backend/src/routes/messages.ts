@@ -11,7 +11,7 @@
 import type { FastifyInstance } from 'fastify';
 import { requireUser } from '../auth.js';
 import { admin } from '../db.js';
-import { notify, notifyOrgMembers } from '../notify.js';
+import { notify, notifyOrgMembers, inBackground } from '../notify.js';
 
 async function orgOf(userId: string): Promise<string | null> {
   const { data } = await admin
@@ -158,18 +158,22 @@ export async function messagesRoutes(app: FastifyInstance) {
       .single();
     if (error) return reply.code(500).send({ error: error.message });
 
-    // Notify (in-app + email) the receiving side.
-    if (me.role === 'backer') {
-      const { data: org } = await admin.from('organizations').select('name').eq('id', orgId).single();
-      await notify(founderId, 'message',
-        'New message from ' + (org?.name ?? 'an organisation'),
-        body.trim().slice(0, 200));
-    } else {
-      const { data: f } = await admin.from('founders').select('full_name').eq('id', founderId).single();
-      await notifyOrgMembers(orgId, 'message',
-        'New message from ' + (f?.full_name ?? 'a founder'),
-        body.trim().slice(0, 200));
-    }
+    // Notify (in-app + email) the receiving side — after the response, so
+    // sending a chat message never waits on the email provider.
+    const senderRole = me.role;
+    inBackground((async () => {
+      if (senderRole === 'backer') {
+        const { data: org } = await admin.from('organizations').select('name').eq('id', orgId).single();
+        await notify(founderId, 'message',
+          'New message from ' + (org?.name ?? 'an organisation'),
+          body.trim().slice(0, 200));
+      } else {
+        const { data: f } = await admin.from('founders').select('full_name').eq('id', founderId).single();
+        await notifyOrgMembers(orgId, 'message',
+          'New message from ' + (f?.full_name ?? 'a founder'),
+          body.trim().slice(0, 200));
+      }
+    })());
     return msg;
   });
 }

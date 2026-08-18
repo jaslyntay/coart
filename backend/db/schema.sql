@@ -255,6 +255,12 @@ create policy "grants: public read active"
   on grants for select using (status = 'active');
 
 -- ─── grant_questions ─────────────────────────────────────────────────
+--
+-- Media questions (video/image answers): field_type = 'file' with
+-- help_text = 'video' | 'image' carrying the kind. This avoids an enum
+-- migration; the answer value is the uploaded file's public URL (or a
+-- pasted link for videos). Uploads go browser → Supabase Storage via a
+-- signed URL from POST /applications/:id/answer-upload.
 
 create table grant_questions (
   id              uuid primary key default uuid_generate_v4(),
