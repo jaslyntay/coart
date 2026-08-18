@@ -238,7 +238,7 @@ body { background:var(--bg); font-family:'Figtree',sans-serif; color:var(--text)
     <div class="org-type" id="sb-org-type"></div>
   </div>
   <nav class="sidebar-nav">
-    <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants">14</span></div>
+    <div class="nav-item on" onclick="showPage('grants', this)"><span class="nav-icon">✦</span> Our Grants <span class="nav-badge" id="badge-grants" style="display:none;"></span></div>
     <div class="nav-item" onclick="showPage('discover', this)"><span class="nav-icon">⌂</span> Discover Founders</div>
     <div class="nav-item" onclick="showPage('messages', this)"><span class="nav-icon">✉</span> Messages <span id="msg-badge" style="display:none;background:var(--orange);color:#fff;font-size:9px;padding:2px 7px;border-radius:8px;font-family:'DM Mono',monospace;margin-left:6px;"></span></div>
     <div class="nav-item" onclick="showPage('backed', this)"><span class="nav-icon">◈</span> Backed Projects</div>
@@ -894,6 +894,12 @@ async function switchRole() {
   } catch (e) { showToast('Could not reset — ' + e.message); }
 }
 
+function fmtAmount(a) {
+  if (a == null || a === '') return '';
+  const s = String(a).trim();
+  if (/^\d+(\.\d+)?$/.test(s)) return 'S$' + Number(s).toLocaleString('en-SG');
+  return s;
+}
 function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
@@ -1099,11 +1105,12 @@ function renderOurGrants() {
       '<div class="grant-amount" style="margin-top:6px;">Post your first grant and it becomes visible to every founder on coart.</div>' +
       '<div class="btn-row" style="margin-top:12px;"><button class="btn btn-or" onclick="showPage(\'postgrant\', document.querySelector(\'[onclick*=postgrant]\'))">+ Post A Grant</button></div>' +
       '</div></div></div>';
-    document.getElementById('badge-grants').textContent = '0';
+    document.getElementById('badge-grants').style.display = 'none';
     return;
   }
   document.getElementById('badge-grants').textContent =
     MY_GRANTS.reduce((n, g) => n + (g.applications || []).length, 0);
+  document.getElementById('badge-grants').style.display = document.getElementById('badge-grants').textContent === '0' ? 'none' : 'inline-block';
   el.innerHTML = MY_GRANTS.map((g, i) => {
     const apps = g.applications || [];
     const meta = '<span class="tag tag-or">' + apps.length + ' Application' + (apps.length === 1 ? '' : 's') + '</span>' +
@@ -1118,8 +1125,9 @@ function renderOurGrants() {
       '<div class="grant-block-header"><div>' +
       '<div class="grant-ref">' + esc(g.reference_code || '') + '</div>' +
       '<div class="grant-title">' + esc(g.title) + '</div>' +
-      '<div class="grant-amount">' + esc(g.amount_display || '') + '</div>' +
-      '<div class="grant-meta">' + meta + '</div>' +
+      '<div class="grant-meta">' +
+      (g.amount_display ? '<span class="grant-meta-chip" style="background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600;">' + esc(fmtAmount(g.amount_display)) + '</span>' : '') +
+      meta + '</div>' +
       '</div>' +
       '<div class="grant-block-actions">' +
       '<button class="btn btn-out btn-sm" onclick="openGrantEdit(\'' + g.id + '\')">✎ Edit</button> ' +
@@ -1302,7 +1310,7 @@ async function openApplicantModal(applicationId, grantId) {
   document.getElementById('modal-btn-back').style.display = a.status === 'backed' ? 'none' : 'inline-block';
   document.getElementById('modal-applied-box').style.display = 'block';
   document.getElementById('modal-grant-name').textContent = grant.title;
-  document.getElementById('modal-grant-amount').textContent = grant.amount_display || '';
+  document.getElementById('modal-grant-amount').textContent = fmtAmount(grant.amount_display);
   try {
     const f = await api('/founders/' + a.founder.id);
     fillModalProfile(f);
@@ -1400,7 +1408,7 @@ function openInvite(founderId, name) {
   MY_GRANTS.forEach(g => {
     const o = document.createElement('option');
     o.value = g.id;
-    o.textContent = g.title + (g.amount_display ? ' — ' + g.amount_display : '');
+    o.textContent = g.title + (g.amount_display ? ' — ' + fmtAmount(g.amount_display) : '');
     sel.appendChild(o);
   });
   document.getElementById('invite-form').style.display = 'block';

@@ -261,6 +261,27 @@ textarea.form-input { min-height:80px; }
   </div>
 </div>
 
+<datalist id="sg-unis">
+  <option>National University of Singapore (NUS)</option>
+  <option>Nanyang Technological University (NTU)</option>
+  <option>Singapore Management University (SMU)</option>
+  <option>Singapore University of Technology and Design (SUTD)</option>
+  <option>Singapore Institute of Technology (SIT)</option>
+  <option>Singapore University of Social Sciences (SUSS)</option>
+  <option>SIM Global Education</option>
+  <option>LASALLE College of the Arts</option>
+  <option>Nanyang Academy of Fine Arts (NAFA)</option>
+  <option>Yale-NUS College</option>
+  <option>Singapore Polytechnic</option>
+  <option>Ngee Ann Polytechnic</option>
+  <option>Temasek Polytechnic</option>
+  <option>Nanyang Polytechnic</option>
+  <option>Republic Polytechnic</option>
+  <option>ITE</option>
+  <option>James Cook University Singapore</option>
+  <option>Curtin Singapore</option>
+  <option>Not studying / working full-time</option>
+</datalist>
 <!-- ═══ FIRST-LOGIN ONBOARDING MODAL ═══ -->
 <div class="modal-overlay" id="onboard-overlay">
   <div class="modal">
@@ -289,7 +310,7 @@ textarea.form-input { min-height:80px; }
         </div>
         <div class="form-row">
           <div class="form-label"><span>University (optional)</span></div>
-          <input class="form-input" id="ob-uni"/>
+          <input class="form-input" id="ob-uni" list="sg-unis"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Contact email — shared only when a backer backs you</span></div>
@@ -317,12 +338,16 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="ob-bio"></textarea>
         </div>
         <div class="form-row">
-          <div class="form-label"><span>Focus areas, comma separated (optional)</span></div>
-          <input class="form-input" id="ob-focus"/>
+          <div class="form-label"><span>Focus areas (optional — pick any that fit)</span></div>
+          <div id="ob-focus-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Arts"/>Arts</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Environment"/>Environment</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Community"/>Community</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Education"/>Education</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Food"/>Food</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Heritage"/>Heritage</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Social Enterprise"/>Social Enterprise</label></div>
+          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below (comma separated)</div>
+          <input class="form-input" id="ob-focus-other" style="margin-top:4px;"/>
         </div>
         <div class="form-row">
-          <div class="form-label"><span>Community / audience you serve (optional)</span></div>
-          <input class="form-input" id="ob-community"/>
+          <div class="form-label"><span>Community / audience you serve (optional — pick any)</span></div>
+          <div id="ob-community-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Students"/>Students</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Seniors"/>Seniors</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Low-income families"/>Low-income families</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Persons with disabilities"/>Persons with disabilities</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Migrant workers"/>Migrant workers</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Local artisans & craftspeople"/>Local artisans & craftspeople</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="General public"/>General public</label></div>
+          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below</div>
+          <input class="form-input" id="ob-community-other" style="margin-top:4px;"/>
         </div>
         <div class="form-row">
           <div class="form-label"><span>Why are you the right person to lead this work? (optional)</span></div>
@@ -332,7 +357,17 @@ textarea.form-input { min-height:80px; }
           <div class="form-label"><span>Typical budget range you work with, S$ (optional)</span></div>
           <input class="form-input" id="ob-budget"/>
         </div>
-        <p style="font-size:11px;color:var(--hint);margin-top:4px;">You can add a profile photo afterwards from Profile → Basic Info.</p>
+        <div class="form-row">
+          <div class="form-label"><span>Profile photo (optional)</span></div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <canvas id="ob-pfp-canvas" width="240" height="240" style="width:110px;height:110px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);cursor:grab;touch-action:none;flex-shrink:0;"></canvas>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input type="file" id="ob-pfp-file" accept="image/*" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+              <label style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">Zoom <input type="range" id="ob-pfp-zoom" min="100" max="300" value="100" style="vertical-align:middle;"/></label>
+              <span style="font-size:10px;color:var(--hint);">Drag the photo to reposition it</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div class="form-section" id="ob-backer-fields" style="display:none;">
         <div class="form-row">
@@ -375,7 +410,17 @@ textarea.form-input { min-height:80px; }
           <div class="form-label"><span>Focus areas, comma separated (optional)</span></div>
           <input class="form-input" id="ob-org-focus"/>
         </div>
-        <p style="font-size:11px;color:var(--hint);margin-top:4px;">You can add a logo afterwards from Organisation Profile → Edit.</p>
+        <div class="form-row">
+          <div class="form-label"><span>Organisation logo (optional)</span></div>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <canvas id="ob-logo-canvas" width="240" height="240" style="width:110px;height:110px;border-radius:10px;background:var(--surface);border:1px solid var(--border-strong);cursor:grab;touch-action:none;flex-shrink:0;"></canvas>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input type="file" id="ob-logo-file" accept="image/*" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+              <label style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">Zoom <input type="range" id="ob-logo-zoom" min="100" max="300" value="100" style="vertical-align:middle;"/></label>
+              <span style="font-size:10px;color:var(--hint);">Drag to reposition</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="ob-status" style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:.05em;min-height:14px;"></div>
     </div>
@@ -529,7 +574,7 @@ textarea.form-input { min-height:80px; }
       <div class="form-section">
         <div class="form-row"><div class="form-label"><span>Full name</span></div><input class="form-input" id="bi-name"/></div>
         <div class="form-row"><div class="form-label"><span>Age</span></div><input class="form-input" id="bi-age" type="number" min="13" max="99"/></div>
-        <div class="form-row"><div class="form-label"><span>University</span></div><input class="form-input" id="bi-uni"/></div>
+        <div class="form-row"><div class="form-label"><span>University</span></div><input class="form-input" id="bi-uni" list="sg-unis"/></div>
         <div class="form-row"><div class="form-label"><span>Field of study</span></div><input class="form-input" id="bi-fos"/></div>
         <div class="form-row"><div class="form-label"><span>Location</span></div><input class="form-input" id="bi-location"/></div>
         <div class="form-row"><div class="form-label"><span>LinkedIn URL (optional)</span></div><input class="form-input" id="bi-linkedin"/></div>
@@ -537,9 +582,13 @@ textarea.form-input { min-height:80px; }
         <div class="form-row"><div class="form-label"><span>Contact number — shared only when backed</span></div><input class="form-input" id="bi-cphone"/></div>
         <div class="form-row">
           <div class="form-label"><span>Profile photo</span></div>
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div id="bi-avatar-preview" style="width:52px;height:52px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);background-size:cover;background-position:center;flex-shrink:0;"></div>
-            <input type="file" id="bi-avatar" accept="image/jpeg,image/png,image/webp" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+          <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+            <canvas id="bi-pfp-canvas" width="240" height="240" style="width:110px;height:110px;border-radius:50%;background:var(--surface);border:1px solid var(--border-strong);cursor:grab;touch-action:none;flex-shrink:0;"></canvas>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <input type="file" id="bi-pfp-file" accept="image/*" style="font-size:11px;font-family:'DM Mono',monospace;"/>
+              <label style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;">Zoom <input type="range" id="bi-pfp-zoom" min="100" max="300" value="100" style="vertical-align:middle;"/></label>
+              <span style="font-size:10px;color:var(--hint);">Drag to reposition</span>
+            </div>
           </div>
         </div>
       </div>
@@ -581,12 +630,16 @@ textarea.form-input { min-height:80px; }
           <textarea class="form-input" id="ga-bio"></textarea>
         </div>
         <div class="form-row">
-          <div class="form-label"><span>Focus Areas (comma separated)</span></div>
-          <input class="form-input" id="ga-focus"/>
+          <div class="form-label"><span>Focus Areas (pick any that fit)</span></div>
+          <div id="ga-focus-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Arts"/>Arts</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Environment"/>Environment</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Community"/>Community</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Education"/>Education</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Food"/>Food</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Heritage"/>Heritage</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Social Enterprise"/>Social Enterprise</label></div>
+          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below (comma separated)</div>
+          <input class="form-input" id="ga-focus-other" style="margin-top:4px;"/>
         </div>
         <div class="form-row">
-          <div class="form-label"><span>Community / Audience you serve</span></div>
-          <input class="form-input" id="ga-community"/>
+          <div class="form-label"><span>Community / Audience you serve (pick any)</span></div>
+          <div id="ga-community-group" style="display:flex;flex-wrap:wrap;gap:8px;"><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Youth"/>Youth</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Students"/>Students</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Seniors"/>Seniors</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Low-income families"/>Low-income families</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Persons with disabilities"/>Persons with disabilities</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Migrant workers"/>Migrant workers</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="Local artisans & craftspeople"/>Local artisans & craftspeople</label><label style="display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid var(--border-strong);background:var(--card);font-size:12px;cursor:pointer;"><input type="checkbox" value="General public"/>General public</label></div>
+          <div style="font-size:10px;color:var(--hint);margin-top:8px;font-family:'DM Mono',monospace;">Something else? Type it below</div>
+          <input class="form-input" id="ga-community-other" style="margin-top:4px;"/>
         </div>
       </div>
 
@@ -937,6 +990,107 @@ function esc(s) {
   return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// S$ formatting: bare numbers become "S$1,000"; anything already worded stays.
+function fmtAmount(a) {
+  if (a == null || a === '') return '';
+  const s = String(a).trim();
+  if (/^\d+(\.\d+)?$/.test(s)) return 'S$' + Number(s).toLocaleString('en-SG');
+  return s;
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-SG', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+function grantCycleClosed(g) {
+  if (g.is_rolling) return false;
+  if (!g.application_closes_at) return false;
+  return g.application_closes_at < new Date().toISOString().slice(0, 10);
+}
+
+// ───── AVATAR/LOGO PICKER (preview + zoom + drag reposition) ─────
+const AVATAR_PICKERS = {};
+function initAvatarPicker(key, existingUrl) {
+  const canvas = document.getElementById(key + '-canvas');
+  const file = document.getElementById(key + '-file');
+  const zoom = document.getElementById(key + '-zoom');
+  if (!canvas || !file) return;
+  const st = AVATAR_PICKERS[key] = { img: null, zoom: 1, ox: 0, oy: 0, dirty: false };
+  const draw = () => {
+    const ctx = canvas.getContext('2d');
+    ctx.clearRect(0, 0, 240, 240);
+    if (!st.img) return;
+    const base = Math.max(240 / st.img.width, 240 / st.img.height) * st.zoom;
+    const w = st.img.width * base, h = st.img.height * base;
+    st.ox = Math.min(0, Math.max(240 - w, st.ox));
+    st.oy = Math.min(0, Math.max(240 - h, st.oy));
+    ctx.drawImage(st.img, st.ox, st.oy, w, h);
+  };
+  st.draw = draw;
+  file.onchange = () => {
+    const f = file.files[0];
+    if (!f) return;
+    const img = new Image();
+    img.onload = () => { st.img = img; st.zoom = 1; st.ox = st.oy = 0; st.dirty = true; if (zoom) zoom.value = 100; draw(); };
+    img.src = URL.createObjectURL(f);
+  };
+  if (zoom) zoom.oninput = () => {
+    if (!st.img) return;
+    // zoom around the current centre
+    const prev = Math.max(240 / st.img.width, 240 / st.img.height) * st.zoom;
+    st.zoom = zoom.value / 100;
+    const next = Math.max(240 / st.img.width, 240 / st.img.height) * st.zoom;
+    const cx = (120 - st.ox) / prev, cy = (120 - st.oy) / prev;
+    st.ox = 120 - cx * next; st.oy = 120 - cy * next;
+    draw();
+  };
+  let dragging = false, lx = 0, ly = 0;
+  canvas.onpointerdown = (e) => { dragging = true; lx = e.clientX; ly = e.clientY; canvas.setPointerCapture(e.pointerId); };
+  canvas.onpointermove = (e) => {
+    if (!dragging || !st.img) return;
+    st.ox += (e.clientX - lx) * 2; st.oy += (e.clientY - ly) * 2;
+    lx = e.clientX; ly = e.clientY; draw();
+  };
+  canvas.onpointerup = canvas.onpointercancel = () => { dragging = false; };
+  if (existingUrl) {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => { if (!st.dirty) { st.img = img; draw(); st.img = st.dirty ? st.img : img; if (!st.dirty) { st.dirty = false; } } };
+    img.src = existingUrl;
+  }
+}
+function avatarPickerResult(key) {
+  const st = AVATAR_PICKERS[key];
+  if (!st || !st.img || !st.dirty) return null;
+  try {
+    const out = document.createElement('canvas');
+    out.width = 512; out.height = 512;
+    const ctx = out.getContext('2d');
+    const scale = 512 / 240;
+    const base = Math.max(240 / st.img.width, 240 / st.img.height) * st.zoom;
+    ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 512, 512);
+    ctx.drawImage(st.img, st.ox * scale, st.oy * scale, st.img.width * base * scale, st.img.height * base * scale);
+    return out.toDataURL('image/jpeg', 0.86).split(',')[1];
+  } catch (e) { return null; }
+}
+// Read a checkbox group + its "other" free-text into a comma-separated string
+function collectChecks(groupId, otherId) {
+  const vals = [...document.querySelectorAll('#' + groupId + ' input:checked')].map(c => c.value);
+  const other = otherId ? document.getElementById(otherId).value.trim() : '';
+  if (other) vals.push(...other.split(',').map(s => s.trim()).filter(Boolean));
+  return vals.join(', ');
+}
+function applyChecks(groupId, otherId, commaString) {
+  const wanted = (commaString || '').split(',').map(s => s.trim()).filter(Boolean);
+  const known = [];
+  document.querySelectorAll('#' + groupId + ' input').forEach(c => {
+    c.checked = wanted.includes(c.value);
+    known.push(c.value);
+  });
+  const leftovers = wanted.filter(w => !known.includes(w));
+  if (otherId) document.getElementById(otherId).value = leftovers.join(', ');
+}
+
 function showPage(id, el) {
   pages.forEach(p => {
     document.getElementById('page-' + p).classList.toggle('on', p === id);
@@ -1030,10 +1184,14 @@ function renderIdentity(row) {
     section.style.display = 'none';
   } else {
     section.style.display = 'block';
-    document.getElementById('prof-missing-body').innerHTML = missing.map(m =>
-      '<div class="profile-field"><div class="profile-field-label">' + esc(m) +
-      '</div><div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>'
-    ).join('');
+    const GENAPP_ITEMS = ['Short Bio', 'Focus Areas', 'Past Experience (Why You)'];
+    document.getElementById('prof-missing-body').innerHTML = missing.map(m => {
+      const action = GENAPP_ITEMS.includes(m) ? 'openGenApp()' : 'openBasicInfo()';
+      return '<div class="profile-field" style="display:flex;justify-content:space-between;align-items:center;gap:12px;">' +
+        '<div><div class="profile-field-label">' + esc(m) + '</div>' +
+        '<div class="profile-field-value" style="color:var(--hint)">Not added yet</div></div>' +
+        '<button class="btn btn-or btn-sm" onclick="' + action + '" style="flex-shrink:0;">+ Add</button></div>';
+    }).join('');
   }
 }
 
@@ -1136,12 +1294,23 @@ function grantDeadlineText(g) {
 
 function grantCard(g, i) {
   const org = g.organization || {};
-  const refLine = [g.reference_code, org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', g.difficulty ? g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1) : '', grantDeadlineText(g)]
+  const refLine = [g.reference_code, org.type ? org.type.charAt(0).toUpperCase() + org.type.slice(1) : '', g.difficulty ? g.difficulty.charAt(0).toUpperCase() + g.difficulty.slice(1) : '']
     .filter(Boolean).join(' · ');
+  const closed = grantCycleClosed(g);
   const platformTag = g.is_external
-    ? '<span class="tag" style="background:#B45309;color:#fff;border-color:#B45309;font-weight:600;">↗ EXTERNAL — draft here, submit on their portal</span>'
+    ? '<span class="tag" style="background:#7C3AED;color:#fff;border-color:#7C3AED;font-weight:600;">↗ EXTERNAL — draft here, submit on their portal</span>'
     : '<span class="tag" style="background:var(--orange);color:#fff;border-color:var(--orange);font-weight:600;">⚡ APPLY DIRECTLY ON COART</span>';
-  const tags = platformTag +
+  let deadlineTag = '';
+  if (closed) {
+    deadlineTag = '<span class="tag" style="background:var(--muted);color:#fff;border-color:var(--muted);font-weight:600;">⏳ CYCLE CLOSED' + (g.frequency ? ' — ' + esc(g.frequency) : '') + '</span>';
+  } else if (g.is_rolling) {
+    deadlineTag = '<span class="tag" style="border-color:var(--orange);color:var(--orange);">✓ Rolling — apply anytime</span>';
+  } else if (g.application_closes_at) {
+    const days = Math.ceil((new Date(g.application_closes_at) - new Date()) / 86400000);
+    const urgent = days <= 30;
+    deadlineTag = '<span class="tag" style="' + (urgent ? 'background:#B91C1C;color:#fff;border-color:#B91C1C;' : 'background:var(--text);color:#fff;border-color:var(--text);') + 'font-weight:600;">⏰ Closes ' + esc(fmtDate(g.application_closes_at)) + (urgent && days >= 0 ? ' — ' + days + ' days left' : '') + '</span>';
+  }
+  const tags = platformTag + deadlineTag +
     (g.focus_areas || []).map(f => '<span class="tag tag-dk">' + esc(f) + '</span>').join('') +
     (org.name ? '<span class="tag">' + esc(org.name) + '</span>' : '');
   const externalLink = g.external_portal_url
@@ -1149,7 +1318,9 @@ function grantCard(g, i) {
     : '';
   const myApp = APP_BY_GRANT[g.id];
   let primaryBtn;
-  if (!myApp) {
+  if (closed && !myApp) {
+    primaryBtn = '<span class="tag" style="text-align:center;color:var(--muted);">Applications closed</span>';
+  } else if (!myApp) {
     primaryBtn = '<button class="btn btn-or" onclick="applyWithAI(\'' + g.id + '\')">Apply with AI</button>';
   } else if (myApp.status === 'draft') {
     primaryBtn = '<button class="btn btn-or" onclick="continueDraft(\'' + myApp.id + '\')">Continue Draft →</button>';
@@ -1161,13 +1332,13 @@ function grantCard(g, i) {
     ? '<button class="btn btn-out btn-sm" onclick="toggleSaveGrant(\'' + g.id + '\')">★ Saved</button>'
     : '<button class="btn btn-out btn-sm" onclick="toggleSaveGrant(\'' + g.id + '\')">Save</button>';
   return (
-    '<div class="grant-explore-card">' +
+    '<div class="grant-explore-card"' + (closed ? ' style="opacity:.55;"' : '') + '>' +
       '<div class="' + (i === 0 ? 'grant-explore-band' : 'grant-explore-band-dim') + '"></div>' +
       '<div class="grant-explore-inner">' +
         '<div class="grant-explore-left">' +
           '<div class="grant-ref" style="font-family:\'DM Mono\',monospace;font-size:9px;color:var(--hint);letter-spacing:.07em;margin-bottom:4px;">' + esc(refLine) + '</div>' +
           '<div class="grant-explore-title">' + esc(g.title) + '</div>' +
-          '<span class="grant-explore-amount">' + esc(g.amount_display || '') + '</span>' +
+          '<span class="grant-explore-amount">' + esc(fmtAmount(g.amount_display)) + '</span>' +
           '<p class="grant-explore-sub">' + esc(g.offering_description || '') + '</p>' +
           '<div class="tags">' + tags + '</div>' +
         '</div>' +
@@ -1298,6 +1469,8 @@ let ONBOARD_ROLE = null;
 
 function openOnboarding() {
   document.querySelector('.profile-name').textContent = 'New here';
+  initAvatarPicker('ob-pfp');
+  initAvatarPicker('ob-logo');
   // Prefill contact email from the login email
   sbAuth.auth.getSession().then(({ data }) => {
     const email = data.session?.user?.email || '';
@@ -1345,12 +1518,18 @@ async function submitOnboarding() {
       if (val('ob-location')) opt.location = val('ob-location');
       if (val('ob-linkedin')) opt.linkedin_url = val('ob-linkedin');
       if (val('ob-bio')) opt.bio = val('ob-bio');
-      if (val('ob-focus')) opt.focus_areas = val('ob-focus').split(',').map(s => s.trim()).filter(Boolean);
-      if (val('ob-community')) opt.community = val('ob-community');
+      const obFocus = collectChecks('ob-focus-group', 'ob-focus-other');
+      if (obFocus) opt.focus_areas = obFocus.split(',').map(s => s.trim()).filter(Boolean);
+      const obCommunity = collectChecks('ob-community-group', 'ob-community-other');
+      if (obCommunity) opt.community = obCommunity;
       if (val('ob-credibility')) opt.past_experience = val('ob-credibility');
       if (val('ob-budget')) opt.typical_budget = val('ob-budget');
       if (Object.keys(opt).length) {
         try { await api('/founders/me', { method: 'PATCH', body: JSON.stringify(opt) }); } catch (e) {}
+      }
+      const pfp = avatarPickerResult('ob-pfp');
+      if (pfp) {
+        try { await api('/founders/me/avatar', { method: 'POST', body: JSON.stringify({ image_base64: pfp, content_type: 'image/jpeg' }) }); } catch (e) {}
       }
       const row = await api('/founders/me');
       document.getElementById('onboard-overlay').classList.remove('on');
@@ -1381,6 +1560,10 @@ async function submitOnboarding() {
       if (Object.keys(orgOpt).length) {
         try { await api('/organizations/me', { method: 'PATCH', body: JSON.stringify(orgOpt) }); } catch (e) {}
       }
+      const logo = avatarPickerResult('ob-logo');
+      if (logo) {
+        try { await api('/organizations/me/logo', { method: 'POST', body: JSON.stringify({ image_base64: logo, content_type: 'image/jpeg' }) }); } catch (e) {}
+      }
       window.location.replace('backer.html');
     }
   } catch (e) {
@@ -1399,9 +1582,7 @@ function openBasicInfo() {
   document.getElementById('bi-linkedin').value = FOUNDER.linkedin_url || '';
   document.getElementById('bi-cemail').value = FOUNDER.contact_email || '';
   document.getElementById('bi-cphone').value = FOUNDER.contact_phone || '';
-  document.getElementById('bi-avatar').value = '';
-  document.getElementById('bi-avatar-preview').style.backgroundImage =
-    FOUNDER.profile_photo_url ? 'url(' + FOUNDER.profile_photo_url + ')' : 'none';
+  initAvatarPicker('bi-pfp', FOUNDER.profile_photo_url || null);
   document.getElementById('bi-status').textContent = '';
   document.getElementById('basicinfo-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
@@ -1430,13 +1611,12 @@ async function saveBasicInfo() {
   status.textContent = 'Saving…';
   try {
     // Upload a new photo first, if one was chosen
-    const fileInput = document.getElementById('bi-avatar');
-    if (fileInput.files && fileInput.files[0]) {
+    const biPfp = avatarPickerResult('bi-pfp');
+    if (biPfp) {
       status.textContent = 'Uploading photo…';
-      const base64 = await resizeImage(fileInput.files[0]);
       await api('/founders/me/avatar', {
         method: 'POST',
-        body: JSON.stringify({ image_base64: base64, content_type: 'image/jpeg' }),
+        body: JSON.stringify({ image_base64: biPfp, content_type: 'image/jpeg' }),
       });
       status.textContent = 'Saving…';
     }
@@ -1452,13 +1632,11 @@ async function saveBasicInfo() {
 // ───── GENERAL APPLICATION MODAL ─────
 function openGenApp() {
   const ga = getGenApp();
-  if (ga) {
-    document.getElementById('ga-bio').value = ga.bio || '';
-    document.getElementById('ga-focus').value = ga.focus || '';
-    document.getElementById('ga-community').value = ga.community || '';
-    document.getElementById('ga-credibility').value = ga.credibility || '';
-    document.getElementById('ga-budget').value = ga.budget || '';
-  }
+  document.getElementById('ga-bio').value = (ga && ga.bio) || '';
+  applyChecks('ga-focus-group', 'ga-focus-other', ga && ga.focus);
+  applyChecks('ga-community-group', 'ga-community-other', ga && ga.community);
+  document.getElementById('ga-credibility').value = (ga && ga.credibility) || '';
+  document.getElementById('ga-budget').value = (ga && ga.budget) || '';
   document.getElementById('genapp-overlay').classList.add('on');
   document.body.style.overflow = 'hidden';
 }
@@ -1472,8 +1650,8 @@ function closeGenAppOutside(e) {
 async function saveGenApp() {
   const ga = {
     bio: document.getElementById('ga-bio').value.trim(),
-    focus: document.getElementById('ga-focus').value.trim(),
-    community: document.getElementById('ga-community').value.trim(),
+    focus: collectChecks('ga-focus-group', 'ga-focus-other'),
+    community: collectChecks('ga-community-group', 'ga-community-other'),
     credibility: document.getElementById('ga-credibility').value.trim(),
     budget: document.getElementById('ga-budget').value.trim()
   };
@@ -1972,7 +2150,7 @@ async function confirmProjectPicker() {
 function openModal(grant, project) {
   document.getElementById('modal-grant-title').textContent = grant.title + ' — Application';
   document.getElementById('modal-grant-ref').textContent =
-    [grant.reference_code, grant.amount_display].filter(Boolean).join(' · ');
+    [grant.reference_code, fmtAmount(grant.amount_display)].filter(Boolean).join(' · ');
 
   const formSection = document.getElementById('modal-custom-fields');
   const defaultSection = document.getElementById('modal-default-fields');

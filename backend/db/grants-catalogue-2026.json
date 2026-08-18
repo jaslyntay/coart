@@ -72,7 +72,7 @@
       "Community"
     ],
     "is_rolling": false,
-    "application_closes_at": null,
+    "application_closes_at": "2026-07-13",
     "frequency": "Annual cycle (2026 window closed 13 Jul; next cycle expected ~Q2 2027)",
     "eligibility_age_min": 18,
     "eligibility_age_max": null,
@@ -332,7 +332,7 @@
     "eligibility_note": "Open to informal ground-up groups (min 2 people) and youth-led organisations incorporated up to 5 years. For projects ready to scale for sustained impact \u2014 not one-off events. Minimum project budget S$10,000; funded elements complete within 2 years. Successor to the Youth Action Challenge.",
     "offering_description": "Up to S$70,000 (100% of supported costs) to scale youth-led community projects with sustained, measurable impact \u2014 plus project guidance, capability-building workshops and a changemaker community.",
     "application_instructions": "Apply via the OurSG Grants Portal during a window with a proposal deck answering the YAG supplementary questions, budget, and team particulars; shortlisted teams pitch at Impact, IRL.",
-    "external_portal_url": "https://go.gov.sg/nyc-yag-osg",
+    "external_portal_url": "https://oursggrants.gov.sg/grants/nycyagopn/instruction",
     "questions": [
       {
         "question_key": "problem_gap",
@@ -422,7 +422,7 @@
     "eligibility_note": "Projects must be relevant to Singapore's heritage/history, engage the community, and complete within 6 months. Formats include mini exhibitions, guided tours, workshops, screenings, murals and temporary outdoor artwork. Projects lacking heritage elements may still be considered for the base YCM grant.",
     "offering_description": "Enhanced YCM track co-presented by NHB and NYC: seed funding of up to S$7,000 plus curator mentorship for youth-led projects that promote appreciation of Singapore's heritage.",
     "application_instructions": "Apply via the YCM grant card on the OurSG Grants Portal, selecting 'Culture & Heritage' as the category, at least 8 weeks before your implementation month; shortlisted teams pitch at the monthly Open Mic.",
-    "external_portal_url": "https://www.nhb.gov.sg/what-we-do/our-work/community-engagement/grants/grants/young-changemakers-youth-heritage-kickstarter-fund",
+    "external_portal_url": "https://oursggrants.gov.sg/grants/nycycm/instruction",
     "questions": [
       {
         "question_key": "team_background",
@@ -528,7 +528,7 @@
     "eligibility_note": "Open to individuals AND informal collectives \u2014 collectives nominate one member to take legal/financial responsibility. Project must not have started before applying, must have a clear arts component, and be intended for public consumption. Priority to self-employed arts practitioners.",
     "offering_description": "NAC's main project grant for emerging artists and collectives: co-funds performances, exhibitions, music EPs/albums, festivals and co-creative projects with the public, in physical and/or digital formats.",
     "application_instructions": "Submit via the OurSG Grants Portal by 23:59 SGT on the cycle deadline, with the proposal and budget templates from the portal, CVs, work samples for first-time applicants, and complete scripts for theatre/literary projects.",
-    "external_portal_url": "https://www.nac.gov.sg/support/funding-and-schemes/presentation-and-participation-grant/overview",
+    "external_portal_url": "https://oursggrants.gov.sg",
     "questions": [
       {
         "question_key": "artistic_concept",
@@ -571,7 +571,7 @@
       "Arts"
     ],
     "is_rolling": false,
-    "application_closes_at": null,
+    "application_closes_at": "2026-05-15",
     "frequency": "Annual single cycle (2026 closed; next expected ~May 2027)",
     "eligibility_age_min": null,
     "eligibility_age_max": null,
@@ -637,7 +637,7 @@
     "eligibility_note": "Explicitly designed for first-timers with little heritage project experience. Informal groups qualify by nominating an individual to take legal/financial responsibility. Funding raised from 50% to 80% of costs from April 2026. Reserve at least 8 weeks for NHB content vetting before launch.",
     "offering_description": "Co-funds community-initiated heritage projects \u2014 trails, exhibitions, publications, documentaries, heritage spaces \u2014 that promote learning about Singapore's history and shared heritage.",
     "application_instructions": "Apply via the OurSG Grants Portal (NHB Minor Project Grant) by 23:59 on the closing date, with a project proposal (max 2,000 words), budget form, and team CVs.",
-    "external_portal_url": "https://www.nhb.gov.sg/what-we-do/our-work/community-engagement/grants/grants/minor-and-major-project-grants",
+    "external_portal_url": "https://go.gov.sg/minormajor",
     "questions": [
       {
         "question_key": "central_idea",
