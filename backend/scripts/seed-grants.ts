@@ -12,7 +12,6 @@ const ORGS: Record<string, OrgSeed> = {
   nyc: { name: 'National Youth Council', type: 'government', location: 'Singapore', external_url: 'https://www.nyc.gov.sg' },
   sif: { name: 'Singapore International Foundation', type: 'corporate', location: 'Singapore', external_url: 'https://www.sif.org.sg' },
   nac: { name: 'National Arts Council', type: 'government', location: 'Singapore', external_url: 'https://www.nac.gov.sg' },
-  tbyn: { name: 'Tiong Bahru Youth Network', type: 'community', location: 'Tiong Bahru, Singapore' },
   nea: { name: 'National Environment Agency', type: 'government', location: 'Singapore', external_url: 'https://www.nea.gov.sg' },
 };
 
@@ -22,7 +21,7 @@ const GRANTS = [
     reference_code: 'NYC-NYF-2025',
     title: 'National Youth Fund',
     grant_type: 'cash',
-    amount_display: 'Up to 80% of project cost',
+    amount_display: 'Up to 80% of project cost (capped S$10,000–S$100,000 by track)',
     difficulty: 'easy',
     focus_areas: ['Community', 'Arts', 'Environment', 'Education'],
     is_rolling: true,
@@ -52,45 +51,15 @@ const GRANTS = [
     external_portal_url: 'https://www.sif.org.sg/Our-Work/Youth/YSE-Global',
     status: 'active',
   },
-  {
-    org: 'nac',
-    reference_code: 'NAC-AEF-2025',
-    title: 'Arts Education Fund',
-    grant_type: 'cash',
-    amount_display: 'Up to S$50,000',
-    difficulty: 'moderate',
-    focus_areas: ['Arts', 'Education'],
-    is_rolling: false,
-    application_closes_at: '2026-03-31',
-    offering_description:
-      'For projects that bring arts programming to underserved communities across Singapore.',
-    application_instructions: 'Apply via the NAC funding and schemes portal.',
-    is_external: true,
-    external_portal_url: 'https://www.nac.gov.sg/support/funding-and-schemes',
-    status: 'active',
-  },
-  {
-    org: 'tbyn',
-    reference_code: 'TBYN-CIG-2025',
-    title: 'Community Impact Grant',
-    grant_type: 'cash',
-    amount_display: 'Up to S$5,000',
-    difficulty: 'easy',
-    focus_areas: ['Community'],
-    is_rolling: false,
-    application_closes_at: '2026-12-31',
-    offering_description:
-      'Supports youth-led projects with a direct impact on the Tiong Bahru and surrounding communities.',
-    application_instructions: 'Apply directly on coart.',
-    is_external: false,
-    status: 'active',
-  },
+  // NAC-AEF-2025 removed Oct 2026: no such scheme in NAC's restructured
+  // funding directory. TBYN-CIG-2025 (mock org from the prototype) removed
+  // too — never seed fictitious grantor organisations.
   {
     org: 'nea',
     reference_code: 'NEA-3R-2025',
     title: 'NEA 3R Fund',
     grant_type: 'cash',
-    amount_display: 'Up to S$300,000',
+    amount_display: 'Up to 80% of qualifying costs, capped at S$1,000,000',
     difficulty: 'moderate',
     focus_areas: ['Environment'],
     is_rolling: true,
@@ -110,30 +79,9 @@ const GRANTS = [
       { question_key: 'budget', label: 'Budget breakdown - manpower, equipment, professional services, other', placeholder: 'Break down qualifying costs across the four categories...', ai_draft_hint: 'Break qualifying costs into manpower, equipment/materials, professional services, and other, with percentages and a total.' },
     ],
   },
-  {
-    org: 'nea',
-    reference_code: 'NEA-EEF-2025',
-    title: 'NEA Environmental Education Fund',
-    grant_type: 'cash',
-    amount_display: 'Up to S$50,000',
-    difficulty: 'moderate',
-    focus_areas: ['Environment', 'Education'],
-    is_rolling: true,
-    offering_description:
-      'Funds environmental education programmes that raise awareness and build capability for sustainable behaviours, especially among youth.',
-    application_instructions:
-      'Draft your answers on coart; the EEF supports environmental education programmes and submissions go to NEA.',
-    is_external: true,
-    external_portal_url: 'https://www.nea.gov.sg/programmes-grants/grants-and-awards',
-    status: 'active',
-    questions: [
-      { question_key: 'org', label: 'Organisation name and background', placeholder: 'Describe your organisation and its environmental work...', ai_draft_hint: 'Introduce the organisation, when it was founded, and its environmental education track record.' },
-      { question_key: 'programme', label: 'Programme description - what environmental education will you deliver?', placeholder: 'Describe the programme content, format, and delivery...', ai_draft_hint: 'Describe content, format, frequency, and delivery of the education programme.' },
-      { question_key: 'target', label: 'Target audience and expected reach', placeholder: 'Who will participate and how many people will you reach?', ai_draft_hint: 'Name the primary audience, expected direct participants, and secondary reach.' },
-      { question_key: 'outcomes', label: 'Expected environmental outcomes and how you will measure them', placeholder: 'What behaviour change do you expect and how will you track it?', ai_draft_hint: 'List expected behaviour changes and concrete measurement methods (surveys, attendance, follow-ups).' },
-      { question_key: 'budget', label: 'Programme budget breakdown', placeholder: 'Break down costs across materials, facilitators, venue, outreach...', ai_draft_hint: 'Break costs into facilitators, materials, venue/logistics, and outreach with percentages and a total.' },
-    ],
-  },
+  // NEA-EEF-2025 removed Oct 2026: no NEA fund by this name exists (the
+  // entry was a mislabel). Closest live schemes for a future entry: NEA
+  // Call for Ideas Fund / Partnership Fund.
 ];
 
 async function getOrCreateOrg(seed: OrgSeed): Promise<string> {
