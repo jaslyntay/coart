@@ -14,7 +14,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const sb = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 const DEMO_DOMAIN = 'demo.coartsg.test';
-const COUNT = 100;
+const COUNT = 102;
 
 // Deterministic PRNG so reruns produce the same cast.
 let seed = 20261030;
@@ -189,17 +189,17 @@ async function seedOne(i: number, archPool: Arch[]) {
 async function main() {
   if (process.argv.includes('--cleanup')) return cleanup();
 
-  // Refuse to double-seed.
+  // Top up to COUNT: skip indices already seeded (emails carry the index).
   const { data: list } = await sb.auth.admin.listUsers({ perPage: 1000 });
   const already = (list?.users ?? []).filter((u) => u.email?.endsWith('@' + DEMO_DOMAIN)).length;
-  if (already > 0) {
-    console.log(`${already} demo users already exist — run --cleanup first to reseed.`);
+  if (already >= COUNT) {
+    console.log(`${already} demo users already exist (target ${COUNT}) — run --cleanup first to reseed.`);
     return;
   }
 
   const archPool = [...PROJECTS];
   let ok = 0;
-  for (let i = 0; i < COUNT; i++) {
+  for (let i = already; i < COUNT; i++) {
     if (await seedOne(i, archPool)) ok++;
     if ((i + 1) % 10 === 0) console.log(`…${i + 1}/${COUNT}`);
   }
